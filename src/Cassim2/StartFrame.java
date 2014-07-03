@@ -1,19 +1,15 @@
 
 package Cassim2;
 
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 
-/**
- *
- * @author jDzama
- */
+
 public class StartFrame extends javax.swing.JFrame {
 
-
-    /**
-     * Creates new form StartFrame
-     */
+    private boolean solutionIsReady=false;
+    
     public StartFrame() {
         initComponents();
         this.setTitle("Cassim 2");
@@ -139,13 +135,22 @@ public class StartFrame extends javax.swing.JFrame {
         
         InputTableDialog inputTableDialog = new InputTableDialog(this, rootPaneCheckingEnabled);
         inputTableDialog.setVisible(true);
+        
+        solutionIsReady = true;
     }//GEN-LAST:event_btnCreateTableActionPerformed
 
     private void btnStartSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartSolutionActionPerformed
-        
-       ValuesSingleton.INSTANCE.onlyOnce = true; 
-       SolutionDialog solutionDialog = new SolutionDialog(this, rootPaneCheckingEnabled);
-       solutionDialog.setVisible(true); 
+       
+        if (!solutionIsReady) {
+            JOptionPane.showMessageDialog(this, "Najprv zadajte vstup!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+ 
+        solutionIsReady = false;
+       
+        ValuesSingleton.INSTANCE.onlyOnce = true; 
+        SolutionDialog solutionDialog = new SolutionDialog(this, rootPaneCheckingEnabled);
+        solutionDialog.setVisible(true); 
         
     }//GEN-LAST:event_btnStartSolutionActionPerformed
 

@@ -1,6 +1,7 @@
 package Cassim2;
 
 import javax.swing.JLabel;
+import javax.swing.JTable;
 
 
 public class SolutionDialog extends javax.swing.JDialog {
@@ -14,7 +15,12 @@ public class SolutionDialog extends javax.swing.JDialog {
     public SolutionDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer());                
+        
+        tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
+        if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        }
+        
     }
 
     /**
@@ -38,17 +44,17 @@ public class SolutionDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
+                .addGap(23, 23, 23))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(74, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                .addGap(40, 40, 40))
         );
 
         pack();
