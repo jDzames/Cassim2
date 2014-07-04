@@ -105,8 +105,11 @@ public class InputTableModel extends AbstractTableModel {
         //skontrolujem pisany vstup: ., des cislo a :/\=(char)92 zlomok
         input.trim();
         if (!(input.charAt(0)>='0' && input.charAt(0)<='9')) {
-            fireTableCellUpdated(row, col);
-            return;
+            String smaller = input.substring(1);           
+            if (smaller==null || smaller.length()<1 || input.charAt(0)!='-' || !(smaller.trim().charAt(0)>='0' && smaller.trim().charAt(0)<='9')) {
+                fireTableCellUpdated(row, col);
+                return;  
+            }           
         }
         if (!(input.charAt(input.length()-1)>='0' && input.charAt(input.length()-1)<='9')) {
             fireTableCellUpdated(row, col);
@@ -114,28 +117,60 @@ public class InputTableModel extends AbstractTableModel {
         }
         int fractionSigns=0;
         int decimalSigns=0;
-        boolean valid = false;        
+        boolean validMinusSign=true;
+        boolean valid = false;  
+        int denominatorIndex=-1;
         for (int i = 0; i < input.length(); i++) {
-            if (input.charAt(i)==' ' || (input.charAt(i)>='0' && input.charAt(i)<='9')) {
+            if (input.charAt(i)=='-') {
+                if (validMinusSign) {
+                    validMinusSign=false;
+                    valid=true;
+                    continue;
+                }                
+                valid=false;
+                break;
+            }
+            if (input.charAt(i)==' ') {
+                valid = true;
+                continue;
+            }
+            if (input.charAt(i)>='0' && input.charAt(i)<='9') {
                 valid=true;
+                validMinusSign = false;
                 continue;
             }
             if (input.charAt(i)==':' || input.charAt(i)=='/' || input.charAt(i)==(char)92) {
+                denominatorIndex=i+1;
                 fractionSigns++;
                 valid=true;
+                validMinusSign = true;
                 continue;
             }
             if (input.charAt(i)==',' || input.charAt(i)=='.') {
                 decimalSigns++;
+                validMinusSign = false;
                 valid=true;
                 continue;
             }
             valid=false;
             break;
         }
-        if (!valid || decimalSigns+fractionSigns>1 ) {
+        if (!valid || decimalSigns+fractionSigns>1 ) { 
             fireTableCellUpdated(row, col);
             return;
+        }
+        //ci menovatel nie je 0
+        if (denominatorIndex!=-1) {
+            try {
+                int denominator = Integer.parseInt(input.substring(denominatorIndex).trim());
+                if (denominator==0) {
+                    fireTableCellUpdated(row, col);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                fireTableCellUpdated(row, col);
+                return;
+            }          
         }
         //vlozim na spravne miesto
         if (col==columnNames.length) {
