@@ -25,13 +25,15 @@ public class InputTableDialog extends javax.swing.JDialog {
         tables();
     }
     
-    private void tables(){
+    private void tables(){         
         if (ValuesSingleton.INSTANCE.columns>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblInput.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             tblVariables.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            tblVariables.setRowHeight(0, 19);
+        } else {
+            tblVariables.setRowHeight(0, 36);
         }
-        
-        
+   
         tblInput.getTableHeader().setVisible(true);//false
         tblVariables.getTableHeader().setVisible(true);//false
         
@@ -66,13 +68,14 @@ public class InputTableDialog extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        scrollPaneForTableVariables = new javax.swing.JScrollPane();
         tblVariables = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tblInput.setModel(inputTableModel);
         tblInput.setRowHeight(25);
+        tblInput.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(tblInput);
 
         btnReadData.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -103,7 +106,7 @@ public class InputTableDialog extends javax.swing.JDialog {
 
         tblVariables.setModel(variablesTblModel);
         tblVariables.getTableHeader().setReorderingAllowed(false);
-        jScrollPane2.setViewportView(tblVariables);
+        scrollPaneForTableVariables.setViewportView(tblVariables);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -129,7 +132,7 @@ public class InputTableDialog extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 651, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2)))
+                            .addComponent(scrollPaneForTableVariables)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(645, 645, 645)
                         .addComponent(btnReadData, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -140,27 +143,25 @@ public class InputTableDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
-                        .addComponent(jLabel6)
-                        .addGap(22, 22, 22))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel6))
+                    .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addComponent(scrollPaneForTableVariables, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnReadData)
                         .addGap(18, 18, 18))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(7, 7, 7)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
                         .addGap(27, 27, 27)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 285, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel5)
@@ -219,7 +220,7 @@ public class InputTableDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane scrollPaneForTableVariables;
     private javax.swing.JTable tblInput;
     private javax.swing.JTable tblVariables;
     // End of variables declaration//GEN-END:variables
