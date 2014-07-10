@@ -34,18 +34,18 @@ public class StartFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("stlpcov");
+        jLabel1.setText("stĺpcov");
 
         jLabel2.setText("riadkov:");
 
-        btnCreateTable.setText("Vytvor tabulku");
+        btnCreateTable.setText("Vytvor tabuľku");
         btnCreateTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCreateTableActionPerformed(evt);
             }
         });
 
-        btnStartSolution.setText("Otvor vypocet");
+        btnStartSolution.setText("Otvor výpočet");
         btnStartSolution.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnStartSolutionActionPerformed(evt);

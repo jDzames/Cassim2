@@ -20,7 +20,7 @@ public class InputTableDialog extends javax.swing.JDialog {
     public InputTableDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        this.setTitle("Zadavanie vstupu");
+        this.setTitle("Zadávanie vstupu");
         
         tables();
     }
@@ -79,7 +79,7 @@ public class InputTableDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(tblInput);
 
         btnReadData.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        btnReadData.setText("Nacitaj data");
+        btnReadData.setText("Načítaj dáta");
         btnReadData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnReadDataActionPerformed(evt);
@@ -87,7 +87,7 @@ public class InputTableDialog extends javax.swing.JDialog {
         });
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabel1.setText("Ohranicenia:");
+        jLabel1.setText("Ohraničenia:");
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel2.setText("Účelová funkcia -");

@@ -85,7 +85,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">
       <Properties>
-        <Property name="text" type="java.lang.String" value="stlpcov"/>
+        <Property name="text" type="java.lang.String" value="st&#x13a;pcov"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
@@ -95,7 +95,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnCreateTable">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Vytvor tabulku"/>
+        <Property name="text" type="java.lang.String" value="Vytvor tabu&#x13e;ku"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCreateTableActionPerformed"/>
@@ -103,7 +103,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnStartSolution">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Otvor vypocet"/>
+        <Property name="text" type="java.lang.String" value="Otvor v&#xfd;po&#x10d;et"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnStartSolutionActionPerformed"/>
