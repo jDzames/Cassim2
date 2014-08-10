@@ -7,13 +7,18 @@ import javax.swing.JTable;
 public class SolutionDialog extends javax.swing.JDialog {
 
     ImageTableModel tableModel = new ImageTableModel();
-    
+    BasisTableModel basisTableModel = new BasisTableModel();
+    SolutionCalcService solutionCalculations = new SolutionCalcService();
     
     /**
      * Creates new form SolutionDialog
      */
     public SolutionDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        String[] pole = new String[ValuesSingleton.INSTANCE.rows];
+        ValuesSingleton.INSTANCE.basisData = pole;
+        solutionCalculations.findBasis();
+                
         initComponents();
         
         tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
@@ -34,27 +39,49 @@ public class SolutionDialog extends javax.swing.JDialog {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblSolution = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblBaza = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tblSolution.setModel(tableModel);
         jScrollPane1.setViewportView(tblSolution);
 
+        jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        jLabel1.setText("v báze: ");
+
+        tblBaza.setModel(basisTableModel);
+        tblBaza.setFocusable(false);
+        tblBaza.setRowHeight(38);
+        tblBaza.setRowSelectionAllowed(false);
+        jScrollPane2.setViewportView(tblBaza);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
-                .addGap(23, 23, 23))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(19, 19, 19)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addGap(35, 35, 35)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+                .addGap(41, 41, 41))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
-                .addGap(40, 40, 40))
+                .addGap(64, 64, 64)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel1)
+                        .addGap(18, 18, 18)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)))
+                .addGap(85, 85, 85))
         );
 
         pack();
@@ -63,7 +90,10 @@ public class SolutionDialog extends javax.swing.JDialog {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tblBaza;
     private javax.swing.JTable tblSolution;
     // End of variables declaration//GEN-END:variables
 }
