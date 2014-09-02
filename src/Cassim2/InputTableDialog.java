@@ -179,7 +179,6 @@ public class InputTableDialog extends javax.swing.JDialog {
             ValuesSingleton.INSTANCE.tableData = new Fraction[ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
             for (int i = 0; i <= ValuesSingleton.INSTANCE.rows; i++) {
                 for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {  
-                    System.out.println("bezi cyklus");
                     a=i;
                     b=j;
                     int colTable=j;
@@ -187,18 +186,16 @@ public class InputTableDialog extends javax.swing.JDialog {
                     if (j==ValuesSingleton.INSTANCE.columns) {
                         colArray=0;
                         if (i==0) {
-                            System.out.println(i+"  "+colArray+"   0");
-                            ValuesSingleton.INSTANCE.tableData[i][colArray] = new Fraction(0);
+                            ValuesSingleton.INSTANCE.tableData[0][0] = dataParser.parseString("0");
                             continue;
                         }
                         colTable=ValuesSingleton.INSTANCE.columns+1;
                     }else{
                         colArray=j+1;
                     }
-                    System.out.println(i+"  "+colArray+"   "+(String) inputTableModel.getValueAt(i, colTable));
                     ValuesSingleton.INSTANCE.tableData[i][colArray] = dataParser.parseString(((String) inputTableModel.getValueAt(i, colTable)).trim());            
                 }
-            }
+            }          
             this.dispose();
         
         } catch (NumberFormatException e) {

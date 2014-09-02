@@ -29,24 +29,21 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
             
             TeXIcon icon;
             String latex;
-            if (row<1 && column<1) {
-                latex = "0";
+
+            if (ValuesSingleton.INSTANCE.getTableData()[row][column].getDenominator()==1) {
+                latex = ""+ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator();
             } else {
-                if (ValuesSingleton.INSTANCE.getTableData()[row][column].getDenominator()==1) {
-                    latex = ""+ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator();
-                } else {
-                    String sign = "";
-                    String numerator = "";
-                    if (ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator()<0) {
-                        sign="-";
-                        numerator = ""+ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator()*(-1);
-                    } else{
-                        numerator = ""+ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator();
-                    }                
-                    latex = sign+"\\frac{"+numerator+"}{"
-                            +ValuesSingleton.INSTANCE.getTableData()[row][column].getDenominator()+"}";
-                    }                
-            }
+                String sign = "";
+                String numerator = "";
+                if (ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator()<0) {
+                    sign="-";
+                    numerator = ""+ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator()*(-1);
+                } else{
+                    numerator = ""+ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator();
+                }                
+                latex = sign+"\\frac{"+numerator+"}{"
+                        +ValuesSingleton.INSTANCE.getTableData()[row][column].getDenominator()+"}";
+                }                
             
             TeXFormula formula = new TeXFormula(latex);
             icon = formula.new TeXIconBuilder().setStyle(TeXConstants.STYLE_DISPLAY)
@@ -67,7 +64,7 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
                 }
                 /*minHeight = 5;*/
 
-            System.out.println("som v rendereri a vraciam label");
+            /*System.out.println("som v rendereri a vraciam label");*/
             return c;
         }
 

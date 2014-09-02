@@ -1,6 +1,8 @@
 
 package Cassim2;
 
+import org.apache.commons.math3.fraction.Fraction;
+
 
 public class SolutionCalcService {
     
@@ -21,8 +23,15 @@ public class SolutionCalcService {
                 }              
             }
             if (inBasis==1) {
-                System.out.println("row "+row+" premenna"+columnNames[i]);
+                Fraction oldBasisNumber = new Fraction(ValuesSingleton.INSTANCE.tableData[row][i].getNumerator(), ValuesSingleton.INSTANCE.tableData[row][i].getDenominator());
+                Fraction numberToZero = new Fraction(ValuesSingleton.INSTANCE.tableData[0][i].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][i].getDenominator());
+                for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
+                    ValuesSingleton.INSTANCE.tableData[row][j] = ValuesSingleton.INSTANCE.tableData[row][j].divide(oldBasisNumber);
+                    ValuesSingleton.INSTANCE.tableData[0][j] = ValuesSingleton.INSTANCE.tableData[0][j].add(ValuesSingleton.INSTANCE.tableData[row][j].multiply(numberToZero).negate());
+                }
                 ValuesSingleton.INSTANCE.basisData[row-1]=columnNames[i];
+                /*ValuesSingleton.INSTANCE.tableData[0][i] = ValuesSingleton.INSTANCE.tableData[0][i].divide(ValuesSingleton.INSTANCE.tableData[row][i]); 
+                ValuesSingleton.INSTANCE.tableData[row][i] = new Fraction(1);*/
             } 
         }
     }
