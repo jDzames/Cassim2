@@ -17,7 +17,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         super(parent, modal);
         String[] pole = new String[ValuesSingleton.INSTANCE.rows];
         ValuesSingleton.INSTANCE.basisData = pole;
-        solutionCalculations.findBasis();
+        /*solutionCalculations.findBasis();   ak by sme to chceli robit automaticky     */
                 
         initComponents();
         
