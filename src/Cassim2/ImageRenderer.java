@@ -1,9 +1,11 @@
 
 package Cassim2;
 
+import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.border.LineBorder;
 import javax.swing.table.TableCellRenderer;
 import org.scilab.forge.jlatexmath.TeXConstants;
 import org.scilab.forge.jlatexmath.TeXFormula;
@@ -43,27 +45,35 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
                 }                
                 latex = sign+"\\frac{"+numerator+"}{"
                         +ValuesSingleton.INSTANCE.getTableData()[row][column].getDenominator()+"}";
-                }                
-            
+                }    
+           
             TeXFormula formula = new TeXFormula(latex);
-            icon = formula.new TeXIconBuilder().setStyle(TeXConstants.STYLE_DISPLAY)
-	.setSize(13)
-	.setWidth(TeXConstants.UNIT_PIXEL, 256f, TeXConstants.ALIGN_CENTER)
-	.setIsMaxWidth(true).setInterLineSpacing(TeXConstants.UNIT_PIXEL, 20f)
-	.build();
+             
+            if (hasFocus) {
+                icon = formula.new TeXIconBuilder().setStyle(TeXConstants.STYLE_DISPLAY)
+                .setSize(17)
+                .setWidth(TeXConstants.UNIT_PIXEL, 256f, TeXConstants.ALIGN_CENTER)
+                .setIsMaxWidth(true).setInterLineSpacing(TeXConstants.UNIT_PIXEL, 20f)
+                .build();
+                icon.setForeground(Color.blue);
+            } else {
+                icon = formula.new TeXIconBuilder().setStyle(TeXConstants.STYLE_DISPLAY)
+                .setSize(13)
+                .setWidth(TeXConstants.UNIT_PIXEL, 256f, TeXConstants.ALIGN_CENTER)
+                .setIsMaxWidth(true).setInterLineSpacing(TeXConstants.UNIT_PIXEL, 20f)
+                .build();
+            }
             
             //ImageIcon icon = (ImageIcon) value;
             minHeight = Math.max(minHeight, icon.getIconHeight()+10);
             label.setIcon(icon);
             c = label;
 
-
             if (ValuesSingleton.INSTANCE.isOnlyOnce()) {
                     table.setRowHeight(40);
                     ValuesSingleton.INSTANCE.onlyOnce = false;
                 }
                 /*minHeight = 5;*/
-
             /*System.out.println("som v rendereri a vraciam label");*/
             return c;
         }

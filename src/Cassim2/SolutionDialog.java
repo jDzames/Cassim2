@@ -1,7 +1,10 @@
 package Cassim2;
 
+import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.border.LineBorder;
 
 
 public class SolutionDialog extends javax.swing.JDialog {
@@ -20,7 +23,6 @@ public class SolutionDialog extends javax.swing.JDialog {
         /*solutionCalculations.findBasis();   ak by sme to chceli robit automaticky     */
                 
         initComponents();
-        
         tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -46,12 +48,19 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuFile = new javax.swing.JMenu();
         jMenuItemSave = new javax.swing.JMenuItem();
         jMenuItemLoad = new javax.swing.JMenuItem();
+        jMenuItemExit = new javax.swing.JMenuItem();
+        jMenuSolveAs = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFindBasis = new javax.swing.JMenuItem();
+        jMenuItemPivot = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         tblSolution.setModel(tableModel);
+        tblSolution.setCellSelectionEnabled(true);
         jScrollPane1.setViewportView(tblSolution);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -78,7 +87,28 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuItemLoad.setText("Load");
         jMenuFile.add(jMenuItemLoad);
 
+        jMenuItemExit.setText("Exit");
+        jMenuItemExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemExitActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuItemExit);
+
         jMenuBar.add(jMenuFile);
+
+        jMenuSolveAs.setText("Solve as");
+
+        jMenuItem3.setText("Classic simplex");
+        jMenuSolveAs.add(jMenuItem3);
+
+        jMenuItem1.setText("Dual");
+        jMenuSolveAs.add(jMenuItem1);
+
+        jMenuItem2.setText("Revidovana");
+        jMenuSolveAs.add(jMenuItem2);
+
+        jMenuBar.add(jMenuSolveAs);
 
         jMenuEdit.setText("Edit");
 
@@ -90,6 +120,10 @@ public class SolutionDialog extends javax.swing.JDialog {
             }
         });
         jMenuEdit.add(jMenuItemFindBasis);
+
+        jMenuItemPivot.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, 0));
+        jMenuItemPivot.setText("Pivot");
+        jMenuEdit.add(jMenuItemPivot);
 
         jMenuBar.add(jMenuEdit);
 
@@ -133,7 +167,12 @@ public class SolutionDialog extends javax.swing.JDialog {
         solutionCalculations.findBasis();
         tblSolution.repaint();
         tblBaza.repaint();
+        
     }//GEN-LAST:event_jMenuItemFindBasisActionPerformed
+
+    private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jMenuItemExitActionPerformed
 
 
 
@@ -142,9 +181,15 @@ public class SolutionDialog extends javax.swing.JDialog {
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemFindBasis;
     private javax.swing.JMenuItem jMenuItemLoad;
+    private javax.swing.JMenuItem jMenuItemPivot;
     private javax.swing.JMenuItem jMenuItemSave;
+    private javax.swing.JMenu jMenuSolveAs;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblBaza;
