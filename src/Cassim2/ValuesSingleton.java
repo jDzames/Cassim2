@@ -17,6 +17,8 @@ public enum ValuesSingleton {
     
     public String[] basisData;
     public Fraction[][] tableData;
+    public int selectedRow;
+    public int selectedColumn;
     
     public boolean onlyOnce = true;
 
@@ -57,7 +59,23 @@ public enum ValuesSingleton {
         return basisData;
     }
 
+    public int getSelectedRow() {
+        return selectedRow;
+    }
+
+    public int getSelectedColumn() {
+        return selectedColumn;
+    }
     
+
+    public void setSelectedRow(int selectedRow) {
+        this.selectedRow = selectedRow;
+    }
+
+    public void setSelectedColumn(int selectedColumn) {
+        this.selectedColumn = selectedColumn;
+    }
+
     public void setColumns(int columns) {
         this.columns = columns;
     }
