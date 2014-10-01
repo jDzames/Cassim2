@@ -35,6 +35,28 @@ public class SolutionCalcService {
             } 
         }
     }
+
+    public int minimum(int selectedRow, int selectedColumn) {
+        if (ValuesSingleton.INSTANCE.tableData[0][selectedColumn].getNumerator()>=0) {
+            return -1;
+        }
+        int minIdx = -2;
+        Fraction minimal = new Fraction(Integer.MAX_VALUE);
+        
+        for (int i = 1; i <= ValuesSingleton.INSTANCE.rows; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[i][selectedColumn].getNumerator()<=0) {
+                continue;
+            }
+            Fraction actual = new Fraction(ValuesSingleton.INSTANCE.tableData[i][0].getNumerator(),ValuesSingleton.INSTANCE.tableData[i][0].getDenominator());
+            actual = actual.divide(ValuesSingleton.INSTANCE.tableData[i][selectedColumn]);
+            if (minimal.compareTo(actual)>0) {
+                minimal = actual;
+                minIdx = i;
+            }
+        }
+        
+        return minIdx;
+    }
    
     
     

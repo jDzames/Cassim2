@@ -2,6 +2,7 @@ package Cassim2;
 
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
@@ -9,7 +10,7 @@ import javax.swing.border.LineBorder;
 
 public class SolutionDialog extends javax.swing.JDialog {
 
-    ImageTableModel tableModel = new ImageTableModel();
+    ImageTableModel imageTableModel = new ImageTableModel();
     BasisTableModel basisTableModel = new BasisTableModel();
     SolutionCalcService solutionCalculations = new SolutionCalcService();
     
@@ -52,14 +53,16 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuSolveAs = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItemPomocnaUloha = new javax.swing.JMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFindBasis = new javax.swing.JMenuItem();
         jMenuItemPivot = new javax.swing.JMenuItem();
+        jMenuItemMin = new javax.swing.JMenuItem();
+        jMenuItemMax = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        tblSolution.setModel(tableModel);
+        tblSolution.setModel(imageTableModel);
         tblSolution.setCellSelectionEnabled(true);
         jScrollPane1.setViewportView(tblSolution);
 
@@ -72,10 +75,10 @@ public class SolutionDialog extends javax.swing.JDialog {
         tblBaza.setRowSelectionAllowed(false);
         jScrollPane2.setViewportView(tblBaza);
 
-        jMenuFile.setText("File");
+        jMenuFile.setText("Úloha");
 
         jMenuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemSave.setText("Save");
+        jMenuItemSave.setText("Uložiť");
         jMenuItemSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemSaveActionPerformed(evt);
@@ -84,10 +87,15 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuFile.add(jMenuItemSave);
 
         jMenuItemLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemLoad.setText("Load");
+        jMenuItemLoad.setText("Otvoriť");
+        jMenuItemLoad.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemLoadActionPerformed(evt);
+            }
+        });
         jMenuFile.add(jMenuItemLoad);
 
-        jMenuItemExit.setText("Exit");
+        jMenuItemExit.setText("Ukončiť");
         jMenuItemExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemExitActionPerformed(evt);
@@ -97,23 +105,28 @@ public class SolutionDialog extends javax.swing.JDialog {
 
         jMenuBar.add(jMenuFile);
 
-        jMenuSolveAs.setText("Solve as");
+        jMenuSolveAs.setText("Tabuľka");
 
-        jMenuItem3.setText("Classic simplex");
+        jMenuItem3.setText("Revidovaná úloa");
         jMenuSolveAs.add(jMenuItem3);
 
-        jMenuItem1.setText("Dual");
+        jMenuItem1.setText("Gomoryho rez");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
         jMenuSolveAs.add(jMenuItem1);
 
-        jMenuItem2.setText("Revidovana");
-        jMenuSolveAs.add(jMenuItem2);
+        jMenuItemPomocnaUloha.setText("Riešiť pomocnú úlohu");
+        jMenuSolveAs.add(jMenuItemPomocnaUloha);
 
         jMenuBar.add(jMenuSolveAs);
 
-        jMenuEdit.setText("Edit");
+        jMenuEdit.setText("Prepočty");
 
         jMenuItemFindBasis.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, 0));
-        jMenuItemFindBasis.setText("Find basis");
+        jMenuItemFindBasis.setText("Bázuj");
         jMenuItemFindBasis.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemFindBasisActionPerformed(evt);
@@ -122,8 +135,19 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuEdit.add(jMenuItemFindBasis);
 
         jMenuItemPivot.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, 0));
-        jMenuItemPivot.setText("Pivot");
+        jMenuItemPivot.setText("Pivotuj");
         jMenuEdit.add(jMenuItemPivot);
+
+        jMenuItemMin.setText("Minimum");
+        jMenuItemMin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemMinActionPerformed(evt);
+            }
+        });
+        jMenuEdit.add(jMenuItemMin);
+
+        jMenuItemMax.setText("Maximum");
+        jMenuEdit.add(jMenuItemMax);
 
         jMenuBar.add(jMenuEdit);
 
@@ -174,6 +198,29 @@ public class SolutionDialog extends javax.swing.JDialog {
         this.dispose();
     }//GEN-LAST:event_jMenuItemExitActionPerformed
 
+    private void jMenuItemLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoadActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jMenuItemLoadActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItemMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMinActionPerformed
+        int focusRow = solutionCalculations.minimum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+        if (focusRow==-2) {
+            JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Chyba", JOptionPane.ERROR_MESSAGE);
+        }
+        if (focusRow==-1) {
+            JOptionPane.showMessageDialog(this, "Hľadáte minimum v nevhodnom stĺpci, pozrite na hodnotu v 0. riadku pre tento stĺpec!", "Chyba", JOptionPane.ERROR_MESSAGE);
+        }
+        if (focusRow>0) {
+            tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), true, false);
+        }   
+    }//GEN-LAST:event_jMenuItemMinActionPerformed
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -182,12 +229,14 @@ public class SolutionDialog extends javax.swing.JDialog {
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemFindBasis;
     private javax.swing.JMenuItem jMenuItemLoad;
+    private javax.swing.JMenuItem jMenuItemMax;
+    private javax.swing.JMenuItem jMenuItemMin;
     private javax.swing.JMenuItem jMenuItemPivot;
+    private javax.swing.JMenuItem jMenuItemPomocnaUloha;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenu jMenuSolveAs;
     private javax.swing.JScrollPane jScrollPane1;

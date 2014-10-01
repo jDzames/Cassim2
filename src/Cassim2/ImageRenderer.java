@@ -47,17 +47,22 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
                 }    
            
             TeXFormula formula = new TeXFormula(latex);
-             
+            int sizeOfFont = 13;
+            if (column==0 || row==0 || hasFocus) {
+                sizeOfFont = 20;
+            }
             if (hasFocus) {
+                ValuesSingleton.INSTANCE.setSelectedRow(row);
+                ValuesSingleton.INSTANCE.setSelectedColumn(column);
                 icon = formula.new TeXIconBuilder().setStyle(TeXConstants.STYLE_DISPLAY)
-                .setSize(17)
+                .setSize(sizeOfFont)
                 .setWidth(TeXConstants.UNIT_PIXEL, 256f, TeXConstants.ALIGN_CENTER)
                 .setIsMaxWidth(true).setInterLineSpacing(TeXConstants.UNIT_PIXEL, 20f)
                 .build();
-                icon.setForeground(Color.blue);
+                icon.setForeground(Color.RED);
             } else {
                 icon = formula.new TeXIconBuilder().setStyle(TeXConstants.STYLE_DISPLAY)
-                .setSize(13)
+                .setSize(sizeOfFont)
                 .setWidth(TeXConstants.UNIT_PIXEL, 256f, TeXConstants.ALIGN_CENTER)
                 .setIsMaxWidth(true).setInterLineSpacing(TeXConstants.UNIT_PIXEL, 20f)
                 .build();

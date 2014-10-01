@@ -27,6 +27,9 @@ public class skusky {
         
         Fraction f = new Fraction(0);
         System.out.println(f.toString());
+        
+        Fraction a = new Fraction(1,-3);
+        System.out.println(a.getDenominator());
     }
     
 }
