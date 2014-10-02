@@ -37,8 +37,13 @@ public class SolutionCalcService {
     }
 
     public int minimum(int selectedRow, int selectedColumn) {
-        if (ValuesSingleton.INSTANCE.tableData[0][selectedColumn].getNumerator()>=0) {
+        if (selectedColumn == 0)
+            return -4;
+        if (ValuesSingleton.INSTANCE.tableData[0][selectedColumn].getNumerator()>0)
             return -1;
+        for (int i=1; i<= ValuesSingleton.INSTANCE.rows; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[i][0].getNumerator() <0)
+                return -3;
         }
         int minIdx = -2;
         Fraction minimal = new Fraction(Integer.MAX_VALUE);
@@ -57,7 +62,34 @@ public class SolutionCalcService {
         
         return minIdx;
     }
-   
+
+    public int maximum(int selectedRow, int selectedColumn) {
+        if (selectedRow == 0)
+            return -4;
+        if (ValuesSingleton.INSTANCE.tableData[selectedRow][0].getNumerator()>0)
+                return -1;
+        for (int i=1; i<= ValuesSingleton.INSTANCE.rows; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[0][i].getNumerator() <0)
+                return -3;
+        }
+        int maxIdx = -2;
+        Fraction maximal = new Fraction(Integer.MIN_VALUE);
+        
+        for (int i = 1; i <= ValuesSingleton.INSTANCE.columns; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[selectedRow][i].getNumerator()>=0) {
+                continue;
+            }
+            Fraction actual = new Fraction(ValuesSingleton.INSTANCE.tableData[0][i].getNumerator(),ValuesSingleton.INSTANCE.tableData[0][i].getDenominator());
+            actual = actual.divide(ValuesSingleton.INSTANCE.tableData[selectedRow][i]);
+            if (maximal.compareTo(actual)<0) {
+                maximal = actual;
+                maxIdx = i;
+            }
+        }
+        
+        return maxIdx;
+    }
+
     
     
 }
