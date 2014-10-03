@@ -10,6 +10,62 @@ public class SolutionCalcService {
     private String[] columnNames = ValuesSingleton.INSTANCE.getColumnNames();
     private String[][] data = ValuesSingleton.INSTANCE.getData();
 
+    public int check0Row(){
+        //-1:if all<0, +1:if all>=0, 0:else
+        boolean positive=false;
+        boolean negative=false;
+        for (int i=1; i<= ValuesSingleton.INSTANCE.rows; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[i][0].getNumerator() <0){
+                negative=true;
+            }else{
+                positive=true;
+            }
+            if (positive&&negative) {
+                return 0;
+            }
+        }
+        if (negative) {
+            return -1;
+        }else{
+            return 1;
+        }
+    }
+    
+    public int check0Column(){
+        //-1:if all<0, +1:if all>=0, 0:else
+        boolean positive=false;
+        boolean negative=false;
+        for (int i=1; i<= ValuesSingleton.INSTANCE.columns; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[0][i].getNumerator() <0){
+                negative=true;
+            }else{
+                positive=true;
+            }
+            if (positive&&negative) {
+                return 0;
+            }
+        }
+        if (negative) {
+            return -1;
+        }else{
+            return 1;
+        }
+        
+    }
+    
+    public void multiplRow(int row, Fraction multipl){
+        for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
+            ValuesSingleton.INSTANCE.tableData[row][j] = ValuesSingleton.INSTANCE.tableData[row][j].multiply(multipl);
+        }
+    }
+    
+    public void addRowToRow(int addingRow, int toRow, Fraction multipl){
+        for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
+            ValuesSingleton.INSTANCE.tableData[toRow][j] = 
+                    ValuesSingleton.INSTANCE.tableData[toRow][j].add(ValuesSingleton.INSTANCE.tableData[addingRow][j].multiply(multipl));
+        }
+    }
+    
     public void findBasis() {
 
         for (int i = 1; i <= ValuesSingleton.INSTANCE.columns; i++) {
@@ -65,12 +121,12 @@ public class SolutionCalcService {
 
     public int maximum(int selectedRow, int selectedColumn) {
         if (selectedRow == 0)
-            return -4;
+            return -4; //0. riadok, nehladam max
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][0].getNumerator()>0)
-                return -1;
-        for (int i=1; i<= ValuesSingleton.INSTANCE.rows; i++) {
+                return -1;//v 0. stlpci ma byt zaporna hodnota tu
+        for (int i=1; i<= ValuesSingleton.INSTANCE.columns; i++) {
             if (ValuesSingleton.INSTANCE.tableData[0][i].getNumerator() <0)
-                return -3;
+                return -3;//nulty riadok ma byt kladny
         }
         int maxIdx = -2;
         Fraction maximal = new Fraction(Integer.MIN_VALUE);
@@ -90,6 +146,22 @@ public class SolutionCalcService {
         return maxIdx;
     }
 
-    
+    public int pivot(int row, int column){
+        if (row==0 || column==0) {
+            return -1;//tu nepivotujem
+        }
+        int num=ValuesSingleton.INSTANCE.tableData[row][column].getNumerator();
+        int denom=ValuesSingleton.INSTANCE.tableData[row][column].getDenominator();
+        if (num!=1 || denom!=1) {
+            multiplRow(row, new Fraction(denom, num));   //nasobim prevratenou hodnototu=>1       
+        }
+        for (int i = 0; i <= ValuesSingleton.INSTANCE.rows; i++) {
+            if (row==i) {
+                continue;
+            }
+            addRowToRow(row, i, new Fraction(-1*ValuesSingleton.INSTANCE.tableData[i][column].getDenominator(), ValuesSingleton.INSTANCE.tableData[i][column].getNumerator()));
+        }
+        return 0; //=vsetko zbehlo OK
+    }
     
 }
