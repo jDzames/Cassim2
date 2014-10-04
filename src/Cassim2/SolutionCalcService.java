@@ -10,7 +10,7 @@ public class SolutionCalcService {
     private String[] columnNames = ValuesSingleton.INSTANCE.getColumnNames();
     private String[][] data = ValuesSingleton.INSTANCE.getData();
 
-    public int check0Row(){
+    public int check0Column(){
         //-1:if all<0, +1:if all>=0, 0:else
         boolean positive=false;
         boolean negative=false;
@@ -31,7 +31,7 @@ public class SolutionCalcService {
         }
     }
     
-    public int check0Column(){
+    public int check0Row(){
         //-1:if all<0, +1:if all>=0, 0:else
         boolean positive=false;
         boolean negative=false;
@@ -53,13 +53,13 @@ public class SolutionCalcService {
         
     }
     
-    public void multiplRow(int row, Fraction multipl){
+    private void multiplRow(int row, Fraction multipl){
         for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
             ValuesSingleton.INSTANCE.tableData[row][j] = ValuesSingleton.INSTANCE.tableData[row][j].multiply(multipl);
         }
     }
     
-    public void addRowToRow(int addingRow, int toRow, Fraction multipl){
+    private void addRowToRow(int addingRow, int toRow, Fraction multipl){
         for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
             ValuesSingleton.INSTANCE.tableData[toRow][j] = 
                     ValuesSingleton.INSTANCE.tableData[toRow][j].add(ValuesSingleton.INSTANCE.tableData[addingRow][j].multiply(multipl));
@@ -79,12 +79,16 @@ public class SolutionCalcService {
                 }              
             }
             if (inBasis==1) {
+                multiplRow(row, new Fraction(ValuesSingleton.INSTANCE.tableData[row][i].getDenominator(), ValuesSingleton.INSTANCE.tableData[row][i].getNumerator()));
+                addRowToRow(row, 0, new Fraction(-1*ValuesSingleton.INSTANCE.tableData[row][i].getDenominator(), ValuesSingleton.INSTANCE.tableData[0][i].getNumerator()));
+                /*
                 Fraction oldBasisNumber = new Fraction(ValuesSingleton.INSTANCE.tableData[row][i].getNumerator(), ValuesSingleton.INSTANCE.tableData[row][i].getDenominator());
                 Fraction numberToZero = new Fraction(ValuesSingleton.INSTANCE.tableData[0][i].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][i].getDenominator());
                 for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
                     ValuesSingleton.INSTANCE.tableData[row][j] = ValuesSingleton.INSTANCE.tableData[row][j].divide(oldBasisNumber);
                     ValuesSingleton.INSTANCE.tableData[0][j] = ValuesSingleton.INSTANCE.tableData[0][j].add(ValuesSingleton.INSTANCE.tableData[row][j].multiply(numberToZero).negate());
                 }
+                */
                 ValuesSingleton.INSTANCE.basisData[row-1]=columnNames[i];
                 /*ValuesSingleton.INSTANCE.tableData[0][i] = ValuesSingleton.INSTANCE.tableData[0][i].divide(ValuesSingleton.INSTANCE.tableData[row][i]); 
                 ValuesSingleton.INSTANCE.tableData[row][i] = new Fraction(1);*/
@@ -97,8 +101,7 @@ public class SolutionCalcService {
             return -4;
         if (ValuesSingleton.INSTANCE.tableData[0][selectedColumn].getNumerator()>0)
             return -1;
-        for (int i=1; i<= ValuesSingleton.INSTANCE.rows; i++) {
-            if (ValuesSingleton.INSTANCE.tableData[i][0].getNumerator() <0)
+        if (check0Column() <0){ 
                 return -3;
         }
         int minIdx = -2;
@@ -124,8 +127,7 @@ public class SolutionCalcService {
             return -4; //0. riadok, nehladam max
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][0].getNumerator()>0)
                 return -1;//v 0. stlpci ma byt zaporna hodnota tu
-        for (int i=1; i<= ValuesSingleton.INSTANCE.columns; i++) {
-            if (ValuesSingleton.INSTANCE.tableData[0][i].getNumerator() <0)
+        if (check0Row() <0){
                 return -3;//nulty riadok ma byt kladny
         }
         int maxIdx = -2;
@@ -161,6 +163,7 @@ public class SolutionCalcService {
             }
             addRowToRow(row, i, new Fraction(-1*ValuesSingleton.INSTANCE.tableData[i][column].getDenominator(), ValuesSingleton.INSTANCE.tableData[i][column].getNumerator()));
         }
+        ValuesSingleton.INSTANCE.basisData[row-1]=ValuesSingleton.INSTANCE.columnNames[column];
         return 0; //=vsetko zbehlo OK
     }
     

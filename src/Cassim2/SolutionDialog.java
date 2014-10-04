@@ -136,6 +136,11 @@ public class SolutionDialog extends javax.swing.JDialog {
 
         jMenuItemPivot.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, 0));
         jMenuItemPivot.setText("Pivotuj");
+        jMenuItemPivot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemPivotActionPerformed(evt);
+            }
+        });
         jMenuEdit.add(jMenuItemPivot);
 
         jMenuItemMin.setText("Minimum");
@@ -278,6 +283,13 @@ public class SolutionDialog extends javax.swing.JDialog {
         }
                 */
     }//GEN-LAST:event_jMenuItemMaxActionPerformed
+
+    private void jMenuItemPivotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPivotActionPerformed
+        
+        if (solutionCalculations.pivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn())!=0) {
+            JOptionPane.showMessageDialog(this, "Pri pivotovaní nastala chyba!", "Chyba", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jMenuItemPivotActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
