@@ -297,6 +297,8 @@ public class SolutionDialog extends javax.swing.JDialog {
         if (solutionCalculations.pivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn())!=0) {
             JOptionPane.showMessageDialog(this, "Pri pivotovaní nastala chyba!", "Chyba", JOptionPane.ERROR_MESSAGE);
         }
+        tblSolution.updateUI();
+        tblBaza.updateUI();
     }//GEN-LAST:event_jMenuItemPivotActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
