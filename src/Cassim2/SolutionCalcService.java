@@ -11,17 +11,11 @@ public class SolutionCalcService {
     private String[][] data = ValuesSingleton.INSTANCE.getData();
 
     public int check0Column(){
-        //-1:if all<0, +1:if all>=0, 0:else
-        boolean positive=false;
+        //-1:if exists<0, +1:else
         boolean negative=false;
         for (int i=1; i<= ValuesSingleton.INSTANCE.rows; i++) {
             if (ValuesSingleton.INSTANCE.tableData[i][0].getNumerator() <0){
                 negative=true;
-            }else{
-                positive=true;
-            }
-            if (positive&&negative) {
-                return 0;
             }
         }
         if (negative) {
@@ -32,17 +26,11 @@ public class SolutionCalcService {
     }
     
     public int check0Row(){
-        //-1:if all<0, +1:if all>=0, 0:else
-        boolean positive=false;
+        //-1:if exists<0, +1:else
         boolean negative=false;
         for (int i=1; i<= ValuesSingleton.INSTANCE.columns; i++) {
             if (ValuesSingleton.INSTANCE.tableData[0][i].getNumerator() <0){
                 negative=true;
-            }else{
-                positive=true;
-            }
-            if (positive&&negative) {
-                return 0;
             }
         }
         if (negative) {
@@ -80,7 +68,9 @@ public class SolutionCalcService {
             }
             if (inBasis==1) {
                 multiplRow(row, new Fraction(ValuesSingleton.INSTANCE.tableData[row][i].getDenominator(), ValuesSingleton.INSTANCE.tableData[row][i].getNumerator()));
-                addRowToRow(row, 0, new Fraction(-1*ValuesSingleton.INSTANCE.tableData[row][i].getDenominator(), ValuesSingleton.INSTANCE.tableData[0][i].getNumerator()));
+                Fraction multiple = new Fraction(-1*ValuesSingleton.INSTANCE.tableData[row][i].getDenominator()*ValuesSingleton.INSTANCE.tableData[0][i].getNumerator()
+                    , ValuesSingleton.INSTANCE.tableData[0][i].getDenominator()*ValuesSingleton.INSTANCE.tableData[row][i].getNumerator());
+                addRowToRow(row, 0, multiple);
                 /*
                 Fraction oldBasisNumber = new Fraction(ValuesSingleton.INSTANCE.tableData[row][i].getNumerator(), ValuesSingleton.INSTANCE.tableData[row][i].getDenominator());
                 Fraction numberToZero = new Fraction(ValuesSingleton.INSTANCE.tableData[0][i].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][i].getDenominator());
@@ -161,7 +151,9 @@ public class SolutionCalcService {
             if (row==i) {
                 continue;
             }
-            addRowToRow(row, i, new Fraction(-1*ValuesSingleton.INSTANCE.tableData[i][column].getDenominator(), ValuesSingleton.INSTANCE.tableData[i][column].getNumerator()));
+            Fraction multiple = new Fraction(-1*ValuesSingleton.INSTANCE.tableData[i][column].getNumerator()*ValuesSingleton.INSTANCE.tableData[row][column].getDenominator()
+                    , ValuesSingleton.INSTANCE.tableData[row][column].getNumerator()*ValuesSingleton.INSTANCE.tableData[i][column].getDenominator());
+            addRowToRow(row, i, multiple);
         }
         ValuesSingleton.INSTANCE.basisData[row-1]=ValuesSingleton.INSTANCE.columnNames[column];
         return 0; //=vsetko zbehlo OK

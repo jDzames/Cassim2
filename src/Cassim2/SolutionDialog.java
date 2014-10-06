@@ -223,9 +223,13 @@ public class SolutionDialog extends javax.swing.JDialog {
 
         switch(focusRow){
             case -4: JOptionPane.showMessageDialog(this, "Nachádzate sa v 0. stĺpci!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
             case -2: JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Chyba", JOptionPane.ERROR_MESSAGE);
-            case -1: JOptionPane.showMessageDialog(this, "Hľadáte minimum v nevhodnom stĺpci, pozrite na hodnotu v 0. stĺpci pre tento stĺpec!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
+            case -1: JOptionPane.showMessageDialog(this, "Hľadáte minimum v nevhodnom stĺpci, pozrite na hodnotu v 0. riadku pre tento stĺpec!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
             default: if (focusRow>0 && focusRow<= ValuesSingleton.INSTANCE.rows) {
                         tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), true, false);
                      } else {
@@ -256,9 +260,13 @@ public class SolutionDialog extends javax.swing.JDialog {
 
         switch(focusColumn){
             case -4: JOptionPane.showMessageDialog(this, "Nachádzate sa v 0. riadku!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return; 
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení duálu!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
             case -2: JOptionPane.showMessageDialog(this, "Duálna úloha je neohraničená!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
             case -1: JOptionPane.showMessageDialog(this, "Hľadáte minimum v nevhodnom riadku, pozrite na hodnotu v 0. stĺpci pre tento riadok!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
             default: if (focusColumn>0 && focusColumn<= ValuesSingleton.INSTANCE.columns) {
                         tblSolution.changeSelection(tblSolution.getSelectedRow(), focusColumn, true, false);
                      } else {
