@@ -49,7 +49,7 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
             TeXFormula formula = new TeXFormula(latex);
             int sizeOfFont = 13;
             if (column==0 || row==0 || hasFocus) {
-                sizeOfFont = 20;
+                sizeOfFont = 18;
             }
             if (hasFocus) {
                 ValuesSingleton.INSTANCE.setSelectedRow(row);
