@@ -5,7 +5,7 @@ import javax.swing.table.AbstractTableModel;
 
 public class BasisTableModel extends AbstractTableModel{
 
-    //private Object[] basisData = ValuesSingleton.INSTANCE.basisData;
+    
     
     @Override
     public int getRowCount() {
@@ -19,7 +19,11 @@ public class BasisTableModel extends AbstractTableModel{
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        return ValuesSingleton.INSTANCE.basisData[rowIndex];
+        int idx = ValuesSingleton.INSTANCE.basisDataIdx[rowIndex];
+        if (idx<0) {
+            return "";
+        }
+        return ValuesSingleton.INSTANCE.columnNames[idx];
     }
     
     public boolean isCellEditable(int row, int col){        

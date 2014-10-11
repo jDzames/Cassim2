@@ -15,7 +15,7 @@ public enum ValuesSingleton {
     public String[] porovnaniasPS; //porovnanie +1 =(prislusne) data (od prveho riadku - lebo bez ucelovej)
     public String[] nezapornost;
     
-    public String[] basisData;
+    public int[] basisDataIdx;
     public Fraction[][] tableData;
     public int selectedRow;
     public int selectedColumn;
@@ -55,8 +55,8 @@ public enum ValuesSingleton {
         return porovnaniasPS;
     }
 
-    public String[] getBasisData() {
-        return basisData;
+    public int[] getBasisData() {
+        return basisDataIdx;
     }
 
     public int getSelectedRow() {
@@ -104,8 +104,8 @@ public enum ValuesSingleton {
         this.onlyOnce = onlyOnce;
     }
 
-    public void setBasisData(String[] basisData) {
-        this.basisData = basisData;
+    public void setBasisData(int[] basisData) {
+        this.basisDataIdx = basisData;
     }
 
     public void setPorovnaniasPS(String[] porovnaniasPS) {

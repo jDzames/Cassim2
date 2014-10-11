@@ -19,8 +19,11 @@ public class SolutionDialog extends javax.swing.JDialog {
      */
     public SolutionDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
-        String[] pole = new String[ValuesSingleton.INSTANCE.rows];
-        ValuesSingleton.INSTANCE.basisData = pole;
+        int[] pole = new int[ValuesSingleton.INSTANCE.rows];
+        for (int i = 0; i < pole.length; i++) {
+            pole[i]=-1;          
+        }
+        ValuesSingleton.INSTANCE.basisDataIdx = pole;
         /*solutionCalculations.findBasis();   ak by sme to chceli robit automaticky     */
                 
         initComponents();
@@ -199,9 +202,10 @@ public class SolutionDialog extends javax.swing.JDialog {
 
     private void jMenuItemFindBasisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFindBasisActionPerformed
         solutionCalculations.findBasis();
-        tblSolution.repaint();
-        tblBaza.repaint();
-        
+        //tblSolution.repaint();
+        //tblBaza.repaint();
+        imageTableModel.fireTableDataChanged();
+        basisTableModel.fireTableDataChanged();
     }//GEN-LAST:event_jMenuItemFindBasisActionPerformed
 
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
@@ -219,86 +223,84 @@ public class SolutionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItemMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMinActionPerformed
-        int focusRow = solutionCalculations.minimum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+        int checkedMin = solutionCalculations.checkMin(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
 
-        switch(focusRow){
+        switch(checkedMin){
             case -4: JOptionPane.showMessageDialog(this, "Nachádzate sa v 0. stĺpci!", "Chyba", JOptionPane.ERROR_MESSAGE);
                     return;
-            case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                     return;
-            case -2: JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Chyba", JOptionPane.ERROR_MESSAGE);
-                    return;
-            case -1: JOptionPane.showMessageDialog(this, "Hľadáte minimum v nevhodnom stĺpci, pozrite na hodnotu v 0. riadku pre tento stĺpec!", "Chyba", JOptionPane.ERROR_MESSAGE);
-                    return;
-            default: if (focusRow>0 && focusRow<= ValuesSingleton.INSTANCE.rows) {
+            case -1: int potvrdenie = JOptionPane.showConfirmDialog(this, "Hľadanie minima v tomto stĺpci nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?");
+                    if (potvrdenie != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+            default: int focusRow = solutionCalculations.minimum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+                    if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator()<0) {
+                        JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
+                        return;
+                    }
+                    if (focusRow>0 && focusRow<= ValuesSingleton.INSTANCE.rows) {
                         tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), true, false);
                      } else {
                         JOptionPane.showMessageDialog(this, "Chybový stav!", "Chyba", JOptionPane.ERROR_MESSAGE);
                      }
         }
-        /*
-        if (focusRow == -4) {
-            JOptionPane.showMessageDialog(this, "Nachádzate sa v 0. stlpci!", "Chyba", JOptionPane.ERROR_MESSAGE);
-        }
-        if (focusRow==-3) {
-            JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Chyba", JOptionPane.ERROR_MESSAGE);
-        }
-        if (focusRow==-2) {
-            JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Chyba", JOptionPane.ERROR_MESSAGE);
-        }
-        if (focusRow==-1) {
-            JOptionPane.showMessageDialog(this, "Hľadáte minimum v nevhodnom stĺpci, pozrite na hodnotu v 0. riadku pre tento stĺpec!", "Chyba", JOptionPane.ERROR_MESSAGE);
-        }
-        if (focusRow>0) {
-            tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), true, false);
-        }
-        */
+
     }//GEN-LAST:event_jMenuItemMinActionPerformed
 
     private void jMenuItemMaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMaxActionPerformed
-        int focusColumn = solutionCalculations.maximum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+        int checkMax = solutionCalculations.checkMax(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
 
-        switch(focusColumn){
+        switch(checkMax){
             case -4: JOptionPane.showMessageDialog(this, "Nachádzate sa v 0. riadku!", "Chyba", JOptionPane.ERROR_MESSAGE);
                     return; 
-            case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení duálu!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení duálu!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                     return;
-            case -2: JOptionPane.showMessageDialog(this, "Duálna úloha je neohraničená!", "Chyba", JOptionPane.ERROR_MESSAGE);
-                    return;
-            case -1: JOptionPane.showMessageDialog(this, "Hľadáte minimum v nevhodnom riadku, pozrite na hodnotu v 0. stĺpci pre tento riadok!", "Chyba", JOptionPane.ERROR_MESSAGE);
-                    return;
-            default: if (focusColumn>0 && focusColumn<= ValuesSingleton.INSTANCE.columns) {
+            case -2: 
+            case -1: int potvrdenie = JOptionPane.showConfirmDialog(this, "Hľadanie maxima v tomto riadku nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?");
+                    if (potvrdenie != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+            default: int focusColumn = solutionCalculations.maximum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+                    if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator()<0) {
+                        JOptionPane.showMessageDialog(this, "Duálna úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
+                        return;
+                    }
+                    if (focusColumn>0 && focusColumn<= ValuesSingleton.INSTANCE.columns) {
                         tblSolution.changeSelection(tblSolution.getSelectedRow(), focusColumn, true, false);
                      } else {
                         JOptionPane.showMessageDialog(this, "Chybový stav!", "Chyba", JOptionPane.ERROR_MESSAGE);
                      }
         }
-        /*
-        if (focusColumn == -4) {
-            JOptionPane.showMessageDialog(this, "Nachádzate sa v 0. riadku!", "Chyba", JOptionPane.ERROR_MESSAGE);
-        }
-        if (focusColumn==-3) {
-            JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení duálu!", "Chyba", JOptionPane.ERROR_MESSAGE);
-        }
-        if (focusColumn==-2) {
-            JOptionPane.showMessageDialog(this, "Duálna úloha je neohraničená!", "Chyba", JOptionPane.ERROR_MESSAGE);
-        }
-        if (focusColumn==-1) {
-            JOptionPane.showMessageDialog(this, "Hľadáte minimum v nevhodnom riadku, pozrite na hodnotu v 0. stĺpci pre tento riadok!", "Chyba", JOptionPane.ERROR_MESSAGE);
-        }
-        if (focusColumn>0) {
-            tblSolution.changeSelection(tblSolution.getSelectedRow(), focusColumn, true, false);
-        }
-                */
+
     }//GEN-LAST:event_jMenuItemMaxActionPerformed
 
     private void jMenuItemPivotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPivotActionPerformed
         
-        if (solutionCalculations.pivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn())!=0) {
-            JOptionPane.showMessageDialog(this, "Pri pivotovaní nastala chyba!", "Chyba", JOptionPane.ERROR_MESSAGE);
+        int checkPivot = solutionCalculations.checkPivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+        switch(checkPivot){
+            case -1: JOptionPane.showMessageDialog(this, "V 0. riadku alebo stĺpci nie je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                return;
+            case -2: JOptionPane.showMessageDialog(this, "Nie je možné pivotovať na 0.", "Chyba", JOptionPane.ERROR_MESSAGE);
+                return;
+            case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
+                return;
+            case -4: int potvrdenie = JOptionPane.showConfirmDialog(this, "Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?");
+                if (potvrdenie != JOptionPane.YES_OPTION) {
+                    return;
+                } 
+            case -5: int potvrdenie2 = JOptionPane.showConfirmDialog(this, "Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?");
+                if (potvrdenie2 != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            default: //pivotuj
+                solutionCalculations.pivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());                   
+                imageTableModel.fireTableDataChanged();
+                basisTableModel.fireTableDataChanged();
+                
         }
-        tblSolution.updateUI();
-        tblBaza.updateUI();
+        
+        
     }//GEN-LAST:event_jMenuItemPivotActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
