@@ -19,6 +19,7 @@ public class SolutionDialog extends javax.swing.JDialog {
      */
     public SolutionDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        this.options = new String[]{"Áno", "Nie"};
         int[] pole = new int[ValuesSingleton.INSTANCE.rows];
         for (int i = 0; i < pole.length; i++) {
             pole[i]=-1;          
@@ -230,7 +231,8 @@ public class SolutionDialog extends javax.swing.JDialog {
                     return;
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                     return;
-            case -1: int potvrdenie = JOptionPane.showConfirmDialog(this, "Hľadanie minima v tomto stĺpci nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?");
+            case -1: int potvrdenie = JOptionPane.showOptionDialog(this, "Hľadanie minima v tomto stĺpci nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?",
+                    "Varovanie", 0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                     if (potvrdenie != JOptionPane.YES_OPTION) {
                         return;
                     }
@@ -257,7 +259,8 @@ public class SolutionDialog extends javax.swing.JDialog {
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení duálu!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                     return;
             case -2: 
-            case -1: int potvrdenie = JOptionPane.showConfirmDialog(this, "Hľadanie maxima v tomto riadku nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?");
+            case -1: int potvrdenie = JOptionPane.showOptionDialog(this, "Hľadanie maxima v tomto riadku nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?",
+                    "Varovanie", 0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                     if (potvrdenie != JOptionPane.YES_OPTION) {
                         return;
                     }
@@ -285,14 +288,16 @@ public class SolutionDialog extends javax.swing.JDialog {
                 return;
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                 return;
-            case -4: int potvrdenie = JOptionPane.showConfirmDialog(this, "Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?");
+            case -4: int potvrdenie = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?", "Varonanie",
+                    0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                 if (potvrdenie != JOptionPane.YES_OPTION) {
                     return;
                 } 
-            case -5: int potvrdenie2 = JOptionPane.showConfirmDialog(this, "Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?");
+            case -5: int potvrdenie2 = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?", "Varonanie",
+                    0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                 if (potvrdenie2 != JOptionPane.YES_OPTION) {
                     return;
-                }
+                } 
             default: //pivotuj
                 solutionCalculations.pivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());                   
                 imageTableModel.fireTableDataChanged();
@@ -302,6 +307,8 @@ public class SolutionDialog extends javax.swing.JDialog {
         
         
     }//GEN-LAST:event_jMenuItemPivotActionPerformed
+
+    private final String[] options;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
