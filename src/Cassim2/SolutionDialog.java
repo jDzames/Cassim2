@@ -6,13 +6,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
+import javax.swing.table.TableColumn;
 
 
 public class SolutionDialog extends javax.swing.JDialog {
 
-    ImageTableModel imageTableModel = new ImageTableModel();
-    BasisTableModel basisTableModel = new BasisTableModel();
-    SolutionCalcService solutionCalculations = new SolutionCalcService();
+    private ImageTableModel imageTableModel = new ImageTableModel();
+    private BasisTableModel basisTableModel = new BasisTableModel();
+    private SolutionCalcService solutionCalculations = new SolutionCalcService();
+    private boolean jeBazovane = false;
     
     /**
      * Creates new form SolutionDialog
@@ -123,6 +125,11 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuSolveAs.add(jMenuItem1);
 
         jMenuItemPomocnaUloha.setText("Riešiť pomocnú úlohu");
+        jMenuItemPomocnaUloha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemPomocnaUlohaActionPerformed(evt);
+            }
+        });
         jMenuSolveAs.add(jMenuItemPomocnaUloha);
 
         jMenuBar.add(jMenuSolveAs);
@@ -147,6 +154,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         });
         jMenuEdit.add(jMenuItemPivot);
 
+        jMenuItemMin.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, 0));
         jMenuItemMin.setText("Minimum");
         jMenuItemMin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -155,6 +163,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         });
         jMenuEdit.add(jMenuItemMin);
 
+        jMenuItemMax.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, 0));
         jMenuItemMax.setText("Maximum");
         jMenuItemMax.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -205,6 +214,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         solutionCalculations.findBasis();
         //tblSolution.repaint();
         //tblBaza.repaint();
+        jeBazovane=true;
         imageTableModel.fireTableDataChanged();
         basisTableModel.fireTableDataChanged();
     }//GEN-LAST:event_jMenuItemFindBasisActionPerformed
@@ -282,18 +292,18 @@ public class SolutionDialog extends javax.swing.JDialog {
         
         int checkPivot = solutionCalculations.checkPivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
         switch(checkPivot){
-            case -1: JOptionPane.showMessageDialog(this, "V 0. riadku alebo stĺpci nie je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            case -1: JOptionPane.showMessageDialog(this, "Vyberte riadok/stĺpec kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
             case -2: JOptionPane.showMessageDialog(this, "Nie je možné pivotovať na 0.", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                 return;
-            case -4: int potvrdenie = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?", "Varonanie",
+            case -4: int potvrdenie = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde (v 0. riadku/stĺpci nie je záporné číslo). Naozaj chcete pokračovať?", "Varonanie",
                     0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                 if (potvrdenie != JOptionPane.YES_OPTION) {
                     return;
                 } 
-            case -5: int potvrdenie2 = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?", "Varonanie",
+            case -5: int potvrdenie2 = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde (v tejto bunke nie je minimum/maximum). Naozaj chcete pokračovať?", "Varonanie",
                     0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                 if (potvrdenie2 != JOptionPane.YES_OPTION) {
                     return;
@@ -307,6 +317,31 @@ public class SolutionDialog extends javax.swing.JDialog {
         
         
     }//GEN-LAST:event_jMenuItemPivotActionPerformed
+
+    private void jMenuItemPomocnaUlohaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPomocnaUlohaActionPerformed
+        if (!jeBazovane) {
+            JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná", "Pomocná úloha", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }       
+        
+        int pomocnychPremennych = 0;
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            if (ValuesSingleton.INSTANCE.basisDataIdx[i]<0) {
+                pomocnychPremennych++;
+            }
+        }
+        if (pomocnychPremennych==0) {
+            JOptionPane.showMessageDialog(this, "Pomocná úloha nie je potrebná", "Pomocná úloha", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+      
+        ValuesSingleton.INSTANCE.startPomocnaUloha(pomocnychPremennych);  
+        for (int i = 0; i < pomocnychPremennych; i++) {
+            tblSolution.addColumn(new TableColumn());
+        }
+        column names a v baze po bazovani
+        //este skoncenie - 1.spravne podmienky a 2. ked nespravne ta savedTableData nahodit
+    }//GEN-LAST:event_jMenuItemPomocnaUlohaActionPerformed
 
     private final String[] options;
 

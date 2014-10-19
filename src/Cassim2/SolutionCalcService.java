@@ -51,7 +51,7 @@ public class SolutionCalcService {
             int inBasis = 0;
             
             for (int j = 1; j <= ValuesSingleton.INSTANCE.rows; j++) {
-                if (!data[j][i].trim().equals("0")) {
+                if (!(ValuesSingleton.INSTANCE.getTableData()[j][i].getNumerator()==0)) {
                     inBasis++;
                     row=j;
                 }              
@@ -133,7 +133,7 @@ public class SolutionCalcService {
     
     public int checkPivot(int selectedRow, int selectedColumn){
         //errory
-        if (selectedRow==0 || selectedColumn==0) 
+        if (selectedRow<=0 || selectedColumn<=0) 
             return -1;//tu nepivotujem      
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator()==0) 
             return -2;//nepivotujem na 0

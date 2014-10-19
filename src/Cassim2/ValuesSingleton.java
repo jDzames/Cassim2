@@ -1,6 +1,7 @@
 
 package Cassim2;
 
+import java.util.Arrays;
 import org.apache.commons.math3.fraction.Fraction;
 
 
@@ -19,6 +20,9 @@ public enum ValuesSingleton {
     public Fraction[][] tableData;
     public int selectedRow;
     public int selectedColumn;
+    
+    public Fraction[][] tableDataSaved;
+    public int[] basisDataIdxSaved;
     
     public boolean onlyOnce = true;
 
@@ -110,6 +114,45 @@ public enum ValuesSingleton {
 
     public void setPorovnaniasPS(String[] porovnaniasPS) {
         this.porovnaniasPS = porovnaniasPS;
+    }
+
+    public void startPomocnaUloha(int pocetPomPremennych) {
+        this.columns = this.columns+pocetPomPremennych;
+        this.basisDataIdxSaved = this.basisDataIdx.clone();  
+        this.tableDataSaved = this.tableData;
+        Fraction[][] pole = new Fraction[this.tableData.length][this.tableData[0].length+pocetPomPremennych];
+        String[] colNames = new String[this.columnNames.length+pocetPomPremennych];
+        System.arraycopy( this.columnNames, 0, colNames, 0, this.columnNames.length );
+        for (int i = colNames.length; i < pocetPomPremennych; i++) {
+            colNames[i] = "p"+(i+1-colNames.length);  
+        }
+        this.columnNames = colNames;
+        
+        for(int j=0; j<this.tableData[0].length; j++){
+            pole[0][j]=Fraction.ZERO;
+        }
+        for(int j=this.tableData[0].length; j<pole[0].length; j++){
+            pole[0][j]=Fraction.ONE;
+        }
+        
+        for(int i=1; i<pole.length; i++){
+            for(int j=0; j<this.tableData[0].length; j++){
+                pole[i][j]=new Fraction(this.tableDataSaved[i][j].getNumerator(), this.tableDataSaved[i][j].getDenominator());
+            }
+            for(int j=this.tableData[0].length; j<pole[0].length; j++){
+                pole[i][j]=new Fraction(0);
+            }
+        }
+        
+        this.tableData = pole;
+        
+        int columnPomPremennych=0;
+        for (int i = 0; i < this.basisDataIdx.length; i++) {
+            if (this.basisDataIdx[i]<0) {
+                this.tableData[i+1][this.tableDataSaved.length+columnPomPremennych]= Fraction.ONE;
+                columnPomPremennych++;
+            }        
+        }  
     }
     
     

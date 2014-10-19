@@ -30,7 +30,7 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
             
             TeXIcon icon;
             String latex;
-
+            //System.out.println("row - column - velkost tab - riadkov - stlpcov: "+row+" "+column+" "+ValuesSingleton.INSTANCE.getTableData().length+" "+ValuesSingleton.INSTANCE.getTableData()[0].length);
             if (ValuesSingleton.INSTANCE.getTableData()[row][column].getDenominator()==1) {
                 latex = ""+ValuesSingleton.INSTANCE.getTableData()[row][column].getNumerator();
             } else {
