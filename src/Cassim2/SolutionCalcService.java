@@ -175,5 +175,23 @@ public class SolutionCalcService {
         }
         ValuesSingleton.INSTANCE.basisDataIdx[row-1]=column;
     }
+
+    boolean rightEndOfSuppRole(int pocetPomPremennych) {
+        if (ValuesSingleton.INSTANCE.tableData[0][0].getNumerator()!=0) {
+            return false;
+        }
+        for (int i = 1; i <= ValuesSingleton.INSTANCE.columns; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[0][i].getNumerator()<0) {
+                return false;
+            }
+        }
+        int pocetPovodStlpcov = ValuesSingleton.INSTANCE.columns-pocetPomPremennych;
+        for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
+            if (ValuesSingleton.INSTANCE.basisDataIdx[i]>pocetPovodStlpcov) {
+                return false;
+            }
+        }
+        return true;
+    }
     
 }

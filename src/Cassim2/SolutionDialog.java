@@ -15,6 +15,7 @@ public class SolutionDialog extends javax.swing.JDialog {
     private BasisTableModel basisTableModel = new BasisTableModel();
     private SolutionCalcService solutionCalculations = new SolutionCalcService();
     private boolean jeBazovane = false;
+    private int pocetPomPremennych;
     
     /**
      * Creates new form SolutionDialog
@@ -30,6 +31,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         /*solutionCalculations.findBasis();   ak by sme to chceli robit automaticky     */
                 
         initComponents();
+        btnKoniecPomUlohy.setVisible(false);
         tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -51,6 +53,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBaza = new javax.swing.JTable();
+        btnKoniecPomUlohy = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemSave = new javax.swing.JMenuItem();
@@ -71,6 +74,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         tblSolution.setModel(imageTableModel);
         tblSolution.setCellSelectionEnabled(true);
         jScrollPane1.setViewportView(tblSolution);
+        tblSolution.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         jLabel1.setText("v báze: ");
@@ -80,6 +84,13 @@ public class SolutionDialog extends javax.swing.JDialog {
         tblBaza.setRowHeight(38);
         tblBaza.setRowSelectionAllowed(false);
         jScrollPane2.setViewportView(tblBaza);
+
+        btnKoniecPomUlohy.setText("Ukončiť pomocnú úlohu");
+        btnKoniecPomUlohy.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKoniecPomUlohyActionPerformed(evt);
+            }
+        });
 
         jMenuFile.setText("Úloha");
 
@@ -182,17 +193,24 @@ public class SolutionDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(19, 19, 19)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(35, 35, 35)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
-                .addGap(41, 41, 41))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnKoniecPomUlohy)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1))
+                        .addGap(35, 35, 35)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+                        .addGap(41, 41, 41))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(64, 64, 64)
+                .addGap(19, 19, 19)
+                .addComponent(btnKoniecPomUlohy)
+                .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
@@ -252,7 +270,7 @@ public class SolutionDialog extends javax.swing.JDialog {
                         return;
                     }
                     if (focusRow>0 && focusRow<= ValuesSingleton.INSTANCE.rows) {
-                        tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), true, false);
+                        tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), false, false);
                      } else {
                         JOptionPane.showMessageDialog(this, "Chybový stav!", "Chyba", JOptionPane.ERROR_MESSAGE);
                      }
@@ -280,7 +298,7 @@ public class SolutionDialog extends javax.swing.JDialog {
                         return;
                     }
                     if (focusColumn>0 && focusColumn<= ValuesSingleton.INSTANCE.columns) {
-                        tblSolution.changeSelection(tblSolution.getSelectedRow(), focusColumn, true, false);
+                        tblSolution.changeSelection(tblSolution.getSelectedRow(), focusColumn, false, false);
                      } else {
                         JOptionPane.showMessageDialog(this, "Chybový stav!", "Chyba", JOptionPane.ERROR_MESSAGE);
                      }
@@ -324,28 +342,56 @@ public class SolutionDialog extends javax.swing.JDialog {
             return;
         }       
         
-        int pomocnychPremennych = 0;
+        pocetPomPremennych = 0;
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
             if (ValuesSingleton.INSTANCE.basisDataIdx[i]<0) {
-                pomocnychPremennych++;
+                pocetPomPremennych++;
             }
         }
-        if (pomocnychPremennych==0) {
+        if (pocetPomPremennych==0) {
             JOptionPane.showMessageDialog(this, "Pomocná úloha nie je potrebná", "Pomocná úloha", JOptionPane.PLAIN_MESSAGE);
             return;
         }
       
-        ValuesSingleton.INSTANCE.startPomocnaUloha(pomocnychPremennych);  
-        for (int i = 0; i < pomocnychPremennych; i++) {
+        ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych);  
+        for (int i = 0; i < pocetPomPremennych; i++) {
             tblSolution.addColumn(new TableColumn());
         }
-        column names a v baze po bazovani
-        //este skoncenie - 1.spravne podmienky a 2. ked nespravne ta savedTableData nahodit
+        
+        imageTableModel = new ImageTableModel();
+        tblSolution.setModel(imageTableModel);
+        btnKoniecPomUlohy.setVisible(true);
     }//GEN-LAST:event_jMenuItemPomocnaUlohaActionPerformed
+
+    private void btnKoniecPomUlohyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKoniecPomUlohyActionPerformed
+        //este skoncenie - 1.spravne podmienky a 2. ked nespravne ta savedTableData nahodit
+        if (solutionCalculations.rightEndOfSuppRole(pocetPomPremennych)) {
+            
+            ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
+            
+            imageTableModel = new ImageTableModel();
+            tblSolution.setModel(imageTableModel);
+            btnKoniecPomUlohy.setVisible(false);
+        } else{
+            
+            int potvrdenie = JOptionPane.showOptionDialog(this,"Daná tabuľka nezodpovedá optimálnej tabuľke na ukončenie pomocnej úlohy. Naozaj chcete pokračovať? (Budete vrátení do stavu pred pomocnou úlohou.)", "Varonanie",
+                    0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+            if (potvrdenie != JOptionPane.YES_OPTION) {
+                return;
+            }
+            ValuesSingleton.INSTANCE.endOfSuppRoleNotOpt(pocetPomPremennych);
+            
+            imageTableModel = new ImageTableModel();
+            tblSolution.setModel(imageTableModel);
+            btnKoniecPomUlohy.setVisible(false);
+        }
+        
+    }//GEN-LAST:event_btnKoniecPomUlohyActionPerformed
 
     private final String[] options;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnKoniecPomUlohy;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuEdit;

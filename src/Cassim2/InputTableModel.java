@@ -27,7 +27,7 @@ public class InputTableModel extends AbstractTableModel {
             return " ";
         }
         if (col==columnNames.length) {
-            return "x0";
+            return columnNames[0];
         }
         return columnNames[col+1];
     }

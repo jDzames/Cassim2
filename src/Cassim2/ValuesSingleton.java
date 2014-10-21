@@ -116,15 +116,17 @@ public enum ValuesSingleton {
         this.porovnaniasPS = porovnaniasPS;
     }
 
-    public void startPomocnaUloha(int pocetPomPremennych) {
+    public void startSuppRole(int pocetPomPremennych) {
         this.columns = this.columns+pocetPomPremennych;
         this.basisDataIdxSaved = this.basisDataIdx.clone();  
         this.tableDataSaved = this.tableData;
         Fraction[][] pole = new Fraction[this.tableData.length][this.tableData[0].length+pocetPomPremennych];
         String[] colNames = new String[this.columnNames.length+pocetPomPremennych];
         System.arraycopy( this.columnNames, 0, colNames, 0, this.columnNames.length );
-        for (int i = colNames.length; i < pocetPomPremennych; i++) {
-            colNames[i] = "p"+(i+1-colNames.length);  
+        int idx=1;
+        for (int i = this.columnNames.length; i < this.columnNames.length+pocetPomPremennych; i++) {
+            colNames[i] = ""+"p"+idx;
+            idx++;
         }
         this.columnNames = colNames;
         
@@ -153,6 +155,38 @@ public enum ValuesSingleton {
                 columnPomPremennych++;
             }        
         }  
+    }
+
+    public void endOfSuppRoleNotOpt(int pocetPomPremennych) {
+        this.columns = this.columns-pocetPomPremennych;
+        
+        ValuesSingleton.INSTANCE.tableData=ValuesSingleton.INSTANCE.tableDataSaved;
+        
+        ValuesSingleton.INSTANCE.basisDataIdx=ValuesSingleton.INSTANCE.basisDataIdxSaved;
+        
+        String[] colNames = new String[this.columnNames.length-pocetPomPremennych];
+        System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      
+        this.columnNames = colNames;
+    }
+
+    public void endOfSuppRoleOpt(int pocetPomPremennych) {
+        this.columns = this.columns-pocetPomPremennych;
+        
+        Fraction[][] pole = new Fraction[this.tableData.length][this.tableData[0].length-pocetPomPremennych];
+        for(int j=0; j<pole[0].length; j++){
+            pole[0][j]=new Fraction(this.tableData[0][j].getNumerator(), this.tableData[0][j].getDenominator());
+        }
+        for(int i=1; i<pole.length; i++){
+            for(int j=0; j<pole[0].length; j++){
+                pole[i][j]=new Fraction(this.tableData[i][j].getNumerator(), this.tableData[i][j].getDenominator());
+            }
+        }
+        ValuesSingleton.INSTANCE.tableData = pole;
+        
+        String[] colNames = new String[this.columnNames.length-pocetPomPremennych];
+        System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      
+        this.columnNames = colNames;
+ 
     }
     
     
