@@ -1,10 +1,13 @@
 package Cassim2;
 
-import java.awt.Dimension;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JComboBox;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.AbstractAction;
+import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.apache.commons.math3.fraction.Fraction;
 
@@ -14,6 +17,7 @@ public class InputTableDialog extends javax.swing.JDialog {
     InputTableModel inputTableModel = new InputTableModel();
     VariablesTableModel variablesTblModel = new VariablesTableModel();
     
+    
     /**
      * Creates new form InputTableDialog
      */
@@ -22,10 +26,10 @@ public class InputTableDialog extends javax.swing.JDialog {
         initComponents();
         this.setTitle("Zadávanie vstupu");
         
-        tables();
+        setTables();
     }
     
-    private void tables(){         
+    private void setTables(){         
         if (ValuesSingleton.INSTANCE.columns>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblInput.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             tblVariables.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -33,15 +37,15 @@ public class InputTableDialog extends javax.swing.JDialog {
         } else {
             tblVariables.setRowHeight(0, 36);
         }
-   
+        
         tblInput.getTableHeader().setVisible(true);//false
         tblVariables.getTableHeader().setVisible(true);//false
         
-        tblInput.getColumn(" ").setCellEditor(new CustomTableCellEditor());
+        tblInput.getColumn(" ").setCellEditor(new InputTableCellEditor());
         tblInput.getColumn(" ").setCellRenderer(new DefaultTableCellRenderer());
         
         for (int i = 0; i < ValuesSingleton.INSTANCE.columnNames.length; i++) {
-            tblInput.getColumn("x"+i).setCellEditor(new CustomTableCellEditor());
+            tblInput.getColumn("x"+i).setCellEditor(new InputTableCellEditor());
             tblInput.getColumn("x"+i).setCellRenderer(new DefaultTableCellRenderer());
         }
         
@@ -76,6 +80,16 @@ public class InputTableDialog extends javax.swing.JDialog {
         tblInput.setModel(inputTableModel);
         tblInput.setRowHeight(25);
         tblInput.getTableHeader().setReorderingAllowed(false);
+        tblInput.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tblInputFocusGained(evt);
+            }
+        });
+        tblInput.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tblInputKeyReleased(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblInput);
 
         btnReadData.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -205,7 +219,35 @@ public class InputTableDialog extends javax.swing.JDialog {
         
     }//GEN-LAST:event_btnReadDataActionPerformed
 
+    private void tblInputFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tblInputFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblInputFocusGained
 
+    private void tblInputKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblInputKeyReleased
+        int row = tblInput.getSelectedRow();
+        int column = tblInput.getSelectedColumn();
+        boolean arrowReleased = false;
+        switch(evt.getKeyCode()){
+            case KeyEvent.VK_LEFT: arrowReleased = true;
+                break;
+            case KeyEvent.VK_RIGHT: arrowReleased = true;
+                break;    
+            case KeyEvent.VK_UP: arrowReleased = true;
+                break;
+            case KeyEvent.VK_DOWN: arrowReleased = true;
+                break;    
+        }
+        
+        if (arrowReleased && tblInput.getCellEditor(row, column).getTableCellEditorComponent(tblInput, tblInput.getCellEditor(row, column).getCellEditorValue(), true, row, column) instanceof JTextField) {
+            //tblInput.changeSelection(row, column, false, false);
+            JTextField textField = (JTextField)(tblInput.getCellEditor(row, column).getTableCellEditorComponent(tblInput, tblInput.getCellEditor(row, column).getCellEditorValue(), true, row, column));
+            tblInput.editCellAt(row, column);
+        }    
+    }//GEN-LAST:event_tblInputKeyReleased
+
+
+    
+    
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -221,4 +263,7 @@ public class InputTableDialog extends javax.swing.JDialog {
     private javax.swing.JTable tblInput;
     private javax.swing.JTable tblVariables;
     // End of variables declaration//GEN-END:variables
+
 }
+
+

@@ -2,6 +2,7 @@ package Cassim2;
 
 import java.util.HashSet;
 import java.util.Set;
+import javax.xml.stream.events.Characters;
 import org.apache.commons.math3.fraction.Fraction;
 
 /**
@@ -30,6 +31,13 @@ public class skusky {
         
         Fraction a = new Fraction(1,-3);
         System.out.println(a.getDenominator());
+        
+        
+        System.out.println(""+'a');
+        
+        System.out.println(" "+(char) 65);
     }
+    
+    
     
 }

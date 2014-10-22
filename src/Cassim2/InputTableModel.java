@@ -102,6 +102,7 @@ public class InputTableModel extends AbstractTableModel {
             fireTableCellUpdated(row, col);
             return;
         }
+        
         //skontrolujem pisany vstup: ., des cislo a :/\=(char)92 zlomok
         input.trim();
         if (!(input.charAt(0)>='0' && input.charAt(0)<='9')) {
