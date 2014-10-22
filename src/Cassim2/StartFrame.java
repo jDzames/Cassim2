@@ -8,11 +8,12 @@ import javax.swing.UIManager;
 
 public class StartFrame extends javax.swing.JFrame {
 
-    private boolean solutionIsReady=false;
+    private boolean solutionIsReady;
     
     public StartFrame() {
         initComponents();
         this.setTitle("Cassim 2");
+        solutionIsReady = false;
     }
 
     /**
@@ -32,10 +33,11 @@ public class StartFrame extends javax.swing.JFrame {
         btnStartSolution = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
+        chckBoxEditLastInput = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setText("stĺpcov");
+        jLabel1.setText("stĺpcov:");
 
         jLabel2.setText("riadkov:");
 
@@ -58,30 +60,41 @@ public class StartFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Prosím o ohlásenie akýchkoľvek chýb na jozef.dzama@gmail.com");
 
+        chckBoxEditLastInput.setText("Uprav posledný vstup");
+        chckBoxEditLastInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chckBoxEditLastInputActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtColumns, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                    .addComponent(txtRows))
-                .addGap(26, 26, 26)
-                .addComponent(btnCreateTable)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnStartSolution)
-                .addGap(77, 77, 77))
             .addGroup(layout.createSequentialGroup()
                 .addGap(94, 94, 94)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jLabel4)
                     .addComponent(jLabel3))
                 .addGap(0, 132, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtColumns, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtRows, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnCreateTable)
+                .addGap(31, 31, 31)
+                .addComponent(btnStartSolution)
+                .addGap(39, 39, 39))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(chckBoxEditLastInput)
+                .addGap(160, 160, 160))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -90,31 +103,37 @@ public class StartFrame extends javax.swing.JFrame {
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtColumns, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1))
-                        .addGap(10, 10, 10)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtRows, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnCreateTable)
-                            .addComponent(btnStartSolution))
-                        .addGap(26, 26, 26))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnStartSolution)
+                    .addComponent(jLabel1)
+                    .addComponent(txtColumns, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtRows, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnCreateTable))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chckBoxEditLastInput)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateTableActionPerformed
+        if (chckBoxEditLastInput.isSelected()) {
+            InputTableDialog inputTableDialog = new InputTableDialog(this, rootPaneCheckingEnabled);
+            inputTableDialog.setVisible(true);
+            return;
+        }
         
-        ValuesSingleton.INSTANCE.columns = Integer.parseInt(txtColumns.getText());
-        ValuesSingleton.INSTANCE.rows = Integer.parseInt(txtRows.getText());
+        try {
+            ValuesSingleton.INSTANCE.columns = Integer.parseInt(txtColumns.getText());
+            ValuesSingleton.INSTANCE.rows = Integer.parseInt(txtRows.getText());
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Počet riadkov a stĺpcov musia byť celé kladné čísla!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         
         String[][] data = new String [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
         for (int i = 0; i <= ValuesSingleton.INSTANCE.rows; i++) {
@@ -152,14 +171,28 @@ public class StartFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Najprv zadajte vstup!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;
         }
- 
-        solutionIsReady = false;
        
         ValuesSingleton.INSTANCE.onlyOnce = true; 
+        
+        ValuesSingleton.INSTANCE.rows = ValuesSingleton.INSTANCE.tableData.length-1;
+        ValuesSingleton.INSTANCE.columns = ValuesSingleton.INSTANCE.tableData[0].length-1;
+        if (ValuesSingleton.INSTANCE.columnNames.length!=ValuesSingleton.INSTANCE.columns+1) {
+            String[] columnNames = new String[ValuesSingleton.INSTANCE.columns+1];
+            for (int i = 0; i < ValuesSingleton.INSTANCE.columns; i++) {
+                columnNames[i]="x"+i;
+            }
+            ValuesSingleton.INSTANCE.columnNames = columnNames;
+        }
+        
+        
         SolutionDialog solutionDialog = new SolutionDialog(this, rootPaneCheckingEnabled);
         solutionDialog.setVisible(true); 
         
     }//GEN-LAST:event_btnStartSolutionActionPerformed
+
+    private void chckBoxEditLastInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckBoxEditLastInputActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_chckBoxEditLastInputActionPerformed
 
     /**
      * @param args the command line arguments
@@ -194,6 +227,7 @@ public class StartFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateTable;
     private javax.swing.JButton btnStartSolution;
+    private javax.swing.JCheckBox chckBoxEditLastInput;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

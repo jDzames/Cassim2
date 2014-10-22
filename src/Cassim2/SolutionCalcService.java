@@ -67,7 +67,7 @@ public class SolutionCalcService {
     
     public int checkMin(int selectedRow, int selectedColumn){
         //error
-        if (selectedColumn == 0)
+        if (selectedColumn <= 0)
             return -4;
         if (check0Column() <0)
                 return -3;
@@ -100,7 +100,7 @@ public class SolutionCalcService {
 
     public int checkMax(int selectedRow, int selectedColumn){
         //error
-        if (selectedRow == 0)
+        if (selectedRow <= 0)
             return -4; //0. riadok, nehladam max
         if (check0Row() <0)
                 return -3;//nulty riadok ma byt kladny       
@@ -142,14 +142,14 @@ public class SolutionCalcService {
         //questiony
         //vetvenie na dva a v oboch po 2 Q a ked ano, posli rovno, neries dalsie, uz i tak nezodpoveda (ci 1 abo obi2)
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator()>0) {
-            if (ValuesSingleton.INSTANCE.tableData[0][selectedColumn].getNumerator()>=0) {
+            if (ValuesSingleton.INSTANCE.tableData[0][selectedColumn].getNumerator()>0) {
                 return -4;
             }
             if (minimum(selectedRow, selectedColumn)!=selectedRow) {
                 return -5;
             }
         } else {
-            if (ValuesSingleton.INSTANCE.tableData[selectedRow][0].getNumerator()>=0) {
+            if (ValuesSingleton.INSTANCE.tableData[selectedRow][0].getNumerator()>0) {
                 return -4;
             }
             if (maximum(selectedRow, selectedColumn)!=selectedColumn) {
@@ -180,11 +180,7 @@ public class SolutionCalcService {
         if (ValuesSingleton.INSTANCE.tableData[0][0].getNumerator()!=0) {
             return false;
         }
-        for (int i = 1; i <= ValuesSingleton.INSTANCE.columns; i++) {
-            if (ValuesSingleton.INSTANCE.tableData[0][i].getNumerator()<0) {
-                return false;
-            }
-        }
+        
         int pocetPovodStlpcov = ValuesSingleton.INSTANCE.columns-pocetPomPremennych;
         for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
             if (ValuesSingleton.INSTANCE.basisDataIdx[i]>pocetPovodStlpcov) {

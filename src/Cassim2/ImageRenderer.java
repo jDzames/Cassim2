@@ -74,11 +74,10 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
             c = label;
 
             if (ValuesSingleton.INSTANCE.isOnlyOnce()) {
-                    table.setRowHeight(40);
-                    ValuesSingleton.INSTANCE.onlyOnce = false;
-                }
-                /*minHeight = 5;*/
-            /*System.out.println("som v rendereri a vraciam label");*/
+                table.setRowHeight(40);
+                ValuesSingleton.INSTANCE.onlyOnce = false;
+            }
+
             return c;
         }
 

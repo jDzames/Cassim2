@@ -32,6 +32,7 @@ public class SolutionDialog extends javax.swing.JDialog {
                 
         initComponents();
         btnKoniecPomUlohy.setVisible(false);
+        jeBazovane=false;
         tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -255,7 +256,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         int checkedMin = solutionCalculations.checkMin(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
 
         switch(checkedMin){
-            case -4: JOptionPane.showMessageDialog(this, "Nachádzate sa v 0. stĺpci!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            case -4: JOptionPane.showMessageDialog(this, "Vyberte bunku kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
                     return;
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                     return;
@@ -282,7 +283,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         int checkMax = solutionCalculations.checkMax(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
 
         switch(checkMax){
-            case -4: JOptionPane.showMessageDialog(this, "Nachádzate sa v 0. riadku!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            case -4: JOptionPane.showMessageDialog(this, "Vyberte bunku kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
                     return; 
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení duálu!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                     return;
@@ -307,6 +308,10 @@ public class SolutionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItemMaxActionPerformed
 
     private void jMenuItemPivotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPivotActionPerformed
+        if (!jeBazovane) {
+            JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            return;            
+        }
         
         int checkPivot = solutionCalculations.checkPivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
         switch(checkPivot){
@@ -371,6 +376,7 @@ public class SolutionDialog extends javax.swing.JDialog {
             
             imageTableModel = new ImageTableModel();
             tblSolution.setModel(imageTableModel);
+            jeBazovane=false;
             btnKoniecPomUlohy.setVisible(false);
         } else{
             

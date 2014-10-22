@@ -24,7 +24,7 @@ public enum ValuesSingleton {
     public Fraction[][] tableDataSaved;
     public int[] basisDataIdxSaved;
     
-    public boolean onlyOnce = true;
+    public boolean onlyOnce = true; //na nastavenie vysky bunky,nech to nerobi viac krat
 
     
     public int getColumns() {
