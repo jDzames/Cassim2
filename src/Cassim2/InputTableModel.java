@@ -1,8 +1,6 @@
 
 package Cassim2;
 
-import java.util.HashSet;
-import java.util.Set;
 import javax.swing.table.AbstractTableModel;
 
 
@@ -85,6 +83,11 @@ public class InputTableModel extends AbstractTableModel {
         if (input==null || input.length()==0) {
             fireTableCellUpdated(row, col);
             return;
+        }
+        //ak je prva nula vo vstupe ta ju vyhodim
+        if (input.length()>1 && input.charAt(0)=='0') {
+            value = input.substring(1);
+            input = input.substring(1);
         }
         //nastavim z comboboxov
         if (col==columnNames.length-1 && row!=0) {

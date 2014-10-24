@@ -238,9 +238,9 @@ public class InputTableDialog extends javax.swing.JDialog {
                 break;    
         }
         
-        if (arrowReleased && tblInput.getCellEditor(row, column).getTableCellEditorComponent(tblInput, tblInput.getCellEditor(row, column).getCellEditorValue(), true, row, column) instanceof JTextField) {
+        if (arrowReleased) {  // && tblInput.getCellEditor(row, column).getTableCellEditorComponent(tblInput, tblInput.getCellEditor(row, column).getCellEditorValue(), true, row, column) instanceof JTextField
             //tblInput.changeSelection(row, column, false, false);
-            JTextField textField = (JTextField)(tblInput.getCellEditor(row, column).getTableCellEditorComponent(tblInput, tblInput.getCellEditor(row, column).getCellEditorValue(), true, row, column));
+            //JTextField textField = (JTextField)(tblInput.getCellEditor(row, column).getTableCellEditorComponent(tblInput, tblInput.getCellEditor(row, column).getCellEditorValue(), true, row, column));
             tblInput.editCellAt(row, column);
         }    
     }//GEN-LAST:event_tblInputKeyReleased
