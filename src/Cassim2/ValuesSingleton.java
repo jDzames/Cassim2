@@ -174,7 +174,7 @@ public enum ValuesSingleton {
         
         Fraction[][] pole = new Fraction[this.tableData.length][this.tableData[0].length-pocetPomPremennych];
         for(int j=0; j<pole[0].length; j++){
-            pole[0][j]=new Fraction(this.tableData[0][j].getNumerator(), this.tableData[0][j].getDenominator());
+            pole[0][j]=new Fraction(this.tableDataSaved[0][j].getNumerator(), this.tableDataSaved[0][j].getDenominator());
         }
         for(int i=1; i<pole.length; i++){
             for(int j=0; j<pole[0].length; j++){

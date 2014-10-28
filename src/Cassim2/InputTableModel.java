@@ -85,7 +85,7 @@ public class InputTableModel extends AbstractTableModel {
             return;
         }
         //ak je prva nula vo vstupe ta ju vyhodim
-        if (input.length()>1 && input.charAt(0)=='0') {
+        if (input.length()>1 && input.charAt(0)=='0' && !( input.charAt(1)==',' || input.charAt(1)=='.' )) {
             value = input.substring(1);
             input = input.substring(1);
         }

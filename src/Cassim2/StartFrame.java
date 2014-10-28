@@ -120,7 +120,7 @@ public class StartFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateTableActionPerformed
-        if (chckBoxEditLastInput.isSelected()) {
+        if (chckBoxEditLastInput.isSelected() && ValuesSingleton.INSTANCE.data != null) {
             InputTableDialog inputTableDialog = new InputTableDialog(this, rootPaneCheckingEnabled);
             inputTableDialog.setVisible(true);
             return;
