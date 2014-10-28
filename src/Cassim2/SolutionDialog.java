@@ -14,8 +14,8 @@ public class SolutionDialog extends javax.swing.JDialog {
     private ImageTableModel imageTableModel = new ImageTableModel();
     private BasisTableModel basisTableModel = new BasisTableModel();
     private SolutionCalcService solutionCalculations = new SolutionCalcService();
-    private boolean jeBazovane = false;
     private int pocetPomPremennych;
+    private boolean isBased;
     
     /**
      * Creates new form SolutionDialog
@@ -31,8 +31,8 @@ public class SolutionDialog extends javax.swing.JDialog {
         /*solutionCalculations.findBasis();   ak by sme to chceli robit automaticky     */
                 
         initComponents();
+        this.isBased=false;
         btnKoniecPomUlohy.setVisible(false);
-        jeBazovane=false;
         tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -233,7 +233,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         solutionCalculations.findBasis();
         //tblSolution.repaint();
         //tblBaza.repaint();
-        jeBazovane=true;
+        this.isBased=true;
         imageTableModel.fireTableDataChanged();
         basisTableModel.fireTableDataChanged();
     }//GEN-LAST:event_jMenuItemFindBasisActionPerformed
@@ -308,7 +308,7 @@ public class SolutionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItemMaxActionPerformed
 
     private void jMenuItemPivotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPivotActionPerformed
-        if (!jeBazovane) {
+        if (!solutionCalculations.isBased()) {
             JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;            
         }
@@ -342,7 +342,7 @@ public class SolutionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItemPivotActionPerformed
 
     private void jMenuItemPomocnaUlohaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPomocnaUlohaActionPerformed
-        if (!jeBazovane) {
+        if (!this.isBased) {
             JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná", "Pomocná úloha", JOptionPane.PLAIN_MESSAGE);
             return;
         }       
@@ -376,10 +376,9 @@ public class SolutionDialog extends javax.swing.JDialog {
             
             imageTableModel = new ImageTableModel();
             tblSolution.setModel(imageTableModel);
-            jeBazovane=false;
             btnKoniecPomUlohy.setVisible(false);
         } else{
-            
+            this.isBased=false;
             int potvrdenie = JOptionPane.showOptionDialog(this,"Daná tabuľka nezodpovedá optimálnej tabuľke na ukončenie pomocnej úlohy. Naozaj chcete pokračovať? (Budete vrátení do stavu pred pomocnou úlohou.)", "Varonanie",
                     0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
             if (potvrdenie != JOptionPane.YES_OPTION) {

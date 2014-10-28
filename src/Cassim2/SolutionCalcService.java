@@ -44,6 +44,15 @@ public class SolutionCalcService {
         }
     }
     
+    public boolean isBased(){
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            if (ValuesSingleton.INSTANCE.basisDataIdx[i]<0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     public void findBasis() {
 
         for (int i = 1; i <= ValuesSingleton.INSTANCE.columns; i++) {
@@ -131,6 +140,28 @@ public class SolutionCalcService {
         return maxIdx;
     }
     
+    private boolean isWorseThanMin(int selectedRow, int selectedColumn){
+        Fraction valueHere = new Fraction(ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator(), ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getDenominator());
+        valueHere = ValuesSingleton.INSTANCE.tableData[selectedRow][0].divide(valueHere);
+        
+        int min = minimum(selectedRow, selectedColumn);
+        Fraction valueMin = new Fraction(ValuesSingleton.INSTANCE.tableData[min][selectedColumn].getNumerator(), ValuesSingleton.INSTANCE.tableData[min][selectedColumn].getDenominator());
+        valueMin = ValuesSingleton.INSTANCE.tableData[min][0].divide(valueMin);
+        
+        return (valueHere.compareTo(valueMin)>0);
+    }
+    
+    private boolean isWorseThanMax(int selectedRow, int selectedColumn){
+        Fraction valueHere = new Fraction(ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator(), ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getDenominator());
+        valueHere = ValuesSingleton.INSTANCE.tableData[0][selectedColumn].divide(valueHere);
+        
+        int max = maximum(selectedRow, selectedColumn);
+        Fraction valueMax = new Fraction(ValuesSingleton.INSTANCE.tableData[selectedRow][max].getNumerator(), ValuesSingleton.INSTANCE.tableData[selectedRow][max].getDenominator());
+        valueMax = ValuesSingleton.INSTANCE.tableData[0][max].divide(valueMax);
+        
+        return (valueHere.compareTo(valueMax)<0);
+    }
+    
     public int checkPivot(int selectedRow, int selectedColumn){
         //errory
         if (selectedRow<=0 || selectedColumn<=0) 
@@ -145,14 +176,14 @@ public class SolutionCalcService {
             if (ValuesSingleton.INSTANCE.tableData[0][selectedColumn].getNumerator()>0) {
                 return -4;
             }
-            if (minimum(selectedRow, selectedColumn)!=selectedRow) {
+            if (isWorseThanMin(selectedRow, selectedColumn)) {
                 return -5;
             }
         } else {
             if (ValuesSingleton.INSTANCE.tableData[selectedRow][0].getNumerator()>0) {
                 return -4;
             }
-            if (maximum(selectedRow, selectedColumn)!=selectedColumn) {
+            if (isWorseThanMax(selectedRow, selectedColumn)) {
                 return -5;
             }
         }          

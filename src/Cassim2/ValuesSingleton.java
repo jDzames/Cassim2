@@ -152,6 +152,7 @@ public enum ValuesSingleton {
         for (int i = 0; i < this.basisDataIdx.length; i++) {
             if (this.basisDataIdx[i]<0) {
                 this.tableData[i+1][this.tableDataSaved.length+columnPomPremennych]= Fraction.ONE;
+                this.basisDataIdx[i]=this.tableDataSaved.length+columnPomPremennych;
                 columnPomPremennych++;
             }        
         }  
