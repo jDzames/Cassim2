@@ -28,11 +28,12 @@ public class SolutionDialog extends javax.swing.JDialog {
             pole[i]=-1;          
         }
         ValuesSingleton.INSTANCE.basisDataIdx = pole;
+        this.pocetPomPremennych=ValuesSingleton.INSTANCE.suppRoleVariables;
         /*solutionCalculations.findBasis();   ak by sme to chceli robit automaticky     */
                 
         initComponents();
         this.isBased=false;
-        btnKoniecPomUlohy.setVisible(false);
+        btnKoniecPomUlohy.setVisible((this.pocetPomPremennych!=0));
         tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);

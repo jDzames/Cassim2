@@ -21,6 +21,8 @@ public enum ValuesSingleton {
     public int selectedRow;
     public int selectedColumn;
     
+    public int suppRoleVariables;
+    
     public Fraction[][] tableDataSaved;
     public int[] basisDataIdxSaved;
     
@@ -156,6 +158,7 @@ public enum ValuesSingleton {
                 columnPomPremennych++;
             }        
         }  
+        this.suppRoleVariables=pocetPomPremennych;
     }
 
     public void endOfSuppRoleNotOpt(int pocetPomPremennych) {
@@ -168,6 +171,7 @@ public enum ValuesSingleton {
         String[] colNames = new String[this.columnNames.length-pocetPomPremennych];
         System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      
         this.columnNames = colNames;
+        this.suppRoleVariables=0;
     }
 
     public void endOfSuppRoleOpt(int pocetPomPremennych) {
@@ -187,7 +191,7 @@ public enum ValuesSingleton {
         String[] colNames = new String[this.columnNames.length-pocetPomPremennych];
         System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      
         this.columnNames = colNames;
- 
+        this.suppRoleVariables = 0;
     }
     
     
