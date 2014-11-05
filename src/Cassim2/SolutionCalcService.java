@@ -30,6 +30,14 @@ public class SolutionCalcService {
         return 1;
     }
     
+    private int checkBasis(){
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            if (ValuesSingleton.INSTANCE.basisDataIdx[i]<0) {
+                return -1;
+            }
+        }
+        return 1;
+    }
     
     private void multiplRow(int row, Fraction multipl){
         for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
@@ -219,6 +227,25 @@ public class SolutionCalcService {
             }
         }
         return true;
+    }
+
+    public int checkGomory(int selectedRow, int selectedColumn) {
+        //errory
+        if (this.check0Column()<0) {
+            return -1; //v nepripustnom rieseni
+        }
+        if (this.checkBasis()<0) {
+            return -2; //nema bazu
+        }
+        if (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getDenominator()==1) {
+            return -3; //neje zlomok
+        }
+        //question
+        if (this.check0Row()<0) {
+            return -4; //este sa da pivotovat
+        }
+        //OK
+        return 0;
     }
     
 }

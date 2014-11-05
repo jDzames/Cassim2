@@ -22,6 +22,7 @@ public enum ValuesSingleton {
     public int selectedColumn;
     
     public int suppRoleVariables;
+    private int gomoryVariables=0;
     
     public Fraction[][] tableDataSaved;
     public int[] basisDataIdxSaved;
@@ -192,6 +193,39 @@ public enum ValuesSingleton {
         System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      
         this.columnNames = colNames;
         this.suppRoleVariables = 0;
+    }
+
+    public void doGomory(int selectedRow) {
+        this.columns++;
+        this.rows++;
+        this.gomoryVariables++;
+        
+        this.basisDataIdxSaved = this.basisDataIdx;  
+        this.tableDataSaved = this.tableData;
+        
+        String[] colNames = new String[this.columnNames.length+1];
+        System.arraycopy( this.columnNames, 0, colNames, 0, this.columnNames.length );
+        colNames[colNames.length-1]="G"+this.gomoryVariables;
+        this.columnNames = colNames;
+        
+        this.basisDataIdx=new int[this.basisDataIdxSaved.length+1];
+        System.arraycopy( this.basisDataIdxSaved, 0, this.basisDataIdx, 0, this.basisDataIdxSaved.length );
+        this.basisDataIdx[this.basisDataIdx.length-1]=this.tableDataSaved[0].length;
+        
+        Fraction[][] pole = new Fraction[this.tableData.length+1][this.tableData[0].length+1];
+        for (int i = 0; i < this.tableDataSaved.length; i++) { //riadky od 0 po predposledny
+            for (int j = 0; j < this.tableDataSaved[0].length; j++) { //stlpce od 0 po predposledny
+                pole[i][j]=new Fraction(this.tableDataSaved[i][j].getNumerator(), this.tableDataSaved[i][j].getDenominator());
+            }
+            pole[i][this.tableDataSaved[0].length]=Fraction.ZERO; //posledny stlpec
+        }
+        for (int j = 0; j < this.tableDataSaved[0].length; j++) { //stlpce od 0 po predposl. v posl. riadku
+            pole[this.tableDataSaved.length][j]=new Fraction(this.tableDataSaved[selectedRow][j].intValue());
+            pole[this.tableDataSaved.length][j]=pole[this.tableDataSaved.length][j].subtract(pole[selectedRow][j]);
+        }
+        pole[this.tableDataSaved.length][this.tableDataSaved[0].length]=Fraction.ONE; //posledny
+        this.tableData=pole;
+        
     }
     
     

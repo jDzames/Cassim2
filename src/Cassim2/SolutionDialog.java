@@ -62,8 +62,8 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuItemLoad = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
         jMenuSolveAs = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItemRevided = new javax.swing.JMenuItem();
+        jMenuItemGomory = new javax.swing.JMenuItem();
         jMenuItemPomocnaUloha = new javax.swing.JMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemFindBasis = new javax.swing.JMenuItem();
@@ -114,6 +114,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         });
         jMenuFile.add(jMenuItemLoad);
 
+        jMenuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
         jMenuItemExit.setText("Ukončiť");
         jMenuItemExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,17 +127,20 @@ public class SolutionDialog extends javax.swing.JDialog {
 
         jMenuSolveAs.setText("Tabuľka");
 
-        jMenuItem3.setText("Revidovaná úloa");
-        jMenuSolveAs.add(jMenuItem3);
+        jMenuItemRevided.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemRevided.setText("Revidovaná úloa");
+        jMenuSolveAs.add(jMenuItemRevided);
 
-        jMenuItem1.setText("Gomoryho rez");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemGomory.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemGomory.setText("Gomoryho rez");
+        jMenuItemGomory.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                jMenuItemGomoryActionPerformed(evt);
             }
         });
-        jMenuSolveAs.add(jMenuItem1);
+        jMenuSolveAs.add(jMenuItemGomory);
 
+        jMenuItemPomocnaUloha.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemPomocnaUloha.setText("Riešiť pomocnú úlohu");
         jMenuItemPomocnaUloha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -248,10 +252,34 @@ public class SolutionDialog extends javax.swing.JDialog {
         
     }//GEN-LAST:event_jMenuItemLoadActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
+    private void jMenuItemGomoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGomoryActionPerformed
+        if (!solutionCalculations.isBased()) {
+            JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            return;            
+        }  //ci napr po pom ulohe dal bazovat a vynuloval nad bazou
         
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+        int checkedGomory = solutionCalculations.checkGomory(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+        //tu zisti ci napr mame bazu
+        
+        switch(checkedGomory){
+            case -1: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
+                    return;
+            case -2: JOptionPane.showMessageDialog(this, "Najprv musí mať tabuľka bázu!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
+            case -3: JOptionPane.showMessageDialog(this, "Nemá zmysel použit Gomoryo rez na tomto riadku!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
+                    return;    
+            case -4: int potvrdenie = JOptionPane.showOptionDialog(this, "Lineárna optimalizácia ešte nie je ukončena. Naozaj chcete teraz použiť Gomoryho rez?",
+                    "Varovanie", 0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+                    if (potvrdenie != JOptionPane.YES_OPTION) {
+                        return;
+                    }
+            default: ValuesSingleton.INSTANCE.doGomory(tblSolution.getSelectedRow());
+                    imageTableModel = new ImageTableModel();
+                    tblSolution.setModel(imageTableModel);
+                    basisTableModel = new BasisTableModel();
+                    tblBaza.setModel(basisTableModel);
+        }
+    }//GEN-LAST:event_jMenuItemGomoryActionPerformed
 
     private void jMenuItemMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMinActionPerformed
         int checkedMin = solutionCalculations.checkMin(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
@@ -336,7 +364,6 @@ public class SolutionDialog extends javax.swing.JDialog {
                 solutionCalculations.pivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());                   
                 imageTableModel.fireTableDataChanged();
                 basisTableModel.fireTableDataChanged();
-                
         }
         
         
@@ -360,10 +387,10 @@ public class SolutionDialog extends javax.swing.JDialog {
         }
       
         ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych);  
-        for (int i = 0; i < pocetPomPremennych; i++) {
+        /*for (int i = 0; i < pocetPomPremennych; i++) {
             tblSolution.addColumn(new TableColumn());
-        }
-        
+        }   */     
+        this.isBased=false;
         imageTableModel = new ImageTableModel();
         tblSolution.setModel(imageTableModel);
         btnKoniecPomUlohy.setVisible(true);
@@ -375,6 +402,7 @@ public class SolutionDialog extends javax.swing.JDialog {
             
             ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
             
+            this.isBased=false;
             imageTableModel = new ImageTableModel();
             tblSolution.setModel(imageTableModel);
             btnKoniecPomUlohy.setVisible(false);
@@ -402,15 +430,15 @@ public class SolutionDialog extends javax.swing.JDialog {
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemFindBasis;
+    private javax.swing.JMenuItem jMenuItemGomory;
     private javax.swing.JMenuItem jMenuItemLoad;
     private javax.swing.JMenuItem jMenuItemMax;
     private javax.swing.JMenuItem jMenuItemMin;
     private javax.swing.JMenuItem jMenuItemPivot;
     private javax.swing.JMenuItem jMenuItemPomocnaUloha;
+    private javax.swing.JMenuItem jMenuItemRevided;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenu jMenuSolveAs;
     private javax.swing.JScrollPane jScrollPane1;
