@@ -2,6 +2,7 @@
 package Cassim2;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 import org.apache.commons.math3.fraction.Fraction;
 
 
@@ -175,19 +176,45 @@ public enum ValuesSingleton {
         this.suppRoleVariables=0;
     }
 
+    public int[] toIntArray(LinkedList<Integer> list){
+        int[] ret = new int[list.size()];
+        for(int i = 0;i < ret.length;i++)
+            ret[i] = list.get(i).intValue();
+        return ret;
+    }
+    
     public void endOfSuppRoleOpt(int pocetPomPremennych) {
         this.columns = this.columns-pocetPomPremennych;
         
-        Fraction[][] pole = new Fraction[this.tableData.length][this.tableData[0].length-pocetPomPremennych];
+        /*potom skontroluj v singletone na rightendof supprole 
+                a vyhod riadky+1 co su p v baze v riadku (vyhodit z tblData aj basisIdx)*/
+        int rowsToRemove = 0;
+        this.basisDataIdxSaved=this.basisDataIdx;
+        LinkedList<Integer> newBasis = new LinkedList<>();
+        for (int i = 0; i < this.basisDataIdxSaved.length; i++) {
+            if (ValuesSingleton.INSTANCE.basisDataIdx[i]>this.columns) {
+                rowsToRemove++;
+            }else{
+                newBasis.add(ValuesSingleton.INSTANCE.basisDataIdx[i]);
+            }
+        }
+        this.basisDataIdx=toIntArray(newBasis);
+        
+        Fraction[][] pole = new Fraction[this.tableData.length-rowsToRemove][this.tableData[0].length-pocetPomPremennych];
         for(int j=0; j<pole[0].length; j++){
             pole[0][j]=new Fraction(this.tableDataSaved[0][j].getNumerator(), this.tableDataSaved[0][j].getDenominator());
         }
+        int actRowToWrite=1;
         for(int i=1; i<pole.length; i++){
-            for(int j=0; j<pole[0].length; j++){
-                pole[i][j]=new Fraction(this.tableData[i][j].getNumerator(), this.tableData[i][j].getDenominator());
+            if (ValuesSingleton.INSTANCE.basisDataIdxSaved[i-1]<=this.columns) {
+                for(int j=0; j<pole[0].length; j++){
+                    pole[actRowToWrite][j]=new Fraction(this.tableData[i][j].getNumerator(), this.tableData[i][j].getDenominator());
+                }
+                actRowToWrite++;
             }
         }
         ValuesSingleton.INSTANCE.tableData = pole;
+        ValuesSingleton.INSTANCE.rows=ValuesSingleton.INSTANCE.rows-rowsToRemove;
         
         String[] colNames = new String[this.columnNames.length-pocetPomPremennych];
         System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      

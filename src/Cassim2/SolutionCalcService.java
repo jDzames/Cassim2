@@ -28,16 +28,7 @@ public class SolutionCalcService {
             }
         }
         return 1;
-    }
-    
-    private int checkBasis(){
-        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
-            if (ValuesSingleton.INSTANCE.basisDataIdx[i]<0) {
-                return -1;
-            }
-        }
-        return 1;
-    }
+    }  
     
     private void multiplRow(int row, Fraction multipl){
         for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
@@ -223,7 +214,15 @@ public class SolutionCalcService {
         int pocetPovodStlpcov = ValuesSingleton.INSTANCE.columns-pocetPomPremennych;
         for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
             if (ValuesSingleton.INSTANCE.basisDataIdx[i]>pocetPovodStlpcov) {
-                return false;
+                
+                if (ValuesSingleton.INSTANCE.tableData[i+1][0].getNumerator()!=0) {
+                    return false;
+                }
+                for (int j = 1; j <= pocetPovodStlpcov; j++) {
+                    if (ValuesSingleton.INSTANCE.tableData[i+1][j].getNumerator()!=0) {
+                        return false;
+                    }
+                }
             }
         }
         return true;
@@ -234,7 +233,7 @@ public class SolutionCalcService {
         if (this.check0Column()<0) {
             return -1; //v nepripustnom rieseni
         }
-        if (this.checkBasis()<0) {
+        if (!this.isBased()) {
             return -2; //nema bazu
         }
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getDenominator()==1) {
@@ -247,5 +246,7 @@ public class SolutionCalcService {
         //OK
         return 0;
     }
+
+   
     
 }

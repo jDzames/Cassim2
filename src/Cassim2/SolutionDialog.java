@@ -235,12 +235,14 @@ public class SolutionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
     private void jMenuItemFindBasisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFindBasisActionPerformed
+        
         solutionCalculations.findBasis();
         //tblSolution.repaint();
         //tblBaza.repaint();
         this.isBased=true;
         imageTableModel.fireTableDataChanged();
         basisTableModel.fireTableDataChanged();
+        
     }//GEN-LAST:event_jMenuItemFindBasisActionPerformed
 
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
@@ -268,11 +270,13 @@ public class SolutionDialog extends javax.swing.JDialog {
                     return;
             case -3: JOptionPane.showMessageDialog(this, "Nemá zmysel použit Gomoryo rez na tomto riadku!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
                     return;    
-            case -4: int potvrdenie = JOptionPane.showOptionDialog(this, "Lineárna optimalizácia ešte nie je ukončena. Naozaj chcete teraz použiť Gomoryho rez?",
+            case -4: /*int potvrdenie = JOptionPane.showOptionDialog(this, "Lineárna optimalizácia ešte nie je ukončena. Naozaj chcete teraz použiť Gomoryho rez?",
                     "Varovanie", 0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                     if (potvrdenie != JOptionPane.YES_OPTION) {
                         return;
-                    }
+                    }*/
+                    JOptionPane.showMessageDialog(this, "Ešte nie je optimum!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
+                    return;
             default: ValuesSingleton.INSTANCE.doGomory(tblSolution.getSelectedRow());
                     imageTableModel = new ImageTableModel();
                     tblSolution.setModel(imageTableModel);
@@ -405,6 +409,8 @@ public class SolutionDialog extends javax.swing.JDialog {
             this.isBased=false;
             imageTableModel = new ImageTableModel();
             tblSolution.setModel(imageTableModel);
+            basisTableModel = new BasisTableModel();
+            tblBaza.setModel(basisTableModel);
             btnKoniecPomUlohy.setVisible(false);
         } else{
             this.isBased=false;
