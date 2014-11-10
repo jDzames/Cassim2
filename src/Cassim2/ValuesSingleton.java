@@ -178,7 +178,7 @@ public enum ValuesSingleton {
 
     public int[] toIntArray(LinkedList<Integer> list){
         int[] ret = new int[list.size()];
-        for(int i = 0;i < ret.length;i++)
+        for(int i = 0; i < ret.length; i++)
             ret[i] = list.get(i).intValue();
         return ret;
     }
@@ -205,7 +205,7 @@ public enum ValuesSingleton {
             pole[0][j]=new Fraction(this.tableDataSaved[0][j].getNumerator(), this.tableDataSaved[0][j].getDenominator());
         }
         int actRowToWrite=1;
-        for(int i=1; i<pole.length; i++){
+        for(int i=1; i<this.tableDataSaved.length; i++){
             if (ValuesSingleton.INSTANCE.basisDataIdxSaved[i-1]<=this.columns) {
                 for(int j=0; j<pole[0].length; j++){
                     pole[actRowToWrite][j]=new Fraction(this.tableData[i][j].getNumerator(), this.tableData[i][j].getDenominator());
@@ -222,6 +222,14 @@ public enum ValuesSingleton {
         this.suppRoleVariables = 0;
     }
 
+    public int bottomIntPart(Fraction frac){
+        if (frac.getNumerator()>=0) {
+            return frac.intValue();
+        } else {
+            return frac.intValue()-1;
+        }
+    }
+    
     public void doGomory(int selectedRow) {
         this.columns++;
         this.rows++;
@@ -247,7 +255,7 @@ public enum ValuesSingleton {
             pole[i][this.tableDataSaved[0].length]=Fraction.ZERO; //posledny stlpec
         }
         for (int j = 0; j < this.tableDataSaved[0].length; j++) { //stlpce od 0 po predposl. v posl. riadku
-            pole[this.tableDataSaved.length][j]=new Fraction(this.tableDataSaved[selectedRow][j].intValue());
+            pole[this.tableDataSaved.length][j]=new Fraction(this.bottomIntPart(this.tableDataSaved[selectedRow][j]));
             pole[this.tableDataSaved.length][j]=pole[this.tableDataSaved.length][j].subtract(pole[selectedRow][j]);
         }
         pole[this.tableDataSaved.length][this.tableDataSaved[0].length]=Fraction.ONE; //posledny

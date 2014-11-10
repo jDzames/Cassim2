@@ -12,7 +12,7 @@ import org.apache.commons.math3.fraction.Fraction;
 public class skusky {
     
     public static void main(String args[]) {
-        Set<String> mnozina = new HashSet<String>();
+        /*Set<String> mnozina = new HashSet<String>();
         mnozina.add("/");
         mnozina.add(":");
         mnozina.add(String.valueOf((char)92));
@@ -35,7 +35,10 @@ public class skusky {
         
         System.out.println(""+'a');
         
-        System.out.println(" "+(char) 65);
+        System.out.println(" "+(char) 65);*/
+        
+        
+        
     }
     
     

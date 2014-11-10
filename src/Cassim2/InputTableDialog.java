@@ -190,6 +190,8 @@ public class InputTableDialog extends javax.swing.JDialog {
         int b=-1;
         try {
             DataParser dataParser = new DataParser();
+            ValuesSingleton.INSTANCE.rows=inputTableModel.getRowCount()-2;
+            ValuesSingleton.INSTANCE.columns=inputTableModel.getColumnCount()-2;
             ValuesSingleton.INSTANCE.tableData = new Fraction[ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
             for (int i = 0; i <= ValuesSingleton.INSTANCE.rows; i++) {
                 for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {  
