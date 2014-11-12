@@ -30,7 +30,7 @@ public class SolutionCalcService {
         return 1;
     }  
     
-    private void multiplRow(int row, Fraction multipl){
+    public void multiplRow(int row, Fraction multipl){
         for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
             ValuesSingleton.INSTANCE.tableData[row][j] = ValuesSingleton.INSTANCE.tableData[row][j].multiply(multipl);
         }
@@ -60,21 +60,29 @@ public class SolutionCalcService {
             
             for (int j = 1; j <= ValuesSingleton.INSTANCE.rows; j++) {
                 if (!(ValuesSingleton.INSTANCE.getTableData()[j][i].getNumerator()==0)) {
-                    inBasis++;
-                    row=j;
+                    if (ValuesSingleton.INSTANCE.getTableData()[j][i].getNumerator()>0) {
+                        inBasis++;
+                        row=j;
+                    } else{
+                        inBasis=inBasis+2;
+                    }   
                 }              
             }
-            if (inBasis==1) {
-                multiplRow(row, new Fraction(ValuesSingleton.INSTANCE.tableData[row][i].getDenominator(), ValuesSingleton.INSTANCE.tableData[row][i].getNumerator()));
-                addRowToRow(row, 0, new Fraction(-1*ValuesSingleton.INSTANCE.tableData[0][i].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][i].getDenominator()));
-                
+            if (inBasis==1 && ValuesSingleton.INSTANCE.basisDataIdx[row-1]<=0) {
                 ValuesSingleton.INSTANCE.basisDataIdx[row-1]=i;
             } 
         }
     }
     
     public void makeZeroOverBasis(){
-        
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            int column = ValuesSingleton.INSTANCE.basisDataIdx[i];
+            if (column>0) {
+                int row = i+1;
+                multiplRow(row, new Fraction(ValuesSingleton.INSTANCE.tableData[row][column].getDenominator(), ValuesSingleton.INSTANCE.tableData[row][column].getNumerator()));
+                addRowToRow(row, 0, new Fraction(-1*ValuesSingleton.INSTANCE.tableData[0][column].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][column].getDenominator()));
+            }
+        }  
     }
     
     public int checkMin(int selectedRow, int selectedColumn){
@@ -246,6 +254,21 @@ public class SolutionCalcService {
         //question
         if (this.check0Row()<0) {
             return -4; //este sa da pivotovat
+        }
+        //OK
+        return 0;
+    }
+
+    public int canBeMultiplied(int selectedRow) {
+        //errory
+        if (ValuesSingleton.INSTANCE.basisDataIdx[selectedRow-1]>0) {
+            return -1; //ma tam bazu
+        } 
+        if (check0Row()==1) {
+            return 0; //kladny 0. riadok
+        }
+        if (ValuesSingleton.INSTANCE.tableData[selectedRow][0].getNumerator()>=0) {
+            return -2; //v 0. riadku neje zaporne
         }
         //OK
         return 0;

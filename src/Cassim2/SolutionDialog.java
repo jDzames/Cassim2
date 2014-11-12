@@ -7,6 +7,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.table.TableColumn;
+import org.apache.commons.math3.fraction.Fraction;
 
 
 public class SolutionDialog extends javax.swing.JDialog {
@@ -29,11 +30,17 @@ public class SolutionDialog extends javax.swing.JDialog {
         }
         ValuesSingleton.INSTANCE.basisDataIdx = pole;
         this.pocetPomPremennych=ValuesSingleton.INSTANCE.suppRoleVariables;
-        /*solutionCalculations.findBasis();   ak by sme to chceli robit automaticky     */
                 
         initComponents();
         this.isBased=false;
+        
         btnKoniecPomUlohy.setVisible((this.pocetPomPremennych!=0));
+        jLblNominator.setVisible(false);
+        jLblDenominator.setVisible(false);
+        jTxtNominator.setVisible(false);
+        jTxtDenominator.setVisible(false);
+        jBtnMultiplyRow.setVisible(false);
+        
         tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -57,6 +64,11 @@ public class SolutionDialog extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBaza = new javax.swing.JTable();
         btnKoniecPomUlohy = new javax.swing.JButton();
+        jTxtNominator = new javax.swing.JTextField();
+        jTxtDenominator = new javax.swing.JTextField();
+        jLblNominator = new javax.swing.JLabel();
+        jLblDenominator = new javax.swing.JLabel();
+        jBtnMultiplyRow = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemSave = new javax.swing.JMenuItem();
@@ -71,6 +83,8 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuItemPivot = new javax.swing.JMenuItem();
         jMenuItemMin = new javax.swing.JMenuItem();
         jMenuItemMax = new javax.swing.JMenuItem();
+        jMenuPomocneOperacie = new javax.swing.JMenu();
+        jMenuItemPrenasobRiadok = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -92,6 +106,26 @@ public class SolutionDialog extends javax.swing.JDialog {
         btnKoniecPomUlohy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnKoniecPomUlohyActionPerformed(evt);
+            }
+        });
+
+        jTxtNominator.setText("1");
+        jTxtNominator.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTxtNominatorActionPerformed(evt);
+            }
+        });
+
+        jTxtDenominator.setText("1");
+
+        jLblNominator.setText("Čitateľ");
+
+        jLblDenominator.setText("Menovateľ");
+
+        jBtnMultiplyRow.setText("Vynásob riadok");
+        jBtnMultiplyRow.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnMultiplyRowActionPerformed(evt);
             }
         });
 
@@ -192,6 +226,19 @@ public class SolutionDialog extends javax.swing.JDialog {
 
         jMenuBar.add(jMenuEdit);
 
+        jMenuPomocneOperacie.setText("Pomocné operácie");
+
+        jMenuItemPrenasobRiadok.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, 0));
+        jMenuItemPrenasobRiadok.setText("Prenásob riadok");
+        jMenuItemPrenasobRiadok.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemPrenasobRiadokActionPerformed(evt);
+            }
+        });
+        jMenuPomocneOperacie.add(jMenuItemPrenasobRiadok);
+
+        jMenuBar.add(jMenuPomocneOperacie);
+
         setJMenuBar(jMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -203,6 +250,16 @@ public class SolutionDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnKoniecPomUlohy)
+                        .addGap(178, 178, 178)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLblNominator)
+                            .addComponent(jLblDenominator, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTxtNominator, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTxtDenominator, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jBtnMultiplyRow)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -215,16 +272,33 @@ public class SolutionDialog extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addComponent(btnKoniecPomUlohy)
-                .addGap(22, 22, 22)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jTxtNominator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLblNominator, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jTxtDenominator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLblDenominator, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addGap(3, 3, 3))))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(19, 19, 19)
+                            .addComponent(btnKoniecPomUlohy)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(21, 21, 21)
+                        .addComponent(jBtnMultiplyRow)))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(9, 9, 9)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)))
                 .addGap(85, 85, 85))
         );
 
@@ -431,11 +505,69 @@ public class SolutionDialog extends javax.swing.JDialog {
         
     }//GEN-LAST:event_btnKoniecPomUlohyActionPerformed
 
+    private void jMenuItemPrenasobRiadokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPrenasobRiadokActionPerformed
+        if (jLblNominator.isVisible()) {
+            jLblNominator.setVisible(false);
+            jLblDenominator.setVisible(false);
+            jTxtNominator.setVisible(false);
+            jTxtDenominator.setVisible(false);
+            jBtnMultiplyRow.setVisible(false);
+        } else {
+            jLblNominator.setVisible(true);
+            jLblDenominator.setVisible(true);
+            jTxtNominator.setVisible(true);
+            jTxtDenominator.setVisible(true);
+            jBtnMultiplyRow.setVisible(true);
+        }
+    }//GEN-LAST:event_jMenuItemPrenasobRiadokActionPerformed
+
+    private void jTxtNominatorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtNominatorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTxtNominatorActionPerformed
+
+    private void jBtnMultiplyRowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnMultiplyRowActionPerformed
+        if (tblSolution.getSelectedRow()<=0) {
+            JOptionPane.showMessageDialog(this, "Najprv vyberte vhodný riadok!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        Fraction multBy;
+        try {
+            int numerator = Integer.parseInt(jTxtNominator.getText());
+            int denominator = Integer.parseInt(jTxtDenominator.getText());
+            multBy = new Fraction(numerator, denominator);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Zadajte celé nenulové čísla!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        int canBeMult = solutionCalculations.canBeMultiplied(tblSolution.getSelectedRow());
+        switch(canBeMult){
+            case -1: JOptionPane.showMessageDialog(this, "Tento riadok nie je možné násobiť! (Môže sa pokaziť báza.)", "Chyba", JOptionPane.ERROR_MESSAGE);
+                return; //je tam baza
+            case -2: JOptionPane.showMessageDialog(this, "Táto operácia by viedla k neprípustnej úlohe!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                return; //0. riadok zaporny a aj v 0. stlpci to vyrabam
+            default: //vynasobim, prezriem a zrusim nepotrebne componenty
+                solutionCalculations.multiplRow(tblSolution.getSelectedRow(), multBy);
+                imageTableModel.fireTableDataChanged();
+                solutionCalculations.findBasis();//ak by mohlo ist do bazy
+                
+                jLblNominator.setVisible(false);
+                jLblDenominator.setVisible(false);
+                jTxtNominator.setVisible(false);
+                jTxtDenominator.setVisible(false);
+                jBtnMultiplyRow.setVisible(false);
+        }
+        
+    }//GEN-LAST:event_jBtnMultiplyRowActionPerformed
+
     private final String[] options;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnKoniecPomUlohy;
+    private javax.swing.JButton jBtnMultiplyRow;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLblDenominator;
+    private javax.swing.JLabel jLblNominator;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;
@@ -447,11 +579,15 @@ public class SolutionDialog extends javax.swing.JDialog {
     private javax.swing.JMenuItem jMenuItemMin;
     private javax.swing.JMenuItem jMenuItemPivot;
     private javax.swing.JMenuItem jMenuItemPomocnaUloha;
+    private javax.swing.JMenuItem jMenuItemPrenasobRiadok;
     private javax.swing.JMenuItem jMenuItemRevided;
     private javax.swing.JMenuItem jMenuItemSave;
+    private javax.swing.JMenu jMenuPomocneOperacie;
     private javax.swing.JMenu jMenuSolveAs;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField jTxtDenominator;
+    private javax.swing.JTextField jTxtNominator;
     private javax.swing.JTable tblBaza;
     private javax.swing.JTable tblSolution;
     // End of variables declaration//GEN-END:variables
