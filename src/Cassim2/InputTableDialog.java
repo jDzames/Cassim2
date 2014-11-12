@@ -45,8 +45,8 @@ public class InputTableDialog extends javax.swing.JDialog {
         tblInput.getColumn(" ").setCellRenderer(new DefaultTableCellRenderer());
         
         for (int i = 0; i < ValuesSingleton.INSTANCE.columnNames.length; i++) {
-            tblInput.getColumn("x"+i).setCellEditor(new InputTableCellEditor());
-            tblInput.getColumn("x"+i).setCellRenderer(new DefaultTableCellRenderer());
+            tblInput.getColumn(ValuesSingleton.INSTANCE.columnNames[i]).setCellEditor(new InputTableCellEditor());
+            tblInput.getColumn(ValuesSingleton.INSTANCE.columnNames[i]).setCellRenderer(new DefaultTableCellRenderer());
         }
         
         

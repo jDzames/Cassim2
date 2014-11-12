@@ -67,10 +67,14 @@ public class SolutionCalcService {
             if (inBasis==1) {
                 multiplRow(row, new Fraction(ValuesSingleton.INSTANCE.tableData[row][i].getDenominator(), ValuesSingleton.INSTANCE.tableData[row][i].getNumerator()));
                 addRowToRow(row, 0, new Fraction(-1*ValuesSingleton.INSTANCE.tableData[0][i].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][i].getDenominator()));
-
+                
                 ValuesSingleton.INSTANCE.basisDataIdx[row-1]=i;
             } 
         }
+    }
+    
+    public void makeZeroOverBasis(){
+        
     }
     
     public int checkMin(int selectedRow, int selectedColumn){

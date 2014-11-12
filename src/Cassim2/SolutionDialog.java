@@ -38,7 +38,8 @@ public class SolutionDialog extends javax.swing.JDialog {
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         }
-        
+        solutionCalculations.findBasis();
+        basisTableModel.fireTableDataChanged();
     }
 
     /**
@@ -235,14 +236,11 @@ public class SolutionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
     private void jMenuItemFindBasisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFindBasisActionPerformed
-        
-        solutionCalculations.findBasis();
+        solutionCalculations.makeZeroOverBasis();
         //tblSolution.repaint();
         //tblBaza.repaint();
         this.isBased=true;
         imageTableModel.fireTableDataChanged();
-        basisTableModel.fireTableDataChanged();
-        
     }//GEN-LAST:event_jMenuItemFindBasisActionPerformed
 
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
@@ -255,6 +253,11 @@ public class SolutionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItemLoadActionPerformed
 
     private void jMenuItemGomoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGomoryActionPerformed
+        if (tblSolution.getSelectedRow()<=0) {
+            JOptionPane.showMessageDialog(this, "Vyberte vhodný riadok!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            return; 
+        }
+        
         if (!solutionCalculations.isBased()) {
             JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;            

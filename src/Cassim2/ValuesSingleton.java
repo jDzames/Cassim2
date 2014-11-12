@@ -222,13 +222,6 @@ public enum ValuesSingleton {
         this.suppRoleVariables = 0;
     }
 
-    public int bottomIntPart(Fraction frac){
-        if (frac.getNumerator()>=0) {
-            return frac.intValue();
-        } else {
-            return frac.intValue()-1;
-        }
-    }
     
     public void doGomory(int selectedRow) {
         this.columns++;
@@ -255,7 +248,7 @@ public enum ValuesSingleton {
             pole[i][this.tableDataSaved[0].length]=Fraction.ZERO; //posledny stlpec
         }
         for (int j = 0; j < this.tableDataSaved[0].length; j++) { //stlpce od 0 po predposl. v posl. riadku
-            pole[this.tableDataSaved.length][j]=new Fraction(this.bottomIntPart(this.tableDataSaved[selectedRow][j]));
+            pole[this.tableDataSaved.length][j]=new Fraction(Math.floor(this.tableDataSaved[selectedRow][j].intValue()));
             pole[this.tableDataSaved.length][j]=pole[this.tableDataSaved.length][j].subtract(pole[selectedRow][j]);
         }
         pole[this.tableDataSaved.length][this.tableDataSaved[0].length]=Fraction.ONE; //posledny
