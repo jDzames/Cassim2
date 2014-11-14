@@ -209,7 +209,7 @@ public class InputTableDialog extends javax.swing.JDialog {
                     }else{
                         colArray=j+1;
                     }
-                    ValuesSingleton.INSTANCE.tableData[i][colArray] = dataParser.parseString(((String) inputTableModel.getValueAt(i, colTable)).trim());            
+                    ValuesSingleton.INSTANCE.tableData[i][colArray] = dataParser.parseString(((String) inputTableModel.getValueAt(i, colTable)).trim());//dataParser.parseString((String)ValuesSingleton.INSTANCE.data[x][y]);            
                 }
             }          
             this.dispose();

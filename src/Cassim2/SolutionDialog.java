@@ -1,12 +1,8 @@
 package Cassim2;
 
-import java.awt.Color;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.border.LineBorder;
-import javax.swing.table.TableColumn;
 import org.apache.commons.math3.fraction.Fraction;
 
 
@@ -16,7 +12,6 @@ public class SolutionDialog extends javax.swing.JDialog {
     private BasisTableModel basisTableModel = new BasisTableModel();
     private SolutionCalcService solutionCalculations = new SolutionCalcService();
     private int pocetPomPremennych;
-    private boolean isBased;
     
     /**
      * Creates new form SolutionDialog
@@ -32,7 +27,6 @@ public class SolutionDialog extends javax.swing.JDialog {
         this.pocetPomPremennych=ValuesSingleton.INSTANCE.suppRoleVariables;
                 
         initComponents();
-        this.isBased=false;
         
         btnKoniecPomUlohy.setVisible((this.pocetPomPremennych!=0));
         jLblNominator.setVisible(false);
@@ -250,10 +244,10 @@ public class SolutionDialog extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnKoniecPomUlohy)
-                        .addGap(178, 178, 178)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLblNominator)
-                            .addComponent(jLblDenominator, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(165, 165, 165)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLblNominator, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLblDenominator, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTxtNominator, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -313,7 +307,6 @@ public class SolutionDialog extends javax.swing.JDialog {
         solutionCalculations.makeZeroOverBasis();
         //tblSolution.repaint();
         //tblBaza.repaint();
-        this.isBased=true;
         imageTableModel.fireTableDataChanged();
     }//GEN-LAST:event_jMenuItemFindBasisActionPerformed
 
@@ -332,7 +325,7 @@ public class SolutionDialog extends javax.swing.JDialog {
             return; 
         }
         
-        if (!solutionCalculations.isBased()) {
+        if (!(solutionCalculations.isBased() && solutionCalculations.have0overBasis())) {
             JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;            
         }  //ci napr po pom ulohe dal bazovat a vynuloval nad bazou
@@ -451,7 +444,7 @@ public class SolutionDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jMenuItemPivotActionPerformed
 
     private void jMenuItemPomocnaUlohaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPomocnaUlohaActionPerformed
-        if (!this.isBased) {
+        if (!solutionCalculations.have0overBasis()) {
             JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná", "Pomocná úloha", JOptionPane.PLAIN_MESSAGE);
             return;
         }       
@@ -470,10 +463,10 @@ public class SolutionDialog extends javax.swing.JDialog {
         ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych);  
         /*for (int i = 0; i < pocetPomPremennych; i++) {
             tblSolution.addColumn(new TableColumn());
-        }   */     
-        this.isBased=false;
+        }   */
         imageTableModel = new ImageTableModel();
         tblSolution.setModel(imageTableModel);
+        basisTableModel.fireTableDataChanged();
         btnKoniecPomUlohy.setVisible(true);
     }//GEN-LAST:event_jMenuItemPomocnaUlohaActionPerformed
 
@@ -483,14 +476,12 @@ public class SolutionDialog extends javax.swing.JDialog {
             
             ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
             
-            this.isBased=false;
             imageTableModel = new ImageTableModel();
             tblSolution.setModel(imageTableModel);
             basisTableModel = new BasisTableModel();
             tblBaza.setModel(basisTableModel);
             btnKoniecPomUlohy.setVisible(false);
         } else{
-            this.isBased=false;
             int potvrdenie = JOptionPane.showOptionDialog(this,"Daná tabuľka nezodpovedá optimálnej tabuľke na ukončenie pomocnej úlohy. Naozaj chcete pokračovať? (Budete vrátení do stavu pred pomocnou úlohou.)", "Varonanie",
                     0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
             if (potvrdenie != JOptionPane.YES_OPTION) {
@@ -500,6 +491,7 @@ public class SolutionDialog extends javax.swing.JDialog {
             
             imageTableModel = new ImageTableModel();
             tblSolution.setModel(imageTableModel);
+            basisTableModel.fireTableDataChanged();
             btnKoniecPomUlohy.setVisible(false);
         }
         

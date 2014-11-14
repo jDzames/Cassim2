@@ -49,6 +49,22 @@ public class SolutionCalcService {
                 return false;
             }
         }
+        
+        return true;
+    }
+    
+    public boolean have0overBasis() {
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            if (ValuesSingleton.INSTANCE.basisDataIdx[i]>0) {
+                int col = ValuesSingleton.INSTANCE.basisDataIdx[i];
+                if (!(ValuesSingleton.INSTANCE.tableData[i+1][col].compareTo(Fraction.ONE)==0)) {
+                    return false;
+                }
+                if (ValuesSingleton.INSTANCE.tableData[0][col].getNumerator()!=0) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
     
@@ -274,6 +290,5 @@ public class SolutionCalcService {
         return 0;
     }
 
-   
     
 }
