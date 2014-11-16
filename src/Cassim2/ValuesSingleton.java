@@ -1,13 +1,19 @@
 
 package Cassim2;
 
-import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.math3.fraction.Fraction;
 
 
 public enum ValuesSingleton {
     INSTANCE;
+    
+    private final BlockingQueue<String[]> savingQueue = new LinkedBlockingQueue<>();
     
     public int columns;
     public int rows;
@@ -29,7 +35,7 @@ public enum ValuesSingleton {
     public int[] basisDataIdxSaved;
     
     public boolean onlyOnce = true; //na nastavenie vysky bunky,nech to nerobi viac krat
-
+    
     
     public int getColumns() {
         return columns;
@@ -119,7 +125,23 @@ public enum ValuesSingleton {
     public void setPorovnaniasPS(String[] porovnaniasPS) {
         this.porovnaniasPS = porovnaniasPS;
     }
-
+    
+    public void putToSavingQueue(String[] rowToSave){
+        try {
+            this.savingQueue.offer(rowToSave, 1, TimeUnit.SECONDS);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ValuesSingleton.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }   
+    
+    public String[] takeFromSavingQueue(){
+        try {
+            return this.savingQueue.poll(1, TimeUnit.SECONDS);
+        } catch (InterruptedException ex) {
+            return null;
+        }
+    }
+    
     public void startSuppRole(int pocetPomPremennych) {
         this.columns = this.columns+pocetPomPremennych;
         this.basisDataIdxSaved = this.basisDataIdx.clone();  

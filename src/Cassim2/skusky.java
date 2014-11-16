@@ -2,6 +2,8 @@ package Cassim2;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.xml.stream.events.Characters;
 import org.apache.commons.math3.fraction.Fraction;
 
@@ -37,8 +39,17 @@ public class skusky {
         
         System.out.println(" "+(char) 65);*/
         
+        BlockingQueue<String[]> q = new LinkedBlockingQueue<>();
+        SavingWriterThread vlakno = new SavingWriterThread();
         
+        String[] s = {"jeden"};
+        ValuesSingleton.INSTANCE.putToSavingQueue(s);
+        String[] ss = {"POISON_PILL"};
+        vlakno.run();
+        System.out.println("za runom");
+        ValuesSingleton.INSTANCE.putToSavingQueue(ss);
         
+        System.out.println("konec");
     }
     
     

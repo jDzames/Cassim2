@@ -14,6 +14,7 @@ public class StartFrame extends javax.swing.JFrame {
         initComponents();
         this.setTitle("Cassim 2");
         solutionIsReady = false;
+        this.options = new String[]{"Áno", "Nie"};
     }
 
     /**
@@ -172,6 +173,12 @@ public class StartFrame extends javax.swing.JFrame {
             return;
         }
        
+        int potvrdenie = JOptionPane.showOptionDialog(this, "Chcete ukladať riešenie tejto úlohy?",
+                    "Ukladať?", 0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+        if (potvrdenie == JOptionPane.YES_OPTION) {
+            
+        }
+        
         ValuesSingleton.INSTANCE.onlyOnce = true; 
         
         ValuesSingleton.INSTANCE.rows = ValuesSingleton.INSTANCE.tableData.length-1;
@@ -224,6 +231,7 @@ public class StartFrame extends javax.swing.JFrame {
         });
     }
 
+    private final String[] options;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateTable;
     private javax.swing.JButton btnStartSolution;

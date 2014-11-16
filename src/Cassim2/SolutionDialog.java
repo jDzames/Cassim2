@@ -300,6 +300,8 @@ public class SolutionDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveActionPerformed
+        
+        
         System.out.println("Daco");
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
