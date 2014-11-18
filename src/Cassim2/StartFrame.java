@@ -172,12 +172,6 @@ public class StartFrame extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Najprv zadajte vstup!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;
         }
-       
-        int potvrdenie = JOptionPane.showOptionDialog(this, "Chcete ukladať riešenie tejto úlohy?",
-                    "Ukladať?", 0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
-        if (potvrdenie == JOptionPane.YES_OPTION) {
-            
-        }
         
         ValuesSingleton.INSTANCE.onlyOnce = true; 
         

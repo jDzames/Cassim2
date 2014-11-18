@@ -22,17 +22,19 @@ public class SavingWriterThread implements Runnable{
         try {
             File subor = new File("tmp_posledneRiesenie.csv");
             wr = new PrintWriter(subor);
-            while(true) {
+            //while(true) {
                 System.out.println("tu som");
                 String[] row = ValuesSingleton.INSTANCE.takeFromSavingQueue();
                 if (row==null) {
-                    continue;
+                    //continue;
                 }
                 if (row.length==1 && row[0].equals("POISON_PILL")){
                     System.out.println("closeujem");
                     wr.close();
                     //http://stackoverflow.com/questions/1158777/renaming-a-file-using-java
-                    break;
+                    //http://www.mkyong.com/java/how-to-append-content-to-file-in-java/
+                    //break;
+                    return;
                 }
                 //zapisanie do suboru
                 System.out.println("takeol som");
@@ -43,7 +45,7 @@ public class SavingWriterThread implements Runnable{
                 wr.println(row[row.length-1]);
                 wr.flush();
                 System.out.println("zapisal som");
-            }
+            //}
         } catch (FileNotFoundException ex) {
             throw new FileWritingException("Nenájdený súbor.");    
         } finally{

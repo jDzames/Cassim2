@@ -284,7 +284,7 @@ public class SolutionCalcService {
             return 0; //kladny 0. riadok
         }
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][0].getNumerator()>=0) {
-            return -2; //v 0. riadku neje zaporne
+            return -2; //v 0. stlpci neje zaporne
         }
         //OK
         return 0;

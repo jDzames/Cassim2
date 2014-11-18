@@ -48,6 +48,7 @@ public class skusky {
         vlakno.run();
         System.out.println("za runom");
         ValuesSingleton.INSTANCE.putToSavingQueue(ss);
+        vlakno.run();
         
         System.out.println("konec");
     }
