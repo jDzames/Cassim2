@@ -57,9 +57,9 @@ public class SolutionDialog extends javax.swing.JDialog {
         
         this.isLoaded = ValuesSingleton.INSTANCE.isLoaded;
         if (this.isLoaded) {
-            //ak bolo nacitane
+            //ak bolo nacitane, budem len appendovat
             ValuesSingleton.INSTANCE.isLoaded=false;
-            //appendujem, vo fileName mam full path?
+            //to pre dalsie pouzitie
         } else {
             //nova uloha, zapisem
             ValuesSingleton.INSTANCE.file = new File("tmp_posledneRiesenie.csv");
@@ -415,6 +415,14 @@ public class SolutionDialog extends javax.swing.JDialog {
                     tblSolution.setModel(imageTableModel);
                     basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
+                    SavingWriterThread saver = new SavingWriterThread();
+                    
+                        String[] row = {"5",""+tblSolution.getSelectedRow()};
+                        ValuesSingleton.INSTANCE.putToSavingQueue(row);
+                        String[] end = {"POISON_PILL"};
+                        ValuesSingleton.INSTANCE.putToSavingQueue(end);
+                        saver.append();
+                    
         }
     }//GEN-LAST:event_jMenuItemGomoryActionPerformed
 
@@ -501,6 +509,14 @@ public class SolutionDialog extends javax.swing.JDialog {
                 solutionCalculations.pivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());                   
                 imageTableModel.fireTableDataChanged();
                 basisTableModel.fireTableDataChanged();
+                SavingWriterThread saver = new SavingWriterThread();
+                
+                    String[] row = {"1",""+tblSolution.getSelectedRow(),""+tblSolution.getSelectedColumn()};
+                    ValuesSingleton.INSTANCE.putToSavingQueue(row);
+                    String[] end = {"POISON_PILL"};
+                    ValuesSingleton.INSTANCE.putToSavingQueue(end);
+                    saver.append();
+                
         }
         
         
@@ -531,6 +547,14 @@ public class SolutionDialog extends javax.swing.JDialog {
         tblSolution.setModel(imageTableModel);
         basisTableModel.fireTableDataChanged();
         btnKoniecPomUlohy.setVisible(true);
+        SavingWriterThread saver = new SavingWriterThread();
+        
+            String[] row = {"2"};
+            ValuesSingleton.INSTANCE.putToSavingQueue(row);
+            String[] end = {"POISON_PILL"};
+            ValuesSingleton.INSTANCE.putToSavingQueue(end);
+            saver.append();
+        
     }//GEN-LAST:event_jMenuItemPomocnaUlohaActionPerformed
 
     private void btnKoniecPomUlohyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKoniecPomUlohyActionPerformed
@@ -544,6 +568,14 @@ public class SolutionDialog extends javax.swing.JDialog {
             basisTableModel = new BasisTableModel();
             tblBaza.setModel(basisTableModel);
             btnKoniecPomUlohy.setVisible(false);
+            SavingWriterThread saver = new SavingWriterThread();
+            
+                String[] row = {"3"};
+                ValuesSingleton.INSTANCE.putToSavingQueue(row);
+                String[] end = {"POISON_PILL"};
+                ValuesSingleton.INSTANCE.putToSavingQueue(end);
+                saver.append();
+            
         } else{
             int potvrdenie = JOptionPane.showOptionDialog(this,"Daná tabuľka nezodpovedá optimálnej tabuľke na ukončenie pomocnej úlohy. Naozaj chcete pokračovať? (Budete vrátení do stavu pred pomocnou úlohou.)", "Varonanie",
                     0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
@@ -556,6 +588,14 @@ public class SolutionDialog extends javax.swing.JDialog {
             tblSolution.setModel(imageTableModel);
             basisTableModel.fireTableDataChanged();
             btnKoniecPomUlohy.setVisible(false);
+            SavingWriterThread saver = new SavingWriterThread();
+            
+                String[] row = {"4"};
+                ValuesSingleton.INSTANCE.putToSavingQueue(row);
+                String[] end = {"POISON_PILL"};
+                ValuesSingleton.INSTANCE.putToSavingQueue(end);
+                saver.append();
+            
         }
         
     }//GEN-LAST:event_btnKoniecPomUlohyActionPerformed
@@ -611,6 +651,14 @@ public class SolutionDialog extends javax.swing.JDialog {
                 jTxtNominator.setVisible(false);
                 jTxtDenominator.setVisible(false);
                 jBtnMultiplyRow.setVisible(false);
+                SavingWriterThread saver = new SavingWriterThread();
+                
+                    String[] row = {"6",""+tblSolution.getSelectedRow(),""+multBy.getNumerator(),""+multBy.getDenominator()};
+                    ValuesSingleton.INSTANCE.putToSavingQueue(row);
+                    String[] end = {"POISON_PILL"};
+                    ValuesSingleton.INSTANCE.putToSavingQueue(end);
+                    saver.append();
+                
         }
         
     }//GEN-LAST:event_jBtnMultiplyRowActionPerformed
