@@ -1,13 +1,8 @@
 package Cassim2;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import javax.swing.AbstractAction;
-import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.table.DefaultTableCellRenderer;
 import org.apache.commons.math3.fraction.Fraction;
 
@@ -211,7 +206,8 @@ public class InputTableDialog extends javax.swing.JDialog {
                     }
                     ValuesSingleton.INSTANCE.tableData[i][colArray] = dataParser.parseString(((String) inputTableModel.getValueAt(i, colTable)).trim());//dataParser.parseString((String)ValuesSingleton.INSTANCE.data[x][y]);            
                 }
-            }          
+            }    
+            ValuesSingleton.INSTANCE.isLoaded = false;
             this.dispose();
         
         } catch (NumberFormatException e) {

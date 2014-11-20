@@ -1,16 +1,19 @@
 package Cassim2;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class SavingWriterThread implements Runnable{
 
-    private PrintWriter wr;
+    private FileWriter wr;
+    private BufferedWriter bufferWritter;
     //private BlockingQueue<String[]> q;
 
     /*public SavingWriterThread(BlockingQueue<String[]> q) {
@@ -20,42 +23,49 @@ public class SavingWriterThread implements Runnable{
     @Override
     public void run() {
         try {
-            File subor = new File("tmp_posledneRiesenie.csv");
-            wr = new PrintWriter(subor);
-            //while(true) {
-                System.out.println("tu som");
+            File subor = ValuesSingleton.INSTANCE.file;
+            wr = new FileWriter(subor);
+            bufferWritter = new BufferedWriter(wr);
+            while(true) {
                 String[] row = ValuesSingleton.INSTANCE.takeFromSavingQueue();
                 if (row==null) {
-                    //continue;
+                    bufferWritter.close();
+                    return;
                 }
                 if (row.length==1 && row[0].equals("POISON_PILL")){
-                    System.out.println("closeujem");
-                    wr.close();
+                    System.out.println("Ulozene, konci vlakno.");
+                    bufferWritter.close();
                     //http://stackoverflow.com/questions/1158777/renaming-a-file-using-java
                     //http://www.mkyong.com/java/how-to-append-content-to-file-in-java/
                     //break;
                     return;
                 }
                 //zapisanie do suboru
-                System.out.println("takeol som");
-                for (int i = 0; i < row.length-1; i++) {
+                for (int i = 0; i < row.length; i++) {
                     String string = row[i];
-                    wr.print(string+",");
+                    bufferWritter.write(string+";");
                 }
-                wr.println(row[row.length-1]);
-                wr.flush();
-                System.out.println("zapisal som");
-            //}
+                bufferWritter.newLine();
+                bufferWritter.flush();
+            }
         } catch (FileNotFoundException ex) {
             throw new FileWritingException("Nenájdený súbor.");    
+        } catch (IOException ex) {
+            throw new FileWritingException("Problém so súborom/zápisom.");    
         } finally{
-            if (wr!=null) {
-                wr.close();
+            if (bufferWritter!=null) {
+                try {
+                    bufferWritter.close();
+                } catch (IOException ex) {
+                    throw new FileWritingException("Problém so zavrením súboru.");  
+                }
             }
         }
         
     }
     
-    
+    public void zapis(){
+        System.out.println("tralala");
+    }
     
 }

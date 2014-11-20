@@ -1,12 +1,10 @@
 
 package Cassim2;
 
+import java.io.File;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.math3.fraction.Fraction;
 
 
@@ -14,6 +12,8 @@ public enum ValuesSingleton {
     INSTANCE;
     
     private final BlockingQueue<String[]> savingQueue = new LinkedBlockingQueue<>();
+    public File file;
+    public boolean isLoaded;
     
     public int columns;
     public int rows;
@@ -127,19 +127,11 @@ public enum ValuesSingleton {
     }
     
     public void putToSavingQueue(String[] rowToSave){
-        try {
-            this.savingQueue.offer(rowToSave, 1, TimeUnit.SECONDS);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ValuesSingleton.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.savingQueue.offer(rowToSave);
     }   
     
     public String[] takeFromSavingQueue(){
-        try {
-            return this.savingQueue.poll(1, TimeUnit.SECONDS);
-        } catch (InterruptedException ex) {
-            return null;
-        }
+        return this.savingQueue.poll();
     }
     
     public void startSuppRole(int pocetPomPremennych) {

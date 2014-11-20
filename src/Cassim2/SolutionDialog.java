@@ -1,8 +1,20 @@
 package Cassim2;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import org.apache.commons.math3.fraction.Fraction;
 
 
@@ -12,6 +24,7 @@ public class SolutionDialog extends javax.swing.JDialog {
     private BasisTableModel basisTableModel = new BasisTableModel();
     private SolutionCalcService solutionCalculations = new SolutionCalcService();
     private int pocetPomPremennych;
+    private boolean isLoaded;
     
     /**
      * Creates new form SolutionDialog
@@ -41,6 +54,18 @@ public class SolutionDialog extends javax.swing.JDialog {
         }
         solutionCalculations.findBasis();
         basisTableModel.fireTableDataChanged();
+        
+        this.isLoaded = ValuesSingleton.INSTANCE.isLoaded;
+        if (this.isLoaded) {
+            //ak bolo nacitane
+            ValuesSingleton.INSTANCE.isLoaded=false;
+            //appendujem, vo fileName mam full path?
+        } else {
+            //nova uloha, zapisem
+            ValuesSingleton.INSTANCE.file = new File("tmp_posledneRiesenie.csv");
+            this.saveTables();
+        }
+        
     }
 
     /**
@@ -66,7 +91,6 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuBar = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemSave = new javax.swing.JMenuItem();
-        jMenuItemLoad = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
         jMenuSolveAs = new javax.swing.JMenu();
         jMenuItemRevided = new javax.swing.JMenuItem();
@@ -126,22 +150,13 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuFile.setText("Úloha");
 
         jMenuItemSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemSave.setText("Uložiť");
+        jMenuItemSave.setText("Uložiť ako");
         jMenuItemSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemSaveActionPerformed(evt);
             }
         });
         jMenuFile.add(jMenuItemSave);
-
-        jMenuItemLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemLoad.setText("Otvoriť");
-        jMenuItemLoad.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemLoadActionPerformed(evt);
-            }
-        });
-        jMenuFile.add(jMenuItemLoad);
 
         jMenuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
         jMenuItemExit.setText("Ukončiť");
@@ -157,7 +172,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuSolveAs.setText("Tabuľka");
 
         jMenuItemRevided.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemRevided.setText("Revidovaná úloa");
+        jMenuItemRevided.setText("Revidovaná úloha");
         jMenuSolveAs.add(jMenuItemRevided);
 
         jMenuItemGomory.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
@@ -299,10 +314,61 @@ public class SolutionDialog extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private void saveTables() {
+        String[] size = {""+(ValuesSingleton.INSTANCE.data.length+3),""+ValuesSingleton.INSTANCE.data[0].length};
+        ValuesSingleton.INSTANCE.putToSavingQueue(size);
+        ValuesSingleton.INSTANCE.putToSavingQueue(ValuesSingleton.INSTANCE.columnNames);
+        for (int i = 0; i < ValuesSingleton.INSTANCE.data.length; i++) {
+            ValuesSingleton.INSTANCE.putToSavingQueue(ValuesSingleton.INSTANCE.data[i]);
+        }
+        ValuesSingleton.INSTANCE.putToSavingQueue(ValuesSingleton.INSTANCE.porovnaniasPS);
+        ValuesSingleton.INSTANCE.putToSavingQueue(ValuesSingleton.INSTANCE.nezapornost);
+        String[] size2 = {""+(ValuesSingleton.INSTANCE.rows+1),""+(ValuesSingleton.INSTANCE.columns+1)};
+        ValuesSingleton.INSTANCE.putToSavingQueue(size2);
+        for (int i = 0; i < ValuesSingleton.INSTANCE.rows+1; i++) {
+            String[] frac = new String[ValuesSingleton.INSTANCE.columns+1];
+            for (int j = 0; j < ValuesSingleton.INSTANCE.columns+1; j++) {
+                String string = ValuesSingleton.INSTANCE.tableData[i][j].getNumerator()+":"+ValuesSingleton.INSTANCE.tableData[i][j].getDenominator();
+                frac[j] =string;
+            }
+            ValuesSingleton.INSTANCE.putToSavingQueue(frac);
+        }
+        String[] end = {"POISON_PILL"};
+        ValuesSingleton.INSTANCE.putToSavingQueue(end);
+        SavingWriterThread saver = new SavingWriterThread();
+        try {
+            saver.run();
+        } catch (FileWritingException e) {
+            JOptionPane.showMessageDialog(this, "Chyba pri ukladaní vstupu! -> "+e.sprava, "Chyba", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+    
     private void jMenuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveActionPerformed
-        
-        
-        System.out.println("Daco");
+        JFileChooser chooser = new JFileChooser();
+        chooser.setToolTipText("Vyberte súbor (priečinok a napíšte názov) do ktorého sa úloha uloží");
+        chooser.setVisible(true);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            ".csv", "csv");
+        chooser.setFileFilter(filter);
+        int returnVal = chooser.showOpenDialog(this);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            String s = file.getName();
+            if (!s.endsWith(".csv")) {
+                file = new File(file.getAbsolutePath()+".csv");
+            }
+            String filePath = file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf(File.separator));
+            System.out.println(file.getAbsolutePath());
+            Path newdir = Paths.get(filePath);
+            Path source = ValuesSingleton.INSTANCE.file.toPath();
+            try {
+                Files.move(source, newdir.resolve(file.getName()), REPLACE_EXISTING);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Chyba pri ukladaní vstupu. Skuste súbor nazvať inak alebo ho vytvoriť inde.", "Chyba", JOptionPane.ERROR_MESSAGE);
+            } 
+        }
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
     private void jMenuItemFindBasisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFindBasisActionPerformed
@@ -315,11 +381,6 @@ public class SolutionDialog extends javax.swing.JDialog {
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
         this.dispose();
     }//GEN-LAST:event_jMenuItemExitActionPerformed
-
-    private void jMenuItemLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemLoadActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_jMenuItemLoadActionPerformed
 
     private void jMenuItemGomoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGomoryActionPerformed
         if (tblSolution.getSelectedRow()<=0) {
@@ -568,7 +629,6 @@ public class SolutionDialog extends javax.swing.JDialog {
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemFindBasis;
     private javax.swing.JMenuItem jMenuItemGomory;
-    private javax.swing.JMenuItem jMenuItemLoad;
     private javax.swing.JMenuItem jMenuItemMax;
     private javax.swing.JMenuItem jMenuItemMin;
     private javax.swing.JMenuItem jMenuItemPivot;
@@ -585,4 +645,6 @@ public class SolutionDialog extends javax.swing.JDialog {
     private javax.swing.JTable tblBaza;
     private javax.swing.JTable tblSolution;
     // End of variables declaration//GEN-END:variables
+
+    
 }

@@ -48,9 +48,16 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
            
             TeXFormula formula = new TeXFormula(latex);
             int sizeOfFont = 13;
-            if (column==0 || row==0 || hasFocus) {
-                sizeOfFont = 18;
+            Color cl = new Color(35, 35, 35);
+            if (column==0) {
+                sizeOfFont = 16;
+                cl = Color.BLACK;
             }
+            if (row==0 || hasFocus) {
+                sizeOfFont = 18;
+                cl = Color.BLACK;
+            }
+            
             if (hasFocus) {
                 ValuesSingleton.INSTANCE.setSelectedRow(row);
                 ValuesSingleton.INSTANCE.setSelectedColumn(column);
@@ -60,12 +67,14 @@ public class ImageRenderer extends JLabel implements TableCellRenderer {
                 .setIsMaxWidth(true).setInterLineSpacing(TeXConstants.UNIT_PIXEL, 20f)
                 .build();
                 icon.setForeground(Color.RED);
+                
             } else {
                 icon = formula.new TeXIconBuilder().setStyle(TeXConstants.STYLE_DISPLAY)
                 .setSize(sizeOfFont)
                 .setWidth(TeXConstants.UNIT_PIXEL, 256f, TeXConstants.ALIGN_CENTER)
                 .setIsMaxWidth(true).setInterLineSpacing(TeXConstants.UNIT_PIXEL, 20f)
                 .build();
+                icon.setForeground(cl);
             }
             
             //ImageIcon icon = (ImageIcon) value;
