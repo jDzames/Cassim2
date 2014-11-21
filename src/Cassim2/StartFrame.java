@@ -1,8 +1,11 @@
 
 package Cassim2;
 
+import java.io.File;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 
@@ -34,7 +37,7 @@ public class StartFrame extends javax.swing.JFrame {
         btnStartSolution = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        chckBoxEditLastInput = new javax.swing.JCheckBox();
+        chckBoxOpenSolution = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -61,10 +64,10 @@ public class StartFrame extends javax.swing.JFrame {
 
         jLabel4.setText("Prosím o ohlásenie akýchkoľvek chýb na jozef.dzama@gmail.com");
 
-        chckBoxEditLastInput.setText("Uprav posledný vstup");
-        chckBoxEditLastInput.addActionListener(new java.awt.event.ActionListener() {
+        chckBoxOpenSolution.setText("Otvor uloženú úlohu");
+        chckBoxOpenSolution.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chckBoxEditLastInputActionPerformed(evt);
+                chckBoxOpenSolutionActionPerformed(evt);
             }
         });
 
@@ -87,17 +90,15 @@ public class StartFrame extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txtColumns, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(chckBoxEditLastInput)
-                        .addGap(160, 160, 160))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnCreateTable)
-                        .addGap(31, 31, 31)
-                        .addComponent(btnStartSolution)
-                        .addGap(39, 39, 39))))
+                .addGap(36, 36, 36)
+                .addComponent(btnCreateTable)
+                .addGap(41, 41, 41)
+                .addComponent(btnStartSolution)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(chckBoxOpenSolution)
+                .addGap(143, 143, 143))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -115,7 +116,7 @@ public class StartFrame extends javax.swing.JFrame {
                     .addComponent(txtColumns, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(chckBoxEditLastInput)
+                .addComponent(chckBoxOpenSolution)
                 .addContainerGap())
         );
 
@@ -123,44 +124,65 @@ public class StartFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCreateTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateTableActionPerformed
-        if (chckBoxEditLastInput.isSelected() && ValuesSingleton.INSTANCE.data != null) {
-            InputTableDialog inputTableDialog = new InputTableDialog(this, rootPaneCheckingEnabled);
-            inputTableDialog.setVisible(true);
-            return;
-        }
         
-        try {
-            ValuesSingleton.INSTANCE.columns = Integer.parseInt(txtColumns.getText());
-            ValuesSingleton.INSTANCE.rows = Integer.parseInt(txtRows.getText());
-        } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Počet riadkov a stĺpcov musia byť celé kladné čísla!", "Chyba", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        
-        String[][] data = new String [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
-        for (int i = 0; i <= ValuesSingleton.INSTANCE.rows; i++) {
-            for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
-                data[i][j]="0";
+        if (chckBoxOpenSolution.isSelected()) {
+            
+            JFileChooser chooser = new JFileChooser();
+            chooser.setToolTipText("Zadajte názov alebo vyberte súbor typu csv");
+            chooser.setVisible(true);
+            /*FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                ".csv", "csv");*/
+            chooser.setFileFilter(new CSVFileFilter());
+            int returnVal = chooser.showOpenDialog(this);
+            
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+                if (!file.exists()) {
+                    JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                //otvorit a nacitat data
+                System.out.println(file.getName());
+            } else {
+                //JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                return;
+            }    
+            
+        } else {
+            
+            try {
+                ValuesSingleton.INSTANCE.columns = Integer.parseInt(txtColumns.getText());
+                ValuesSingleton.INSTANCE.rows = Integer.parseInt(txtRows.getText());
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Počet riadkov a stĺpcov musia byť celé kladné čísla!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+
+            String[][] data = new String [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
+            for (int i = 0; i <= ValuesSingleton.INSTANCE.rows; i++) {
+                for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
+                    data[i][j]="0";
+                }
+            }
+            ValuesSingleton.INSTANCE.data = data;  
+
+            String[] porovnania = new String [ValuesSingleton.INSTANCE.rows];
+            for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
+                porovnania[i] = " = ";
+            }
+            ValuesSingleton.INSTANCE.porovnaniasPS = porovnania;
+
+            String[] nezapornost = new String[ValuesSingleton.INSTANCE.columns];        
+            String[] columnNames = new String[ValuesSingleton.INSTANCE.columns+1];
+            for (int i = 0; i < ValuesSingleton.INSTANCE.columns; i++) {
+                columnNames[i]="x"+i;
+                nezapornost[i]=" >= ";
+            }
+            columnNames[ValuesSingleton.INSTANCE.columns]="x"+ValuesSingleton.INSTANCE.columns;
+            ValuesSingleton.INSTANCE.columnNames = columnNames; //new String [ValuesSingleton.INSTANCE.columns]; 
+            ValuesSingleton.INSTANCE.nezapornost = nezapornost;
         }
-        ValuesSingleton.INSTANCE.data = data;  
-        
-        String[] porovnania = new String [ValuesSingleton.INSTANCE.rows];
-        for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
-            porovnania[i] = " = ";
-        }
-        ValuesSingleton.INSTANCE.porovnaniasPS = porovnania;
-        
-        String[] nezapornost = new String[ValuesSingleton.INSTANCE.columns];        
-        String[] columnNames = new String[ValuesSingleton.INSTANCE.columns+1];
-        for (int i = 0; i < ValuesSingleton.INSTANCE.columns; i++) {
-            columnNames[i]="x"+i;
-            nezapornost[i]=" >= ";
-        }
-        columnNames[ValuesSingleton.INSTANCE.columns]="x"+ValuesSingleton.INSTANCE.columns;
-        ValuesSingleton.INSTANCE.columnNames = columnNames; //new String [ValuesSingleton.INSTANCE.columns]; 
-        ValuesSingleton.INSTANCE.nezapornost = nezapornost;
         
         InputTableDialog inputTableDialog = new InputTableDialog(this, rootPaneCheckingEnabled);
         inputTableDialog.setVisible(true);
@@ -170,32 +192,58 @@ public class StartFrame extends javax.swing.JFrame {
 
     private void btnStartSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartSolutionActionPerformed
        
-        if (!solutionIsReady) {
-            JOptionPane.showMessageDialog(this, "Najprv zadajte vstup!", "Chyba", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        ValuesSingleton.INSTANCE.onlyOnce = true; 
-        
-        ValuesSingleton.INSTANCE.rows = ValuesSingleton.INSTANCE.tableData.length-1;
-        ValuesSingleton.INSTANCE.columns = ValuesSingleton.INSTANCE.tableData[0].length-1;
-        if (ValuesSingleton.INSTANCE.columnNames.length!=ValuesSingleton.INSTANCE.columns+1) {
-            String[] columnNames = new String[ValuesSingleton.INSTANCE.columns+1];
-            for (int i = 0; i < ValuesSingleton.INSTANCE.columns; i++) {
-                columnNames[i]="x"+i;
+        if (chckBoxOpenSolution.isSelected()) {
+            
+            JFileChooser chooser = new JFileChooser();
+            chooser.setToolTipText("Zadajte názov alebo vyberte súbor typu csv");
+            chooser.setVisible(true);
+            /*FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                ".csv", "csv");*/
+            chooser.setFileFilter(new CSVFileFilter());
+            int returnVal = chooser.showOpenDialog(this);
+            
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+                if (!file.exists()) {
+                    JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                //otvorit a nacitat data
+                System.out.println(file.getName());
+            } else {
+                //JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                return;
+            }    
+            
+        } else {
+            
+            if (!solutionIsReady) {
+                JOptionPane.showMessageDialog(this, "Najprv zadajte vstup!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-            ValuesSingleton.INSTANCE.columnNames = columnNames;
-        }
         
+            ValuesSingleton.INSTANCE.onlyOnce = true; 
+
+            ValuesSingleton.INSTANCE.rows = ValuesSingleton.INSTANCE.tableData.length-1;
+            ValuesSingleton.INSTANCE.columns = ValuesSingleton.INSTANCE.tableData[0].length-1;
+            if (ValuesSingleton.INSTANCE.columnNames.length!=ValuesSingleton.INSTANCE.columns+1) {
+                String[] columnNames = new String[ValuesSingleton.INSTANCE.columns+1];
+                for (int i = 0; i < ValuesSingleton.INSTANCE.columns; i++) {
+                    columnNames[i]="x"+i;
+                }
+                ValuesSingleton.INSTANCE.columnNames = columnNames;
+            }
+
+        }
         
         SolutionDialog solutionDialog = new SolutionDialog(this, rootPaneCheckingEnabled);
         solutionDialog.setVisible(true); 
         
     }//GEN-LAST:event_btnStartSolutionActionPerformed
 
-    private void chckBoxEditLastInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckBoxEditLastInputActionPerformed
+    private void chckBoxOpenSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chckBoxOpenSolutionActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_chckBoxEditLastInputActionPerformed
+    }//GEN-LAST:event_chckBoxOpenSolutionActionPerformed
 
     /**
      * @param args the command line arguments
@@ -231,7 +279,7 @@ public class StartFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCreateTable;
     private javax.swing.JButton btnStartSolution;
-    private javax.swing.JCheckBox chckBoxEditLastInput;
+    private javax.swing.JCheckBox chckBoxOpenSolution;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

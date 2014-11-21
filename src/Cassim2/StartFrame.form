@@ -40,20 +40,16 @@
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="txtColumns" min="-2" pref="52" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="chckBoxEditLastInput" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="160" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="btnCreateTable" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                      <Component id="btnStartSolution" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
+              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+              <Component id="btnCreateTable" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="41" max="-2" attributes="0"/>
+              <Component id="btnStartSolution" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="chckBoxOpenSolution" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="143" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -74,7 +70,7 @@
                   <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="chckBoxEditLastInput" min="-2" max="-2" attributes="0"/>
+              <Component id="chckBoxOpenSolution" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -124,12 +120,12 @@
         <Property name="text" type="java.lang.String" value="Pros&#xed;m o ohl&#xe1;senie ak&#xfd;chko&#x13e;vek ch&#xfd;b na jozef.dzama@gmail.com"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="chckBoxEditLastInput">
+    <Component class="javax.swing.JCheckBox" name="chckBoxOpenSolution">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Uprav posledn&#xfd; vstup"/>
+        <Property name="text" type="java.lang.String" value="Otvor ulo&#x17e;en&#xfa; &#xfa;lohu"/>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chckBoxEditLastInputActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="chckBoxOpenSolutionActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

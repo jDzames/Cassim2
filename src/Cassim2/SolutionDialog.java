@@ -347,7 +347,7 @@ public class SolutionDialog extends javax.swing.JDialog {
     
     private void jMenuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveActionPerformed
         JFileChooser chooser = new JFileChooser();
-        chooser.setToolTipText("Vyberte súbor (priečinok a napíšte názov) do ktorého sa úloha uloží");
+        chooser.setToolTipText("Zadajte názov alebo vyberte súbor typu csv");
         chooser.setVisible(true);
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
             ".csv", "csv");
@@ -356,7 +356,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
             String s = file.getName();
-            if (!s.endsWith(".csv")) {
+            if (!s.endsWith("*.csv")) {
                 file = new File(file.getAbsolutePath()+".csv");
             }
             String filePath = file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf(File.separator));
