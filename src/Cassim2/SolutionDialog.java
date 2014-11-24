@@ -103,6 +103,7 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuItemMax = new javax.swing.JMenuItem();
         jMenuPomocneOperacie = new javax.swing.JMenu();
         jMenuItemPrenasobRiadok = new javax.swing.JMenuItem();
+        jMenuHistory = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -247,6 +248,14 @@ public class SolutionDialog extends javax.swing.JDialog {
         jMenuPomocneOperacie.add(jMenuItemPrenasobRiadok);
 
         jMenuBar.add(jMenuPomocneOperacie);
+
+        jMenuHistory.setText("História");
+        jMenuHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuHistoryActionPerformed(evt);
+            }
+        });
+        jMenuBar.add(jMenuHistory);
 
         setJMenuBar(jMenuBar);
 
@@ -663,6 +672,11 @@ public class SolutionDialog extends javax.swing.JDialog {
         
     }//GEN-LAST:event_jBtnMultiplyRowActionPerformed
 
+    private void jMenuHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuHistoryActionPerformed
+        
+        //otvor okno s vypisanou historiou
+    }//GEN-LAST:event_jMenuHistoryActionPerformed
+
     private final String[] options;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -674,6 +688,7 @@ public class SolutionDialog extends javax.swing.JDialog {
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;
+    private javax.swing.JMenu jMenuHistory;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemFindBasis;
     private javax.swing.JMenuItem jMenuItemGomory;

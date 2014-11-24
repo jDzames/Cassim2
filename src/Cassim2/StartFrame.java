@@ -2,21 +2,26 @@
 package Cassim2;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 
 
 public class StartFrame extends javax.swing.JFrame {
 
     private boolean solutionIsReady;
+    private SavedSolutionReader reader;
     
     public StartFrame() {
         initComponents();
         this.setTitle("Cassim 2");
         solutionIsReady = false;
+        reader = new SavedSolutionReader();
         this.options = new String[]{"Áno", "Nie"};
     }
 
@@ -142,7 +147,12 @@ public class StartFrame extends javax.swing.JFrame {
                     return;
                 }
                 //otvorit a nacitat data
-                System.out.println(file.getName());
+                try {
+                    reader.readForEdit(file);
+                } catch (FileWritingException ex) {
+                    JOptionPane.showMessageDialog(this, "Problém pri načítaní súboru: "+ex.sprava, "Chyba", JOptionPane.ERROR_MESSAGE);
+                }
+                System.out.println("Otvoril som file: "+file.getName());
             } else {
                 //JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -209,7 +219,12 @@ public class StartFrame extends javax.swing.JFrame {
                     return;
                 }
                 //otvorit a nacitat data
-                System.out.println(file.getName());
+                try {
+                    reader.readForSolution(file);
+                } catch (FileWritingException ex) {
+                    JOptionPane.showMessageDialog(this, "Problém pri načítaní súboru: "+ex.sprava, "Chyba", JOptionPane.ERROR_MESSAGE);
+                }
+                System.out.println("Otvoril som file: "+file.getName());
             } else {
                 //JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;

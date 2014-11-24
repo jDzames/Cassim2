@@ -17,7 +17,7 @@ public class CSVFileFilter extends FileFilter
        
       String name = f.getName();  
       
-      return name.endsWith("*.csv");  
+      return name.endsWith(".csv");  
    }  
 
     @Override
