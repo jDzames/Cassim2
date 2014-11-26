@@ -208,6 +208,7 @@ public class InputTableDialog extends javax.swing.JDialog {
                 }
             }    
             ValuesSingleton.INSTANCE.isLoaded = false;
+            ValuesSingleton.INSTANCE.isOK=true;
             this.dispose();
         
         } catch (NumberFormatException e) {

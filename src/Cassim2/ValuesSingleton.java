@@ -15,6 +15,8 @@ public enum ValuesSingleton {
     public File file;
     public boolean isLoaded;
     
+    public boolean isOK;
+    
     public int columns;
     public int rows;
     
@@ -30,6 +32,7 @@ public enum ValuesSingleton {
     
     public int suppRoleVariables;
     private int gomoryVariables=0;
+    protected Fraction multBy;
     
     public Fraction[][] tableDataSaved;
     public int[] basisDataIdxSaved;

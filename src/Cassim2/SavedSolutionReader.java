@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.math3.fraction.Fraction;
 
 
 public class SavedSolutionReader {
@@ -75,24 +76,48 @@ public class SavedSolutionReader {
             ValuesSingleton.INSTANCE.columns = Integer.parseInt(stringsArray[1])-1;
             
             s = bufReader.readLine();
-            stringsArray = s.split(";");
+            /*stringsArray = s.split(";");
             ValuesSingleton.INSTANCE.columnNames = stringsArray;
-            
+            */
             String[][] data = new String [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
             for (int i = 0; i < ValuesSingleton.INSTANCE.rows+1; i++) {
                 s = bufReader.readLine();
-                stringsArray = s.split(";");
-                data[i] = stringsArray;
+                /*stringsArray = s.split(";");
+                data[i] = stringsArray;*/
             }
-            ValuesSingleton.INSTANCE.data = data;
-            
+            /*ValuesSingleton.INSTANCE.data = data;
+            */
             s = bufReader.readLine();
-            stringsArray = s.split(";");
+            /*stringsArray = s.split(";");
             ValuesSingleton.INSTANCE.porovnaniasPS = stringsArray;
+            */
+            s = bufReader.readLine();
+            /*stringsArray = s.split(";");
+            ValuesSingleton.INSTANCE.nezapornost = stringsArray;
+            */
+            //fractions
+            s = bufReader.readLine();
+            stringsArray = s.split(";");
+            ValuesSingleton.INSTANCE.rows = Integer.parseInt(stringsArray[0])-1;
+            ValuesSingleton.INSTANCE.columns = Integer.parseInt(stringsArray[1])-1;
             
             s = bufReader.readLine();
             stringsArray = s.split(";");
-            ValuesSingleton.INSTANCE.nezapornost = stringsArray;
+            ValuesSingleton.INSTANCE.columnNames = stringsArray;
+            
+            Fraction[][] tData = new Fraction [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
+            for (int i = 0; i < ValuesSingleton.INSTANCE.rows+1; i++) {
+                s = bufReader.readLine();
+                stringsArray = s.split(";");
+                for (int j = 0; j < ValuesSingleton.INSTANCE.columns+1; j++) {
+                    String[] oneFraction = stringsArray[j].split(":");
+                    Fraction fr = new Fraction(Integer.parseInt(oneFraction[0]), Integer.parseInt(oneFraction[1]));
+                    tData[i][j] = fr;
+                }
+            }
+            ValuesSingleton.INSTANCE.tableData = tData;
+            
+            //history
             
         } catch (FileNotFoundException ex) {
             throw new FileWritingException("Nenájdený súbor!");
@@ -100,7 +125,9 @@ public class SavedSolutionReader {
             throw new FileWritingException("Problém s čítaním, pravdepodobne zle formátovaný súbor!");
         } catch (NumberFormatException exxx){
             throw new FileWritingException("Zle formátovaný alebo poškodený súbor!");
-        } catch(Exception exxxx){
+        } catch (NullPointerException exxxx){
+            throw new FileWritingException("Zle formátovaný alebo poškodený súbor!");
+        }catch(Exception exxxxx){
             throw new FileWritingException("Netypická chyba pri čítaní súboru");
         } finally{
             if (bufReader!=null) {
