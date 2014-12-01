@@ -51,7 +51,6 @@ public class MainFrame  extends javax.swing.JFrame {
         StartingOfferDialog startDialog = new StartingOfferDialog(this, true);
         startDialog.setVisible(true);
         int result = startDialog.getResult();
-        System.out.println(result);
         
         switch (result) {
             case 1:  this.jMenuItemOpenNewActionPerformed(null);

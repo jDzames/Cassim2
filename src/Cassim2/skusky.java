@@ -1,5 +1,8 @@
 package Cassim2;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -39,7 +42,7 @@ public class skusky {
         
         System.out.println(" "+(char) 65);*/
         
-        BlockingQueue<String[]> q = new LinkedBlockingQueue<>();
+        /*BlockingQueue<String[]> q = new LinkedBlockingQueue<>();
         SavingWriterThread vlakno = new SavingWriterThread();
         
         String[] s = {"jeden"};
@@ -50,7 +53,8 @@ public class skusky {
         ValuesSingleton.INSTANCE.putToSavingQueue(ss);
         vlakno.run();
         vlakno.append();
-        System.out.println("konec");
+        System.out.println("konec");*/
+
     }
     
     
