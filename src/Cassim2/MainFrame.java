@@ -133,7 +133,7 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         });
 
-        jMenuFile.setText("Úloha");
+        jMenuFile.setText("Úloha ");
 
         jMenuItemOpenNew.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemOpenNew.setText("Začni novú úlohu");
