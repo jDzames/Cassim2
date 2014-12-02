@@ -58,7 +58,7 @@
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemExit">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="ESCAPE"/>
+                  <KeyStroke key="Alt+F4"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="Ukon&#x10d;i&#x165; program"/>
               </Properties>
@@ -110,7 +110,7 @@
             <Property name="text" type="java.lang.String" value="Prepo&#x10d;ty"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemFindBasis">
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItemMakeBasis">
               <Properties>
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="B"/>
@@ -118,7 +118,7 @@
                 <Property name="text" type="java.lang.String" value="B&#xe1;zuj"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemFindBasisActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemMakeBasisActionPerformed"/>
               </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemPivot">
@@ -184,17 +184,17 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="jMenuHelp">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Pomoc"/>
+            <Property name="text" type="java.lang.String" value="Pomocn&#xed;k"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemHelp">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Pomoc"/>
+                <Property name="text" type="java.lang.String" value="Pomocn&#xed;k"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemAboutAuthors">
               <Properties>
-                <Property name="text" type="java.lang.String" value="O autoroch"/>
+                <Property name="text" type="java.lang.String" value="Autori"/>
               </Properties>
             </MenuItem>
           </SubComponents>

@@ -46,6 +46,7 @@ public class SavedSolutionReader {
             s = bufReader.readLine();
             stringsArray = s.split(";");
             ValuesSingleton.INSTANCE.nezapornost = stringsArray;
+            
         } catch (FileNotFoundException ex) {
             throw new FileWritingException("Nenájdený súbor!");
         } catch (IOException exx) {
@@ -76,25 +77,25 @@ public class SavedSolutionReader {
             ValuesSingleton.INSTANCE.columns = Integer.parseInt(stringsArray[1])-1;
             
             s = bufReader.readLine();
-            /*stringsArray = s.split(";");
+            stringsArray = s.split(";");
             ValuesSingleton.INSTANCE.columnNames = stringsArray;
-            */
+            
             String[][] data = new String [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
             for (int i = 0; i < ValuesSingleton.INSTANCE.rows+1; i++) {
                 s = bufReader.readLine();
-                /*stringsArray = s.split(";");
-                data[i] = stringsArray;*/
+                stringsArray = s.split(";");
+                data[i] = stringsArray;
             }
-            /*ValuesSingleton.INSTANCE.data = data;
-            */
+            ValuesSingleton.INSTANCE.data = data;
+            
             s = bufReader.readLine();
-            /*stringsArray = s.split(";");
+            stringsArray = s.split(";");
             ValuesSingleton.INSTANCE.porovnaniasPS = stringsArray;
-            */
+            
             s = bufReader.readLine();
-            /*stringsArray = s.split(";");
+            stringsArray = s.split(";");
             ValuesSingleton.INSTANCE.nezapornost = stringsArray;
-            */
+            
             //fractions
             s = bufReader.readLine();
             stringsArray = s.split(";");
@@ -118,6 +119,7 @@ public class SavedSolutionReader {
             ValuesSingleton.INSTANCE.tableData = tData;
             
             //history
+            
             
         } catch (FileNotFoundException ex) {
             throw new FileWritingException("Nenájdený súbor!");

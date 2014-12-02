@@ -13,7 +13,6 @@ public enum ValuesSingleton {
     
     private final BlockingQueue<String[]> savingQueue = new LinkedBlockingQueue<>();
     public File file;
-    public boolean isLoaded;
     
     public boolean isOK;
     
@@ -127,6 +126,10 @@ public enum ValuesSingleton {
 
     public void setPorovnaniasPS(String[] porovnaniasPS) {
         this.porovnaniasPS = porovnaniasPS;
+    }
+    
+    public void resetSavingQueue(){
+        this.savingQueue.clear();
     }
     
     public void putToSavingQueue(String[] rowToSave){

@@ -85,7 +85,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemGomory = new javax.swing.JMenuItem();
         jMenuItemPomocnaUloha = new javax.swing.JMenuItem();
         jMenuEdit = new javax.swing.JMenu();
-        jMenuItemFindBasis = new javax.swing.JMenuItem();
+        jMenuItemMakeBasis = new javax.swing.JMenuItem();
         jMenuItemPivot = new javax.swing.JMenuItem();
         jMenuItemMin = new javax.swing.JMenuItem();
         jMenuItemMax = new javax.swing.JMenuItem();
@@ -173,7 +173,7 @@ public class MainFrame  extends javax.swing.JFrame {
         });
         jMenuFile.add(jMenuItemSave);
 
-        jMenuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ESCAPE, 0));
+        jMenuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         jMenuItemExit.setText("Ukončiť program");
         jMenuItemExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -212,14 +212,14 @@ public class MainFrame  extends javax.swing.JFrame {
 
         jMenuEdit.setText("Prepočty");
 
-        jMenuItemFindBasis.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, 0));
-        jMenuItemFindBasis.setText("Bázuj");
-        jMenuItemFindBasis.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemMakeBasis.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, 0));
+        jMenuItemMakeBasis.setText("Bázuj");
+        jMenuItemMakeBasis.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemFindBasisActionPerformed(evt);
+                jMenuItemMakeBasisActionPerformed(evt);
             }
         });
-        jMenuEdit.add(jMenuItemFindBasis);
+        jMenuEdit.add(jMenuItemMakeBasis);
 
         jMenuItemPivot.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, 0));
         jMenuItemPivot.setText("Pivotuj");
@@ -271,12 +271,12 @@ public class MainFrame  extends javax.swing.JFrame {
         });
         jMenuBar.add(jMenuHistory);
 
-        jMenuHelp.setText("Pomoc");
+        jMenuHelp.setText("Pomocník");
 
-        jMenuItemHelp.setText("Pomoc");
+        jMenuItemHelp.setText("Pomocník");
         jMenuHelp.add(jMenuItemHelp);
 
-        jMenuItemAboutAuthors.setText("O autoroch");
+        jMenuItemAboutAuthors.setText("Autori");
         jMenuHelp.add(jMenuItemAboutAuthors);
 
         jMenuBar.add(jMenuHelp);
@@ -350,18 +350,6 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         solutionCalculations.findBasis();
         
-        this.isLoaded = ValuesSingleton.INSTANCE.isLoaded;
-        if (this.isLoaded) {
-            //ak bolo nacitane, budem len appendovat
-            ValuesSingleton.INSTANCE.isLoaded=false;
-            //to pre dalsie pouzitie
-        
-        } else {
-            //nova uloha, zapisem
-            ValuesSingleton.INSTANCE.file = new File("tmp_posledneRiesenie.csv");
-            this.saveTables();
-        }
-        
         tblSolution.setModel(imageTableModel);
         tblSolution.setCellSelectionEnabled(true);
         jScrollPane1.setViewportView(tblSolution);
@@ -414,38 +402,57 @@ public class MainFrame  extends javax.swing.JFrame {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
             ".csv", "csv");
         chooser.setFileFilter(filter);
+        chooser.setDialogTitle("Save");
+        chooser.setApproveButtonText("Select");
         int returnVal = chooser.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
-            String s = file.getName();
-            if (!s.endsWith("*.csv")) {
-                file = new File(file.getAbsolutePath()+".csv");
+            if (file.getAbsolutePath().equals(ValuesSingleton.INSTANCE.file.getAbsolutePath())) {
+                JOptionPane.showMessageDialog(this, "Tu už je tento súbor uložený.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
+                return;
             }
+            String s = file.getName();
+            int position = s.indexOf('.');
+            if (position < s.length()&&position>=0) {
+                s = s.substring(0, position);
+            }
+            //s.sub
             String filePath = file.getAbsolutePath().substring(0,file.getAbsolutePath().lastIndexOf(File.separator));
+            file = new File(filePath+File.separator+s+".csv");
             System.out.println(file.getAbsolutePath());
             Path newdir = Paths.get(filePath);
             Path source = ValuesSingleton.INSTANCE.file.toPath();
             try {
                 Files.move(source, newdir.resolve(file.getName()), REPLACE_EXISTING);
+                ValuesSingleton.INSTANCE.file = new File(filePath+File.separator+s+".csv");
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "Chyba pri ukladaní vstupu. Skuste súbor nazvať inak alebo ho vytvoriť inde.", "Chyba", JOptionPane.ERROR_MESSAGE);
+                ValuesSingleton.INSTANCE.resetSavingQueue();
+                JOptionPane.showMessageDialog(this, "Chyba pri ukladaní vstupu. Skuste súbor nazvať inak (lebo takýto súbor už pravdepodobne existuje) alebo súbor vytvorte inde (kvôli chýbajúcim právam).", "Chyba", JOptionPane.ERROR_MESSAGE);
             } 
         }
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
-    private void jMenuItemFindBasisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemFindBasisActionPerformed
+    private void jMenuItemMakeBasisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMakeBasisActionPerformed
         solutionCalculations.makeZeroOverBasis();
         //tblSolution.repaint();
         //tblBaza.repaint();
         imageTableModel.fireTableDataChanged();
-    }//GEN-LAST:event_jMenuItemFindBasisActionPerformed
+        SavingWriterThread saver = new SavingWriterThread();
+        
+            String[] row = {"0"};
+            ValuesSingleton.INSTANCE.putToSavingQueue(row);
+            String[] end = {"POISON_PILL"};
+            ValuesSingleton.INSTANCE.putToSavingQueue(end);
+            saver.append();
+    }//GEN-LAST:event_jMenuItemMakeBasisActionPerformed
 
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
         this.dispose();
     }//GEN-LAST:event_jMenuItemExitActionPerformed
 
     private void jMenuItemGomoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGomoryActionPerformed
-        if (tblSolution.getSelectedRow()<=0) {
+        int selectedRow = tblSolution.getSelectedRow();
+        if (selectedRow<=0) {
             JOptionPane.showMessageDialog(this, "Vyberte vhodný riadok!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return; 
         }
@@ -479,7 +486,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     tblBaza.setModel(basisTableModel);
                     SavingWriterThread saver = new SavingWriterThread();
                     
-                        String[] row = {"5",""+tblSolution.getSelectedRow()};
+                        String[] row = {"5",""+selectedRow};
                         ValuesSingleton.INSTANCE.putToSavingQueue(row);
                         String[] end = {"POISON_PILL"};
                         ValuesSingleton.INSTANCE.putToSavingQueue(end);
@@ -548,8 +555,9 @@ public class MainFrame  extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;            
         }
-        
-        int checkPivot = solutionCalculations.checkPivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+        int selectedRow = tblSolution.getSelectedRow();
+        int selectedColumn = tblSolution.getSelectedColumn();
+        int checkPivot = solutionCalculations.checkPivot(selectedRow, selectedColumn);
         switch(checkPivot){
             case -1: JOptionPane.showMessageDialog(this, "Vyberte riadok/stĺpec kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -568,12 +576,12 @@ public class MainFrame  extends javax.swing.JFrame {
                     return;
                 } 
             default: //pivotuj
-                solutionCalculations.pivot(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());                   
+                solutionCalculations.pivot(selectedRow, selectedColumn);                   
                 imageTableModel.fireTableDataChanged();
                 basisTableModel.fireTableDataChanged();
                 SavingWriterThread saver = new SavingWriterThread();
                 
-                    String[] row = {"1",""+tblSolution.getSelectedRow(),""+tblSolution.getSelectedColumn()};
+                    String[] row = {"1",""+selectedRow,""+selectedColumn};
                     ValuesSingleton.INSTANCE.putToSavingQueue(row);
                     String[] end = {"POISON_PILL"};
                     ValuesSingleton.INSTANCE.putToSavingQueue(end);
@@ -663,8 +671,8 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_btnKoniecPomUlohyActionPerformed
 
     private void jMenuItemPrenasobRiadokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPrenasobRiadokActionPerformed
-
-        if (tblSolution.getSelectedRow()<=0) {
+        int selectedRow = tblSolution.getSelectedRow();
+        if (selectedRow<=0) {
             JOptionPane.showMessageDialog(this, "Najprv vyberte vhodný riadok!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -682,20 +690,20 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.isOK = false;
         Fraction multBy = ValuesSingleton.INSTANCE.multBy;
         
-        int canBeMult = solutionCalculations.canBeMultiplied(tblSolution.getSelectedRow());
+        int canBeMult = solutionCalculations.canBeMultiplied(selectedRow);
         switch(canBeMult){
             case -1: JOptionPane.showMessageDialog(this, "Tento riadok nie je možné násobiť! (Môže sa pokaziť báza.)", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return; //je tam baza
             case -2: JOptionPane.showMessageDialog(this, "Táto operácia by viedla k neprípustnej úlohe!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return; //0. riadok zaporny a aj v 0. stlpci to vyrabam
             default: //vynasobim, prezriem a zrusim nepotrebne componenty
-                solutionCalculations.multiplRow(tblSolution.getSelectedRow(), multBy);
+                solutionCalculations.multiplRow(selectedRow, multBy);
                 imageTableModel.fireTableDataChanged();
                 solutionCalculations.findBasis();//ak by mohlo ist do bazy
 
                 SavingWriterThread saver = new SavingWriterThread();
                 
-                    String[] row = {"6",""+tblSolution.getSelectedRow(),""+multBy.getNumerator(),""+multBy.getDenominator()};
+                    String[] row = {"6",""+selectedRow,""+multBy.getNumerator(),""+multBy.getDenominator()};
                     ValuesSingleton.INSTANCE.putToSavingQueue(row);
                     String[] end = {"POISON_PILL"};
                     ValuesSingleton.INSTANCE.putToSavingQueue(end);
@@ -763,12 +771,16 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         ValuesSingleton.INSTANCE.basisDataIdx = pole;
         
+        ValuesSingleton.INSTANCE.file =  new File("tmp_posledneRiesenie.csv");
+        this.saveTables();
+        
         basisTableModel = new BasisTableModel();
         imageTableModel = new ImageTableModel();
         
         if (!tblSolution.isVisible()) {
             initSolution();
         } else {
+            
             tblBaza.setModel(basisTableModel);
             tblSolution.setModel(imageTableModel);
             solutionCalculations.findBasis();
@@ -821,10 +833,14 @@ public class MainFrame  extends javax.swing.JFrame {
         basisTableModel = new BasisTableModel();
         imageTableModel = new ImageTableModel();
         
+        ValuesSingleton.INSTANCE.file =  new File("tmp_posledneRiesenie.csv");
+        this.saveTables();
         
         if (!tblSolution.isVisible()) {
             initSolution();
+            
         } else {
+            
             tblBaza.setModel(basisTableModel);
             tblSolution.setModel(imageTableModel);
             solutionCalculations.findBasis();
@@ -854,7 +870,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 reader.readForSolution(file);
                 ValuesSingleton.INSTANCE.onlyOnce = true;
                 ValuesSingleton.INSTANCE.file = file;
-                ValuesSingleton.INSTANCE.isLoaded = true;
+                
             } catch (FileWritingException ex) {
                 JOptionPane.showMessageDialog(this, "Problém pri načítaní súboru: "+ex.sprava, "Chyba", JOptionPane.ERROR_MESSAGE);
             }
@@ -877,9 +893,14 @@ public class MainFrame  extends javax.swing.JFrame {
         basisTableModel = new BasisTableModel();
         imageTableModel = new ImageTableModel();
         
+        ValuesSingleton.INSTANCE.file =  new File("tmp_posledneRiesenie.csv");
+        this.saveTables();
+        
         if (!tblSolution.isVisible()) {
             initSolution();
+            
         } else {
+            
             tblBaza.setModel(basisTableModel);
             tblSolution.setModel(imageTableModel);
             solutionCalculations.findBasis();
@@ -931,9 +952,9 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuHistory;
     private javax.swing.JMenuItem jMenuItemAboutAuthors;
     private javax.swing.JMenuItem jMenuItemExit;
-    private javax.swing.JMenuItem jMenuItemFindBasis;
     private javax.swing.JMenuItem jMenuItemGomory;
     private javax.swing.JMenuItem jMenuItemHelp;
+    private javax.swing.JMenuItem jMenuItemMakeBasis;
     private javax.swing.JMenuItem jMenuItemMax;
     private javax.swing.JMenuItem jMenuItemMin;
     private javax.swing.JMenuItem jMenuItemOpenNew;

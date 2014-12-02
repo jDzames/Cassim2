@@ -207,7 +207,7 @@ public class InputTableDialog extends javax.swing.JDialog {
                     ValuesSingleton.INSTANCE.tableData[i][colArray] = dataParser.parseString(((String) inputTableModel.getValueAt(i, colTable)).trim());//dataParser.parseString((String)ValuesSingleton.INSTANCE.data[x][y]);            
                 }
             }    
-            ValuesSingleton.INSTANCE.isLoaded = false;
+            
             ValuesSingleton.INSTANCE.isOK=true;
             this.dispose();
         
