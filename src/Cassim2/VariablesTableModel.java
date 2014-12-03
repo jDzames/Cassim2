@@ -44,15 +44,24 @@ public class VariablesTableModel extends AbstractTableModel {
     }
     
     public void setValueAt(Object value, int row, int col) {
+        String in = (String) value;
         if (((String)value).length()<1 || ((String)value).length()>7) {
             fireTableCellUpdated(row, col);
             return;
         }
+        //48-57,65-90,97-122
+        for (int i = 0; i < in.length(); i++) {
+            if (in.charAt(i)<48 || (in.charAt(i)>57 && in.charAt(i)<65) || (in.charAt(i)>90 && in.charAt(i)<97) || in.charAt(i)>122) {
+                return;
+            }
+        }
+        
         if (col==columnNames.length) {
             columnNames[0] = (String)value;
             fireTableCellUpdated(row, col);
             return;
         }
+        
         columnNames[col+1]=(String)value;
         fireTableCellUpdated(row, col);           
     }
