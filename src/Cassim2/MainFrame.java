@@ -10,8 +10,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.JTableHeader;
 import org.apache.commons.math3.fraction.Fraction;
 
 
@@ -31,6 +33,7 @@ public class MainFrame  extends javax.swing.JFrame {
         this.setTitle("Cassim 2");
         
         initComponents();
+        
         //jScrollPane1.setVisible(false);
         //jScrollPane2.setVisible(false);
         tblSolution.setVisible(false);
@@ -122,7 +125,7 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         ));
         tblBaza.setFocusable(false);
-        tblBaza.setRowHeight(38);
+        tblBaza.setRowHeight(45);
         tblBaza.setRowSelectionAllowed(false);
         jScrollPane2.setViewportView(tblBaza);
 
@@ -294,7 +297,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         .addComponent(btnKoniecPomUlohy)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabelBasis))
                         .addGap(35, 35, 35)
@@ -306,15 +309,15 @@ public class MainFrame  extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(btnKoniecPomUlohy)
-                .addGap(39, 39, 39)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(9, 9, 9)
+                        .addGap(3, 3, 3)
                         .addComponent(jLabelBasis)
-                        .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)))
-                .addGap(85, 85, 85))
+                        .addGap(28, 28, 28)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(47, 47, 47))
         );
 
         pack();
@@ -326,6 +329,14 @@ public class MainFrame  extends javax.swing.JFrame {
         tblBaza = new JTable();
         tblSolution = new JTable();
         
+        tblBaza.setRowHeight(44);
+        tblSolution.setRowHeight(44);
+        tblSolution.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+
+        JTableHeader header = tblSolution.getTableHeader();
+        header.setDefaultRenderer(new HeaderRenderer(tblSolution));
+
         tblBaza.setVisible(true);
         tblSolution.setVisible(true);
         jLabelBasis.setVisible(true);
@@ -344,7 +355,8 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.basisDataIdx = pole;
         this.pocetPomPremennych=ValuesSingleton.INSTANCE.suppRoleVariables;
         
-        tblSolution.setDefaultRenderer(JLabel.class, new ImageRenderer()); 
+        tblSolution.setDefaultRenderer(JLabel.class, new SolutionFractionCellRenderer()); 
+        
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         }
@@ -357,7 +369,6 @@ public class MainFrame  extends javax.swing.JFrame {
 
         tblBaza.setModel(basisTableModel);
         tblBaza.setFocusable(false);
-        tblBaza.setRowHeight(38);
         tblBaza.setRowSelectionAllowed(false);
         jScrollPane2.setViewportView(tblBaza);
     }

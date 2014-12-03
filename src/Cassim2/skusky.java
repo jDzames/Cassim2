@@ -31,11 +31,11 @@ public class skusky {
         Fraction fract = new Fraction(Double.parseDouble("0.2"));
         System.out.println(fract.toString());
         
-        Fraction f = new Fraction(0);
+        Fraction f = new Fraction(-5,3);
         System.out.println(f.toString());
         
-        Fraction a = new Fraction(1,-3);
-        System.out.println(a.getDenominator());
+        f.multiply(Fraction.MINUS_ONE);
+        System.out.println(f.toString());
         
         
         System.out.println(""+'a');

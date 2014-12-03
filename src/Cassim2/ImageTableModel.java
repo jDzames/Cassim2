@@ -21,7 +21,8 @@ public class ImageTableModel extends AbstractTableModel {
     return ValuesSingleton.INSTANCE.rows+1;
   }
   
-  public String getColumnName(int col) { 
+  public String getColumnName(int col) {
+      
       return ValuesSingleton.INSTANCE.columnNames[col];
     }
 
