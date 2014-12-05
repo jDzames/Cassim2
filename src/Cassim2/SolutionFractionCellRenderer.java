@@ -128,7 +128,7 @@ public class SolutionFractionCellRenderer extends JPanel implements TableCellRen
 			int column) {
             
             if (hasFocus) {
-                    setBackground(new Color(70,70,255));
+                setBackground(new Color(170,170,255));
             } else {
                 setBackground(Color.white);
                 if (row==0 || column==0) {

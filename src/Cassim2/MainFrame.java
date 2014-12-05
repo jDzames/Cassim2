@@ -1,5 +1,6 @@
 package Cassim2;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,6 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -36,17 +38,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
         //jScrollPane1.setVisible(false);
         //jScrollPane2.setVisible(false);
-        tblSolution.setVisible(false);
-        tblBaza.setVisible(false);
-        jLabelBasis.setVisible(false);
-        
-        jMenuHistory.setEnabled(false);
-        jMenuEdit.setEnabled(false);
-        jMenuPomocneOperacie.setEnabled(false);
-        jMenuTable.setEnabled(false);
-        jMenuItemSave.setEnabled(false);
-        
-        btnKoniecPomUlohy.setVisible((this.pocetPomPremennych!=0));
+        closeSolution();
         
     }
     
@@ -72,7 +64,6 @@ public class MainFrame  extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         tblSolution = new javax.swing.JTable();
-        jLabelBasis = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBaza = new javax.swing.JTable();
         btnKoniecPomUlohy = new javax.swing.JButton();
@@ -113,9 +104,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblSolution);
         tblSolution.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
-        jLabelBasis.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jLabelBasis.setText("v báze: ");
-
+        tblBaza.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         tblBaza.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -297,9 +286,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         .addComponent(btnKoniecPomUlohy)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelBasis))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(35, 35, 35)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
                         .addGap(41, 41, 41))))
@@ -312,9 +299,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(3, 3, 3)
-                        .addComponent(jLabelBasis)
-                        .addGap(28, 28, 28)
+                        .addGap(48, 48, 48)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addGap(47, 47, 47))
@@ -323,6 +308,19 @@ public class MainFrame  extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    private void closeSolution(){
+        tblSolution.setVisible(false);
+        tblBaza.setVisible(false);
+        
+        jMenuHistory.setEnabled(false);
+        jMenuEdit.setEnabled(false);
+        jMenuPomocneOperacie.setEnabled(false);
+        jMenuTable.setEnabled(false);
+        jMenuItemSave.setEnabled(false);
+        
+        btnKoniecPomUlohy.setVisible(false);
+    }
     
     private void initSolution(){
         //pustim ked prvy raz sa zjavia tabulky
@@ -336,11 +334,16 @@ public class MainFrame  extends javax.swing.JFrame {
 
         JTableHeader header = tblSolution.getTableHeader();
         header.setDefaultRenderer(new HeaderRenderer(tblSolution));
+        JTableHeader header2 = tblBaza.getTableHeader();
+        header2.setDefaultRenderer(new HeaderRenderer(tblBaza));
 
         tblBaza.setVisible(true);
         tblSolution.setVisible(true);
-        jLabelBasis.setVisible(true);
         jMenuItemSave.setEnabled(true);
+        
+        tblSolution.setDefaultRenderer(JLabel.class, new SolutionFractionCellRenderer()); 
+        tblBaza.setDefaultRenderer(JLabel.class, new BasisRenderer(tblBaza));
+        tblBaza.setFont(new Font("Times New Roman", Font.BOLD, 16));
         
         jMenuHistory.setEnabled(true);
         jMenuEdit.setEnabled(true);
@@ -354,8 +357,6 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         ValuesSingleton.INSTANCE.basisDataIdx = pole;
         this.pocetPomPremennych=ValuesSingleton.INSTANCE.suppRoleVariables;
-        
-        tblSolution.setDefaultRenderer(JLabel.class, new SolutionFractionCellRenderer()); 
         
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -735,6 +736,8 @@ public class MainFrame  extends javax.swing.JFrame {
         inputDimensions.setVisible(true);
 
         if (!ValuesSingleton.INSTANCE.isOK) {
+            ValuesSingleton.INSTANCE.rows=ValuesSingleton.INSTANCE.tableData.length-1;
+            ValuesSingleton.INSTANCE.columns=ValuesSingleton.INSTANCE.tableData[0].length-1;
             return;
         }
 
@@ -769,6 +772,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
         if (!ValuesSingleton.INSTANCE.isOK) {
             JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
+            closeSolution();
             return;
         }
         ValuesSingleton.INSTANCE.isOK=false;
@@ -792,12 +796,13 @@ public class MainFrame  extends javax.swing.JFrame {
             initSolution();
         } else {
             
-            tblBaza.setModel(basisTableModel);
             tblSolution.setModel(imageTableModel);
+            tblBaza.setModel(basisTableModel);
             solutionCalculations.findBasis();
             basisTableModel.fireTableDataChanged();
         }
         
+        btnKoniecPomUlohy.setVisible(false);
     }//GEN-LAST:event_jMenuItemOpenNewActionPerformed
 
     private void jMenuItemOpenSavedInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenSavedInputActionPerformed
@@ -821,10 +826,13 @@ public class MainFrame  extends javax.swing.JFrame {
                 reader.readForEdit(file);
             } catch (FileWritingException ex) {
                 JOptionPane.showMessageDialog(this, "Problém pri načítaní súboru: "+ex.sprava, "Chyba", JOptionPane.ERROR_MESSAGE);
+                closeSolution();
+                return;
             }
             System.out.println("Otvoril som file: "+file.getName());
         } else {
             //JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
             return;
         }
 
@@ -833,9 +841,16 @@ public class MainFrame  extends javax.swing.JFrame {
         
         if (!ValuesSingleton.INSTANCE.isOK) {
             JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
+            closeSolution();
             return;
         }
         ValuesSingleton.INSTANCE.isOK=false;
+        
+        int[] pole = new int[ValuesSingleton.INSTANCE.rows];
+        for (int i = 0; i < pole.length; i++) {
+            pole[i]=-1;          
+        }
+        ValuesSingleton.INSTANCE.basisDataIdx = pole;
         
         ValuesSingleton.INSTANCE.suppRoleVariables = 0;
         this.pocetPomPremennych = 0;
@@ -852,12 +867,11 @@ public class MainFrame  extends javax.swing.JFrame {
             
         } else {
             
-            tblBaza.setModel(basisTableModel);
             tblSolution.setModel(imageTableModel);
+            tblBaza.setModel(basisTableModel);
             solutionCalculations.findBasis();
             basisTableModel.fireTableDataChanged();
         }
-        
     }//GEN-LAST:event_jMenuItemOpenSavedInputActionPerformed
 
     private void jMenuItemOpenSavedSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenSavedSolutionActionPerformed
@@ -884,10 +898,13 @@ public class MainFrame  extends javax.swing.JFrame {
                 
             } catch (FileWritingException ex) {
                 JOptionPane.showMessageDialog(this, "Problém pri načítaní súboru: "+ex.sprava, "Chyba", JOptionPane.ERROR_MESSAGE);
+                closeSolution();
+                return;
             }
             System.out.println("Otvoril som file: "+file.getName());
         } else {
             //JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
             return;
         }
         
@@ -918,7 +935,7 @@ public class MainFrame  extends javax.swing.JFrame {
             basisTableModel.fireTableDataChanged();
         }
         
-        
+        btnKoniecPomUlohy.setVisible((this.pocetPomPremennych>0));
     }//GEN-LAST:event_jMenuItemOpenSavedSolutionActionPerformed
 
     
@@ -955,7 +972,6 @@ public class MainFrame  extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnKoniecPomUlohy;
-    private javax.swing.JLabel jLabelBasis;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;

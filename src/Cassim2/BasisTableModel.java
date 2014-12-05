@@ -23,6 +23,7 @@ public class BasisTableModel extends AbstractTableModel{
         if (idx<0) {
             return "";
         }
+        System.out.println("idx "+idx+", collength "+ValuesSingleton.INSTANCE.columnNames.length+", basislength "+ValuesSingleton.INSTANCE.basisDataIdx.length);
         return ValuesSingleton.INSTANCE.columnNames[idx];
     }
     
@@ -31,7 +32,7 @@ public class BasisTableModel extends AbstractTableModel{
     }
     
     public String getColumnName(int col) {
-        return "V báze:";
+        return "Báza:";
     }
 
     public Class getColumnClass(int c) {

@@ -49,7 +49,6 @@ public class SolutionCalcService {
                 return false;
             }
         }
-        
         return true;
     }
     
@@ -234,7 +233,11 @@ public class SolutionCalcService {
         ValuesSingleton.INSTANCE.basisDataIdx[row-1]=column;
     }
 
-    boolean rightEndOfSuppRole(int pocetPomPremennych) {
+    public boolean rightEndOfSuppRole(int pocetPomPremennych) {
+        if (!this.isBased()) {
+            return false;
+        }
+        
         if (ValuesSingleton.INSTANCE.tableData[0][0].getNumerator()!=0) {
             return false;
         }
