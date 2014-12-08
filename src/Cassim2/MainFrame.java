@@ -569,11 +569,11 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         int selectedRow = tblSolution.getSelectedRow();
         int selectedColumn = tblSolution.getSelectedColumn();
-        int checkPivot = solutionCalculations.checkPivot(selectedRow, selectedColumn);
+        int checkPivot = solutionCalculations.checkPivot(selectedRow, selectedColumn, (this.pocetPomPremennych==0));
         switch(checkPivot){
             case -1: JOptionPane.showMessageDialog(this, "Vyberte riadok/stĺpec kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
-            case -2: JOptionPane.showMessageDialog(this, "Nie je možné pivotovať na 0.", "Chyba", JOptionPane.ERROR_MESSAGE);
+            case -2: JOptionPane.showMessageDialog(this, "Nie je možné pivotovať na 0 (čísle menšom ako 0).", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                 return;
@@ -625,6 +625,11 @@ public class MainFrame  extends javax.swing.JFrame {
         /*for (int i = 0; i < pocetPomPremennych; i++) {
             tblSolution.addColumn(new TableColumn());
         }   */
+        
+        if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        }
+        
         imageTableModel = new ImageTableModel();
         tblSolution.setModel(imageTableModel);
         basisTableModel.fireTableDataChanged();
@@ -789,6 +794,10 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.file =  new File("tmp_posledneRiesenie.csv");
         this.saveTables();
         
+        if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        }
+        
         basisTableModel = new BasisTableModel();
         imageTableModel = new ImageTableModel();
         
@@ -866,6 +875,9 @@ public class MainFrame  extends javax.swing.JFrame {
             initSolution();
             
         } else {
+            if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+                tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            }
             
             tblSolution.setModel(imageTableModel);
             tblBaza.setModel(basisTableModel);
@@ -928,6 +940,9 @@ public class MainFrame  extends javax.swing.JFrame {
             initSolution();
             
         } else {
+            if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+                tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            }
             
             tblBaza.setModel(basisTableModel);
             tblSolution.setModel(imageTableModel);
