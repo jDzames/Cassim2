@@ -11,7 +11,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -524,7 +523,11 @@ public class MainFrame  extends javax.swing.JFrame {
                     if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator()<0) {
                         JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                         return;
-                    }
+                    } else
+                        if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator()==0) {
+                            JOptionPane.showMessageDialog(this, "Tento stĺpec nie je vhodný na hľadanie minima.", "Nevhodný stĺpec", JOptionPane.PLAIN_MESSAGE);
+                            return;
+                        }
                     if (focusRow>0 && focusRow<= ValuesSingleton.INSTANCE.rows) {
                         tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), false, false);
                      } else {
@@ -552,7 +555,11 @@ public class MainFrame  extends javax.swing.JFrame {
                     if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator()<0) {
                         JOptionPane.showMessageDialog(this, "Duálna úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                         return;
-                    }
+                    } else
+                        if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator()==0) {
+                            JOptionPane.showMessageDialog(this, "Tento riadok nie je vhodný na hľadanie maxima.", "Nevhodný riadok", JOptionPane.PLAIN_MESSAGE);
+                            return;
+                        }
                     if (focusColumn>0 && focusColumn<= ValuesSingleton.INSTANCE.columns) {
                         tblSolution.changeSelection(tblSolution.getSelectedRow(), focusColumn, false, false);
                      } else {
@@ -569,7 +576,7 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         int selectedRow = tblSolution.getSelectedRow();
         int selectedColumn = tblSolution.getSelectedColumn();
-        int checkPivot = solutionCalculations.checkPivot(selectedRow, selectedColumn, (this.pocetPomPremennych==0));
+        int checkPivot = solutionCalculations.checkPivot(selectedRow, selectedColumn);
         switch(checkPivot){
             case -1: JOptionPane.showMessageDialog(this, "Vyberte riadok/stĺpec kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -577,12 +584,12 @@ public class MainFrame  extends javax.swing.JFrame {
                 return;
             case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                 return;
-            case -4: int potvrdenie = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde (v 0. riadku/stĺpci nie je záporné číslo). Naozaj chcete pokračovať?", "Varonanie",
+            case -4: int potvrdenie = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde (v 0. riadku/stĺpci nie je záporné číslo). Naozaj chcete pokračovať?", "Varovanie",
                     0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                 if (potvrdenie != JOptionPane.YES_OPTION) {
                     return;
                 } 
-            case -5: int potvrdenie2 = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde (v tejto bunke nie je minimum/maximum). Naozaj chcete pokračovať?", "Varonanie",
+            case -5: int potvrdenie2 = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde (v tejto bunke nie je minimum/maximum). Naozaj chcete pokračovať?", "Varovanie",
                     0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                 if (potvrdenie2 != JOptionPane.YES_OPTION) {
                     return;
@@ -610,7 +617,7 @@ public class MainFrame  extends javax.swing.JFrame {
             return;
         }       
         
-        pocetPomPremennych = 0;
+        this.pocetPomPremennych = 0;
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
             if (ValuesSingleton.INSTANCE.basisDataIdx[i]<0) {
                 pocetPomPremennych++;

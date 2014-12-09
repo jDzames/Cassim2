@@ -188,14 +188,16 @@ public class SolutionCalcService {
         return (valueHere.compareTo(valueMax)<0);
     }
     
-    public int checkPivot(int selectedRow, int selectedColumn, boolean isSuppSol){
+    public int checkPivot(int selectedRow, int selectedColumn){
+        boolean isSuppSol = ValuesSingleton.INSTANCE.suppRoleVariables!=0;
+
         //errory
         if (selectedRow<=0 || selectedColumn<=0) 
             return -1;//tu nepivotujem      
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator()==0) 
             return -2;//nepivotujem na 0
-        if ((ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator()<0) && isSuppSol) 
-            return -2;//nepivotujem na 0
+        if (isSuppSol && (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator()<0)) 
+            return -2;//nepivotujem dualne v pomocnej
         
         if (check0Column()<0 && check0Row()<0) 
             return -3;//nezodpovedá SM
