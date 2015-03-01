@@ -127,7 +127,12 @@ public class SolutionFractionCellRenderer extends JPanel implements TableCellRen
 			Object cellValue, boolean isSelected, boolean hasFocus, int row,
 			int column) {
             
-            if (hasFocus) {
+            boolean focusable = ValuesSingleton.INSTANCE.suppRoleRunning || column<ValuesSingleton.INSTANCE.columnNames.length-ValuesSingleton.INSTANCE.suppRoleVariables;
+            if (!focusable) {
+                this.setFocusable(false);
+            }
+            
+            if (hasFocus && focusable) {
                 setBackground(new Color(170,170,255));
             } else {
                 setBackground(Color.white);

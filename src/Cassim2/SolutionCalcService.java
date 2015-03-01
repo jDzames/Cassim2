@@ -189,10 +189,11 @@ public class SolutionCalcService {
     }
     
     public int checkPivot(int selectedRow, int selectedColumn){
-        boolean isSuppSol = ValuesSingleton.INSTANCE.suppRoleVariables!=0;
+        boolean isSuppSol = ValuesSingleton.INSTANCE.suppRoleRunning;
 
         //errory
-        if (selectedRow<=0 || selectedColumn<=0) 
+        if (selectedRow<=0 || selectedColumn<=0 || (!ValuesSingleton.INSTANCE.suppRoleRunning && 
+                selectedColumn>=ValuesSingleton.INSTANCE.columnNames.length-ValuesSingleton.INSTANCE.suppRoleVariables)) 
             return -1;//tu nepivotujem      
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator()==0) 
             return -2;//nepivotujem na 0

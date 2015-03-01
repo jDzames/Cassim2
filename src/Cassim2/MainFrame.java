@@ -25,7 +25,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private final SavedSolutionReader reader = new SavedSolutionReader();
     private final SolutionCalcService solutionCalculations = new SolutionCalcService();
     private int pocetPomPremennych;
-    private boolean isLoaded;
+    
     
 
     public MainFrame() {
@@ -76,7 +76,8 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuTable = new javax.swing.JMenu();
         jMenuItemRevided = new javax.swing.JMenuItem();
         jMenuItemGomory = new javax.swing.JMenuItem();
-        jMenuItemPomocnaUloha = new javax.swing.JMenuItem();
+        jMenuItemSuppRole = new javax.swing.JMenuItem();
+        jMenuItemBasisSolution = new javax.swing.JMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemMakeBasis = new javax.swing.JMenuItem();
         jMenuItemPivot = new javax.swing.JMenuItem();
@@ -84,6 +85,8 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemMax = new javax.swing.JMenuItem();
         jMenuPomocneOperacie = new javax.swing.JMenu();
         jMenuItemPrenasobRiadok = new javax.swing.JMenuItem();
+        jMenuItemShowSuppVariables = new javax.swing.JMenuItem();
+        jMenuItemRemoveZeroLine = new javax.swing.JMenuItem();
         jMenuHistory = new javax.swing.JMenu();
         jMenuHelp = new javax.swing.JMenu();
         jMenuItemHelp = new javax.swing.JMenuItem();
@@ -190,14 +193,23 @@ public class MainFrame  extends javax.swing.JFrame {
         });
         jMenuTable.add(jMenuItemGomory);
 
-        jMenuItemPomocnaUloha.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemPomocnaUloha.setText("Riešiť pomocnú úlohu");
-        jMenuItemPomocnaUloha.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItemSuppRole.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemSuppRole.setText("Riešiť pomocnú úlohu");
+        jMenuItemSuppRole.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemPomocnaUlohaActionPerformed(evt);
+                jMenuItemSuppRoleActionPerformed(evt);
             }
         });
-        jMenuTable.add(jMenuItemPomocnaUloha);
+        jMenuTable.add(jMenuItemSuppRole);
+
+        jMenuItemBasisSolution.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemBasisSolution.setText("Bázické riešenie");
+        jMenuItemBasisSolution.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemBasisSolutionActionPerformed(evt);
+            }
+        });
+        jMenuTable.add(jMenuItemBasisSolution);
 
         jMenuBar.add(jMenuTable);
 
@@ -251,6 +263,19 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         });
         jMenuPomocneOperacie.add(jMenuItemPrenasobRiadok);
+
+        jMenuItemShowSuppVariables.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 0));
+        jMenuItemShowSuppVariables.setText("Zobraz pomocné stĺpce");
+        jMenuItemShowSuppVariables.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemShowSuppVariablesActionPerformed(evt);
+            }
+        });
+        jMenuPomocneOperacie.add(jMenuItemShowSuppVariables);
+
+        jMenuItemRemoveZeroLine.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        jMenuItemRemoveZeroLine.setText("Odstráň nulový riadok");
+        jMenuPomocneOperacie.add(jMenuItemRemoveZeroLine);
 
         jMenuBar.add(jMenuPomocneOperacie);
 
@@ -317,6 +342,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuPomocneOperacie.setEnabled(false);
         jMenuTable.setEnabled(false);
         jMenuItemSave.setEnabled(false);
+        jMenuItemBasisSolution.setEnabled(false);
         
         btnKoniecPomUlohy.setVisible(false);
     }
@@ -349,6 +375,10 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuPomocneOperacie.setEnabled(true);
         jMenuTable.setEnabled(true);
         jMenuItemSave.setEnabled(true);
+        jMenuItemBasisSolution.setEnabled(true);
+        jMenuItemSuppRole.setEnabled(true);
+        
+        ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
         
         int[] pole = new int[ValuesSingleton.INSTANCE.rows];
         for (int i = 0; i < pole.length; i++) {
@@ -611,7 +641,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jMenuItemPivotActionPerformed
 
-    private void jMenuItemPomocnaUlohaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPomocnaUlohaActionPerformed
+    private void jMenuItemSuppRoleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSuppRoleActionPerformed
         if (!solutionCalculations.have0overBasis()) {
             JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná", "Pomocná úloha", JOptionPane.PLAIN_MESSAGE);
             return;
@@ -628,7 +658,8 @@ public class MainFrame  extends javax.swing.JFrame {
             return;
         }
       
-        ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych);  
+        ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych); 
+        ValuesSingleton.INSTANCE.suppRoleRunning = true;
         /*for (int i = 0; i < pocetPomPremennych; i++) {
             tblSolution.addColumn(new TableColumn());
         }   */
@@ -637,6 +668,7 @@ public class MainFrame  extends javax.swing.JFrame {
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         }
         
+        jMenuItemSuppRole.setEnabled(false);
         imageTableModel = new ImageTableModel();
         tblSolution.setModel(imageTableModel);
         basisTableModel.fireTableDataChanged();
@@ -649,7 +681,7 @@ public class MainFrame  extends javax.swing.JFrame {
             ValuesSingleton.INSTANCE.putToSavingQueue(end);
             saver.append();
         
-    }//GEN-LAST:event_jMenuItemPomocnaUlohaActionPerformed
+    }//GEN-LAST:event_jMenuItemSuppRoleActionPerformed
 
     private void btnKoniecPomUlohyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKoniecPomUlohyActionPerformed
         //este skoncenie - 1.spravne podmienky a 2. ked nespravne ta savedTableData nahodit
@@ -691,7 +723,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 saver.append();
             
         }
-        
+        ValuesSingleton.INSTANCE.suppRoleRunning = false;
     }//GEN-LAST:event_btnKoniecPomUlohyActionPerformed
 
     private void jMenuItemPrenasobRiadokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPrenasobRiadokActionPerformed
@@ -724,6 +756,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 solutionCalculations.multiplRow(selectedRow, multBy);
                 imageTableModel.fireTableDataChanged();
                 solutionCalculations.findBasis();//ak by mohlo ist do bazy
+                basisTableModel.fireTableDataChanged();
 
                 SavingWriterThread saver = new SavingWriterThread();
                 
@@ -960,6 +993,24 @@ public class MainFrame  extends javax.swing.JFrame {
         btnKoniecPomUlohy.setVisible((this.pocetPomPremennych>0));
     }//GEN-LAST:event_jMenuItemOpenSavedSolutionActionPerformed
 
+    private void jMenuItemBasisSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemBasisSolutionActionPerformed
+        
+        BasisSolutionDialog basisSolDialog = new BasisSolutionDialog(this, true);
+        basisSolDialog.setVisible(true);
+    }//GEN-LAST:event_jMenuItemBasisSolutionActionPerformed
+
+    private void jMenuItemShowSuppVariablesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemShowSuppVariablesActionPerformed
+        if (ValuesSingleton.INSTANCE.showColumns==ValuesSingleton.INSTANCE.columnNames.length) {
+            ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.showColumns-ValuesSingleton.INSTANCE.suppRoleVariables;
+            jMenuItemShowSuppVariables.setText("Zobraz pomocné stĺpce");
+        }else{
+            ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.showColumns+ValuesSingleton.INSTANCE.suppRoleVariables;
+            jMenuItemShowSuppVariables.setText("Skry pomocné stĺpce");
+        }
+        imageTableModel = new ImageTableModel();
+        tblSolution.setModel(imageTableModel);
+    }//GEN-LAST:event_jMenuItemShowSuppVariablesActionPerformed
+
     
     
     
@@ -1000,6 +1051,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuHelp;
     private javax.swing.JMenu jMenuHistory;
     private javax.swing.JMenuItem jMenuItemAboutAuthors;
+    private javax.swing.JMenuItem jMenuItemBasisSolution;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemGomory;
     private javax.swing.JMenuItem jMenuItemHelp;
@@ -1010,10 +1062,12 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemOpenSavedInput;
     private javax.swing.JMenuItem jMenuItemOpenSavedSolution;
     private javax.swing.JMenuItem jMenuItemPivot;
-    private javax.swing.JMenuItem jMenuItemPomocnaUloha;
     private javax.swing.JMenuItem jMenuItemPrenasobRiadok;
+    private javax.swing.JMenuItem jMenuItemRemoveZeroLine;
     private javax.swing.JMenuItem jMenuItemRevided;
     private javax.swing.JMenuItem jMenuItemSave;
+    private javax.swing.JMenuItem jMenuItemShowSuppVariables;
+    private javax.swing.JMenuItem jMenuItemSuppRole;
     private javax.swing.JMenu jMenuPomocneOperacie;
     private javax.swing.JMenu jMenuTable;
     private javax.swing.JScrollPane jScrollPane1;

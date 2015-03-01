@@ -18,6 +18,7 @@ public enum ValuesSingleton {
     
     public int columns;
     public int rows;
+    public int showColumns;
     
     public String[] columnNames;
     public String[][] data;
@@ -29,6 +30,7 @@ public enum ValuesSingleton {
     public int selectedRow;
     public int selectedColumn;
     
+    public boolean suppRoleRunning;
     public int suppRoleVariables;
     private int gomoryVariables=0;
     protected Fraction multBy;
@@ -141,6 +143,7 @@ public enum ValuesSingleton {
     }
     
     public void startSuppRole(int pocetPomPremennych) {
+        this.showColumns = this.showColumns+pocetPomPremennych;
         this.columns = this.columns+pocetPomPremennych;
         this.basisDataIdxSaved = this.basisDataIdx.clone();  
         this.tableDataSaved = this.tableData;
@@ -184,16 +187,27 @@ public enum ValuesSingleton {
     }
 
     public void endOfSuppRoleNotOpt(int pocetPomPremennych) {
-        this.columns = this.columns-pocetPomPremennych;
+        //this.columns = this.columns-pocetPomPremennych;
         
-        ValuesSingleton.INSTANCE.tableData=ValuesSingleton.INSTANCE.tableDataSaved;
+        //ValuesSingleton.INSTANCE.tableData[0]=ValuesSingleton.INSTANCE.tableDataSaved[0];
+        for (int i = 0; i < columnNames.length-pocetPomPremennych; i++) {
+            this.tableData[0][i]=tableDataSaved[0][i];
+        }
+        ValuesSingleton.INSTANCE.tableDataSaved=null;
+        ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.showColumns-pocetPomPremennych;
         
+        for (int i = 0; i < this.basisDataIdx.length; i++) {
+            if (this.basisDataIdx[i]>=columnNames.length-suppRoleVariables) {
+                this.basisDataIdx[i]=-1;
+            }
+        }
+        /*ValuesSingleton.INSTANCE.tableData=ValuesSingleton.INSTANCE.tableDataSaved;
         ValuesSingleton.INSTANCE.basisDataIdx=ValuesSingleton.INSTANCE.basisDataIdxSaved;
         
         String[] colNames = new String[this.columnNames.length-pocetPomPremennych];
         System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      
         this.columnNames = colNames;
-        this.suppRoleVariables=0;
+        this.suppRoleVariables=0;*/
     }
 
     public int[] toIntArray(LinkedList<Integer> list){
@@ -204,11 +218,18 @@ public enum ValuesSingleton {
     }
     
     public void endOfSuppRoleOpt(int pocetPomPremennych) {
-        this.columns = this.columns-pocetPomPremennych;
+        //this.columns = this.columns-pocetPomPremennych;
+        
+        //ValuesSingleton.INSTANCE.tableData[0]=ValuesSingleton.INSTANCE.tableDataSaved[0];
+        for (int i = 0; i < columnNames.length-pocetPomPremennych; i++) {
+            this.tableData[0][i]=tableDataSaved[0][i];
+        }
+        ValuesSingleton.INSTANCE.tableDataSaved=null;
+        ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.showColumns-pocetPomPremennych;
         
         /*potom skontroluj v singletone na rightendof supprole 
                 a vyhod riadky+1 co su p v baze v riadku (vyhodit z tblData aj basisIdx)*/
-        int rowsToRemove = 0;
+        /*int rowsToRemove = 0;
         this.basisDataIdxSaved=this.basisDataIdx;
         LinkedList<Integer> newBasis = new LinkedList<>();
         for (int i = 0; i < this.basisDataIdxSaved.length; i++) {
@@ -239,7 +260,7 @@ public enum ValuesSingleton {
         String[] colNames = new String[this.columnNames.length-pocetPomPremennych];
         System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      
         this.columnNames = colNames;
-        this.suppRoleVariables = 0;
+        this.suppRoleVariables = 0;*/
     }
 
     

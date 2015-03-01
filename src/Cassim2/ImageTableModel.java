@@ -14,7 +14,7 @@ public class ImageTableModel extends AbstractTableModel {
   }
 
   public int getColumnCount() {
-    return ValuesSingleton.INSTANCE.columnNames.length;
+    return ValuesSingleton.INSTANCE.showColumns;
   }
 
   public int getRowCount() {

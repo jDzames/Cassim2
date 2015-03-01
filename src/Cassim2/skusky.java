@@ -55,6 +55,23 @@ public class skusky {
         vlakno.append();
         System.out.println("konec");*/
 
+        int[] a = {1,2,3};
+        int[] b = {4,5,6};
+        int[][] ab = new int[2][3];
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                ab[i][j]=i*j;
+                System.out.print(i*j+" ");
+            }
+            System.out.println("");
+        }
+        ab[0]=b;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 3; j++) {
+                System.out.print(ab[i][j]+" ");
+            }
+            System.out.println("");
+        }
     }
     
     
