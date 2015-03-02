@@ -11,20 +11,21 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
+import java.math.BigInteger;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
-public class SolutionFractionCellRenderer extends JPanel implements TableCellRenderer{
+public class SolutionBigFractionCellRenderer extends JPanel implements TableCellRenderer{
    
-    private Fraction value;
+    private BigFraction value;
     
-    public Fraction getValue() {
+    public BigFraction getValue() {
 		return value;
 	}
 
-	public void setValue(Fraction value) {
+	public void setValue(BigFraction value) {
 		this.value = value;
 	}
 
@@ -38,19 +39,19 @@ public class SolutionFractionCellRenderer extends JPanel implements TableCellRen
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
-            if (value.getDenominator()==1) {
+            if (value.getDenominator().longValue()==1) {
                 // vytvorime stringy s obsahom, ktory ideme zobrazit
 		boolean negative = false;
-                if (value.getNumerator()<0) {
+                if (value.getNumerator().compareTo(BigInteger.ZERO)<0) {
                     negative = true;
                 }
 
                 // vytvorime stringy s obsahom, ktory ideme zobrazit
                 String numeratorStr;
                 if (negative) {
-                    numeratorStr = Long.toString(value.getNumerator()*-1);
+                    numeratorStr = value.getNumerator().multiply(BigInteger.valueOf(-1)).toString();
                 } else{
-                    numeratorStr = Long.toString(value.getNumerator());
+                    numeratorStr = value.getNumerator().toString();
                 }
 
 		// nechame si vypocitat rozmery podla aktualneho fontu
@@ -74,18 +75,18 @@ public class SolutionFractionCellRenderer extends JPanel implements TableCellRen
 		g2.dispose();
             } else{
                 boolean negative = false;
-                if (value.getNumerator()<0) {
+                if (value.getNumerator().compareTo(BigInteger.ZERO)<0) {
                     negative = true;
                 }
 
                 // vytvorime stringy s obsahom, ktory ideme zobrazit
                 String numeratorStr;
                 if (negative) {
-                    numeratorStr = Long.toString(value.getNumerator()*-1);
+                    numeratorStr = value.getNumerator().multiply(BigInteger.valueOf(-1)).toString();
                 } else{
-                    numeratorStr = Long.toString(value.getNumerator());
+                    numeratorStr = value.getNumerator().toString();
                 }
-		String denominatorStr = Long.toString(value.getDenominator());
+		String denominatorStr = value.getDenominator().toString();
                 
 		// nechame si vypocitat rozmery podla aktualneho fontu
                 g2.setFont(new Font("Times New Roman", Font.PLAIN, 18));

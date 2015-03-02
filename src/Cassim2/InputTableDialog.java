@@ -1,10 +1,11 @@
 package Cassim2;
 
+
 import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
 
 public class InputTableDialog extends javax.swing.JDialog {
@@ -187,7 +188,7 @@ public class InputTableDialog extends javax.swing.JDialog {
             DataParser dataParser = new DataParser();
             ValuesSingleton.INSTANCE.rows=inputTableModel.getRowCount()-2;
             ValuesSingleton.INSTANCE.columns=inputTableModel.getColumnCount()-2;
-            ValuesSingleton.INSTANCE.tableData = new Fraction[ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
+            ValuesSingleton.INSTANCE.tableData = new BigFraction[ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
             for (int i = 0; i <= ValuesSingleton.INSTANCE.rows; i++) {
                 for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {  
                     a=i;

@@ -1,12 +1,12 @@
 
 package Cassim2;
 
-import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
 
 public class DataParser {
     
-    private Fraction fraction;
+    private BigFraction fraction;
     
     private double number;
     
@@ -15,7 +15,7 @@ public class DataParser {
     
     private boolean isFracion_notDouble=false;
     
-    public Fraction parseString(String cell){
+    public BigFraction parseString(String cell){
                      
         String numer="";
         String denum="";
@@ -56,10 +56,10 @@ public class DataParser {
                     denumerator = denumerator*(-1);
                     numerator = numerator*(-1);
                 }
-                fraction = new Fraction(numerator, denumerator);
+                fraction = new BigFraction(numerator, denumerator);
             } else {
                 number = Double.parseDouble(working.toString());
-                fraction = new Fraction(number);
+                fraction = new BigFraction(number);
             }
             
         return fraction;

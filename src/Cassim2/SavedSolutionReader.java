@@ -1,13 +1,12 @@
-
-
 package Cassim2;
+
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
 
 public class SavedSolutionReader {
@@ -103,13 +102,13 @@ public class SavedSolutionReader {
             stringsArray = s.split(";");
             ValuesSingleton.INSTANCE.columnNames = stringsArray;
             
-            Fraction[][] tData = new Fraction [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
+            BigFraction[][] tData = new BigFraction [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
             for (int i = 0; i < ValuesSingleton.INSTANCE.rows+1; i++) {
                 s = bufReader.readLine();
                 stringsArray = s.split(";");
                 for (int j = 0; j < ValuesSingleton.INSTANCE.columns+1; j++) {
-                    String[] oneFraction = stringsArray[j].split(":");
-                    Fraction fr = new Fraction(Integer.parseInt(oneFraction[0]), Integer.parseInt(oneFraction[1]));
+                    String[] oneBigFraction = stringsArray[j].split(":");
+                    BigFraction fr = new BigFraction(Integer.parseInt(oneBigFraction[0]), Integer.parseInt(oneBigFraction[1]));
                     tData[i][j] = fr;
                 }
             }

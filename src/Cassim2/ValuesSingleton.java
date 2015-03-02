@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
 
 public enum ValuesSingleton {
@@ -26,16 +26,16 @@ public enum ValuesSingleton {
     public String[] nezapornost;
     
     public int[] basisDataIdx;
-    public Fraction[][] tableData;
+    public BigFraction[][] tableData;
     public int selectedRow;
     public int selectedColumn;
     
     public boolean suppRoleRunning;
     public int suppRoleVariables;
     private int gomoryVariables=0;
-    protected Fraction multBy;
+    protected BigFraction multBy;
     
-    public Fraction[][] tableDataSaved;
+    public BigFraction[][] tableDataSaved;
     public int[] basisDataIdxSaved;
     
     public boolean onlyOnce = true; //na nastavenie vysky bunky,nech to nerobi viac krat
@@ -61,7 +61,7 @@ public enum ValuesSingleton {
         return nezapornost;
     }
     
-    public Fraction[][] getTableData() {
+    public BigFraction[][] getTableData() {
         return tableData;
     }
 
@@ -114,7 +114,7 @@ public enum ValuesSingleton {
         this.nezapornost = nezapornost;
     }
 
-    public void setTableData(Fraction[][] tableData) {
+    public void setTableData(BigFraction[][] tableData) {
         this.tableData = tableData;
     }
 
@@ -147,7 +147,7 @@ public enum ValuesSingleton {
         this.columns = this.columns+pocetPomPremennych;
         this.basisDataIdxSaved = this.basisDataIdx.clone();  
         this.tableDataSaved = this.tableData;
-        Fraction[][] pole = new Fraction[this.tableData.length][this.tableData[0].length+pocetPomPremennych];
+        BigFraction[][] pole = new BigFraction[this.tableData.length][this.tableData[0].length+pocetPomPremennych];
         String[] colNames = new String[this.columnNames.length+pocetPomPremennych];
         System.arraycopy( this.columnNames, 0, colNames, 0, this.columnNames.length );
         int idx=1;
@@ -158,18 +158,18 @@ public enum ValuesSingleton {
         this.columnNames = colNames;
         
         for(int j=0; j<this.tableData[0].length; j++){
-            pole[0][j]=Fraction.ZERO;
+            pole[0][j]=BigFraction.ZERO;
         }
         for(int j=this.tableData[0].length; j<pole[0].length; j++){
-            pole[0][j]=Fraction.ONE;
+            pole[0][j]=BigFraction.ONE;
         }
         
         for(int i=1; i<pole.length; i++){
             for(int j=0; j<this.tableData[0].length; j++){
-                pole[i][j]=new Fraction(this.tableDataSaved[i][j].getNumerator(), this.tableDataSaved[i][j].getDenominator());
+                pole[i][j]=new BigFraction(this.tableDataSaved[i][j].getNumerator(), this.tableDataSaved[i][j].getDenominator());
             }
             for(int j=this.tableData[0].length; j<pole[0].length; j++){
-                pole[i][j]=new Fraction(0);
+                pole[i][j]=new BigFraction(0);
             }
         }
         
@@ -178,7 +178,7 @@ public enum ValuesSingleton {
         int columnPomPremennych=0;
         for (int i = 0; i < this.basisDataIdx.length; i++) {
             if (this.basisDataIdx[i]<0) {
-                this.tableData[i+1][this.tableDataSaved[0].length+columnPomPremennych]= Fraction.ONE;
+                this.tableData[i+1][this.tableDataSaved[0].length+columnPomPremennych]= BigFraction.ONE;
                 this.basisDataIdx[i]=this.tableDataSaved[0].length+columnPomPremennych;
                 columnPomPremennych++;
             }        
@@ -241,15 +241,15 @@ public enum ValuesSingleton {
         }
         this.basisDataIdx=toIntArray(newBasis);
         
-        Fraction[][] pole = new Fraction[this.tableData.length-rowsToRemove][this.tableData[0].length-pocetPomPremennych];
+        BigFraction[][] pole = new BigFraction[this.tableData.length-rowsToRemove][this.tableData[0].length-pocetPomPremennych];
         for(int j=0; j<pole[0].length; j++){
-            pole[0][j]=new Fraction(this.tableDataSaved[0][j].getNumerator(), this.tableDataSaved[0][j].getDenominator());
+            pole[0][j]=new BigFraction(this.tableDataSaved[0][j].getNumerator(), this.tableDataSaved[0][j].getDenominator());
         }
         int actRowToWrite=1;
         for(int i=1; i<this.tableDataSaved.length; i++){
             if (ValuesSingleton.INSTANCE.basisDataIdxSaved[i-1]<=this.columns) {
                 for(int j=0; j<pole[0].length; j++){
-                    pole[actRowToWrite][j]=new Fraction(this.tableData[i][j].getNumerator(), this.tableData[i][j].getDenominator());
+                    pole[actRowToWrite][j]=new BigFraction(this.tableData[i][j].getNumerator(), this.tableData[i][j].getDenominator());
                 }
                 actRowToWrite++;
             }
@@ -281,18 +281,18 @@ public enum ValuesSingleton {
         System.arraycopy( this.basisDataIdxSaved, 0, this.basisDataIdx, 0, this.basisDataIdxSaved.length );
         this.basisDataIdx[this.basisDataIdx.length-1]=this.tableDataSaved[0].length;
         
-        Fraction[][] pole = new Fraction[this.tableData.length+1][this.tableData[0].length+1];
+        BigFraction[][] pole = new BigFraction[this.tableData.length+1][this.tableData[0].length+1];
         for (int i = 0; i < this.tableDataSaved.length; i++) { //riadky od 0 po predposledny
             for (int j = 0; j < this.tableDataSaved[0].length; j++) { //stlpce od 0 po predposledny
-                pole[i][j]=new Fraction(this.tableDataSaved[i][j].getNumerator(), this.tableDataSaved[i][j].getDenominator());
+                pole[i][j]=new BigFraction(this.tableDataSaved[i][j].getNumerator(), this.tableDataSaved[i][j].getDenominator());
             }
-            pole[i][this.tableDataSaved[0].length]=Fraction.ZERO; //posledny stlpec
+            pole[i][this.tableDataSaved[0].length]=BigFraction.ZERO; //posledny stlpec
         }
         for (int j = 0; j < this.tableDataSaved[0].length; j++) { //stlpce od 0 po predposl. v posl. riadku
-            pole[this.tableDataSaved.length][j]=new Fraction(Math.floor(this.tableDataSaved[selectedRow][j].intValue()));
+            pole[this.tableDataSaved.length][j]=new BigFraction(Math.floor(this.tableDataSaved[selectedRow][j].intValue()));
             pole[this.tableDataSaved.length][j]=pole[this.tableDataSaved.length][j].subtract(pole[selectedRow][j]);
         }
-        pole[this.tableDataSaved.length][this.tableDataSaved[0].length]=Fraction.ONE; //posledny
+        pole[this.tableDataSaved.length][this.tableDataSaved[0].length]=BigFraction.ONE; //posledny
         this.tableData=pole;
         
     }

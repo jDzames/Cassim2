@@ -15,7 +15,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.JTableHeader;
-import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
 
 public class MainFrame  extends javax.swing.JFrame {
@@ -366,7 +366,7 @@ public class MainFrame  extends javax.swing.JFrame {
         tblSolution.setVisible(true);
         jMenuItemSave.setEnabled(true);
         
-        tblSolution.setDefaultRenderer(JLabel.class, new SolutionFractionCellRenderer()); 
+        tblSolution.setDefaultRenderer(JLabel.class, new SolutionBigFractionCellRenderer()); 
         tblBaza.setDefaultRenderer(JLabel.class, new BasisRenderer(tblBaza));
         tblBaza.setFont(new Font("Times New Roman", Font.BOLD, 16));
         
@@ -550,11 +550,11 @@ public class MainFrame  extends javax.swing.JFrame {
                         return;
                     }
             default: int focusRow = solutionCalculations.minimum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
-                    if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator()<0) {
+                    if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator().longValue()<0) {
                         JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                         return;
                     } else
-                        if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator()==0) {
+                        if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator().longValue()==0) {
                             JOptionPane.showMessageDialog(this, "Tento stĺpec nie je vhodný na hľadanie minima.", "Nevhodný stĺpec", JOptionPane.PLAIN_MESSAGE);
                             return;
                         }
@@ -582,11 +582,11 @@ public class MainFrame  extends javax.swing.JFrame {
                         return;
                     }
             default: int focusColumn = solutionCalculations.maximum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
-                    if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator()<0) {
+                    if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator().longValue()<0) {
                         JOptionPane.showMessageDialog(this, "Duálna úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                         return;
                     } else
-                        if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator()==0) {
+                        if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator().longValue()==0) {
                             JOptionPane.showMessageDialog(this, "Tento riadok nie je vhodný na hľadanie maxima.", "Nevhodný riadok", JOptionPane.PLAIN_MESSAGE);
                             return;
                         }
@@ -744,7 +744,7 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         
         ValuesSingleton.INSTANCE.isOK = false;
-        Fraction multBy = ValuesSingleton.INSTANCE.multBy;
+        BigFraction multBy = ValuesSingleton.INSTANCE.multBy;
         
         int canBeMult = solutionCalculations.canBeMultiplied(selectedRow);
         switch(canBeMult){

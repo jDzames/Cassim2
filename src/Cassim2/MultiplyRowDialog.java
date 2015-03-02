@@ -1,18 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package Cassim2;
 
 import javax.swing.JOptionPane;
-import org.apache.commons.math3.fraction.Fraction;
+import org.apache.commons.math3.fraction.BigFraction;
 
-/**
- *
- * @author jDzama
- */
+
 public class MultiplyRowDialog extends javax.swing.JDialog {
 
     
@@ -99,11 +91,11 @@ public class MultiplyRowDialog extends javax.swing.JDialog {
 
     private void jBtnMultiplyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnMultiplyActionPerformed
 
-        Fraction multBy;
+        BigFraction multBy;
         try {
             int numerator = Integer.parseInt(jTxtNominator.getText());
             int denominator = Integer.parseInt(jTxtDenominator.getText());
-            multBy = new Fraction(numerator, denominator);
+            multBy = new BigFraction(numerator, denominator);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Zadajte celé nenulové čísla!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;
