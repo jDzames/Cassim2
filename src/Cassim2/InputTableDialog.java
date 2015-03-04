@@ -187,31 +187,97 @@ public class InputTableDialog extends javax.swing.JDialog {
         try {
             DataParser dataParser = new DataParser();
             ValuesSingleton.INSTANCE.rows=inputTableModel.getRowCount()-2;
-            ValuesSingleton.INSTANCE.columns=inputTableModel.getColumnCount()-2;
+            ValuesSingleton.INSTANCE.columns=inputTableModel.getColumnCount()-2+inputTableModel.getNeohrCount()+inputTableModel.getNerovnCount();
             ValuesSingleton.INSTANCE.tableData = new BigFraction[ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
-            for (int i = 0; i <= ValuesSingleton.INSTANCE.rows; i++) {
-                for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {  
-                    a=i;
-                    b=j;
-                    int colTable=j;
-                    int colArray=j;
-                    if (j==ValuesSingleton.INSTANCE.columns) {
-                        colArray=0;
-                        if (i==0) {
-                            ValuesSingleton.INSTANCE.tableData[0][0] = dataParser.parseString("0");
-                            continue;
+            
+            for (int i = 0; i < ValuesSingleton.INSTANCE.tableData.length; i++)
+                for (int j = 0; j < ValuesSingleton.INSTANCE.tableData[i].length; j++)
+                        ValuesSingleton.INSTANCE.tableData[i][j] = BigFraction.ZERO;
+
+            int currCol = 0;
+            boolean min = true;
+            
+            for ( int i = 0; i < inputTableModel.getColumnCount()-1; i++ ) {
+                for ( int j = 0; j < inputTableModel.getRowCount()-1; j++ ) {
+                    if ( i == 0 ) {
+                        if ( j == 0 ) {
+                            if ( inputTableModel.getDataAt(j, i).equalsIgnoreCase("max")) {
+                                min = false;
+                                ValuesSingleton.INSTANCE.tableData[j][currCol] = BigFraction.ZERO;
+                            }
+                        } else {
+                            ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString( inputTableModel.getDataAt(j, i));//dataParser.parseString((String)ValuesSingleton.INSTANCE.data[x][y]);            
                         }
-                        colTable=ValuesSingleton.INSTANCE.columns+1;
-                    }else{
-                        colArray=j+1;
+                    } else if (inputTableModel.getNezap(i).equalsIgnoreCase("<>") ) {
+                        if ( j == 0 && min == false ) {
+                            ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString(inputTableModel.getDataAt(j, i)).multiply(BigFraction.MINUS_ONE);
+                            ValuesSingleton.INSTANCE.tableData[j][currCol+1] = dataParser.parseString(inputTableModel.getDataAt(j, i));
+                        } else {
+                            ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString(inputTableModel.getDataAt(j, i));
+                            ValuesSingleton.INSTANCE.tableData[j][currCol+1] = dataParser.parseString(inputTableModel.getDataAt(j, i)).multiply(BigFraction.MINUS_ONE);
+                        }
+                    } else {
+                        if ( j == 0 && min == false )
+                            ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString(inputTableModel.getDataAt(j, i)).multiply(BigFraction.MINUS_ONE);
+                        else
+                            ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString(((String) inputTableModel.getDataAt(j, i)).trim());
                     }
-                    ValuesSingleton.INSTANCE.tableData[i][colArray] = dataParser.parseString(((String) inputTableModel.getValueAt(i, colTable)).trim());//dataParser.parseString((String)ValuesSingleton.INSTANCE.data[x][y]);            
-                }
+                } if (inputTableModel.getNezap(i).equalsIgnoreCase("<>"))
+                    currCol = currCol + 2;
+                else
+                    currCol++;
             }    
             
+            for (int i = 0; i < inputTableModel.getNerovnCount(); i++) {
+                if (!inputTableModel.getPorovn(i+1).equalsIgnoreCase("=")) {
+                    for (int j = 0; j < inputTableModel.getRowCount()-1; j++) {
+                        if (j != i+1)
+                            ValuesSingleton.INSTANCE.tableData[j][currCol] = BigFraction.ZERO;
+                        else if ( inputTableModel.getPorovn(i+1).equalsIgnoreCase("<=") )
+                            ValuesSingleton.INSTANCE.tableData[j][currCol] = BigFraction.ONE;
+                        else
+                            ValuesSingleton.INSTANCE.tableData[j][currCol] = BigFraction.MINUS_ONE;
+                    }
+                    currCol++;
+                }
+            }
+            
+            for (int i = 0; i < ValuesSingleton.INSTANCE.tableData.length; i++)
+                for (int j = 0; j < ValuesSingleton.INSTANCE.tableData[i].length; j++)
+                    if (ValuesSingleton.INSTANCE.tableData[i][j].getDenominatorAsInt() == 0)
+                        ValuesSingleton.INSTANCE.tableData[i][j] = BigFraction.ZERO;
+
+            String[] colNames = new String[inputTableModel.getNezapCount()+inputTableModel.getNeohrCount()+inputTableModel.getNerovnCount()+1];
+            int actPos = 0;
+            for (int i = 0; i <= inputTableModel.getNezapCount(); i++) {
+                if (inputTableModel.getNezap(i).equalsIgnoreCase("<>")) {
+                    colNames[actPos] = inputTableModel.getColumnName2(i)+"+";
+                    colNames[actPos+1] = inputTableModel.getColumnName2(i)+"-";
+                    actPos = actPos+2;
+                } else {
+                    colNames[actPos] = inputTableModel.getColumnName2(i);
+                    actPos++;
+                }
+            }
+            int slack = 1;
+            int surplus = 1;
+            for (int i = 1; i <= inputTableModel.getPorovnCount(); i++) {
+                String test3 = inputTableModel.getPorovn(i);
+                if (inputTableModel.getPorovn(i).equals("<=")) {
+                    colNames[actPos] = "r"+slack;
+                    slack++;
+                    actPos++;
+                } else if (inputTableModel.getPorovn(i).equals(">=")) {
+                    colNames[actPos] = "s"+surplus;
+                    surplus++;
+                    actPos++;
+                }
+            }
+            ValuesSingleton.INSTANCE.columnNames = colNames;
+
             ValuesSingleton.INSTANCE.isOK=true;
             this.dispose();
-        
+            
         } catch (NumberFormatException e) {
             System.out.println("chyba u: "+a+"  "+b);
             JOptionPane.showMessageDialog(this, "Nesprávne zadané alebo chýbajúce vstupné údaje. Dokončite alebo opravte, potom pokračujte.", "Chyba", JOptionPane.ERROR_MESSAGE);

@@ -87,6 +87,10 @@ public class SolutionCalcService {
             }
             if (inBasis==1 && ValuesSingleton.INSTANCE.basisDataIdx[row-1]<=0) {
                 ValuesSingleton.INSTANCE.basisDataIdx[row-1]=i;
+                BigFraction rec = ValuesSingleton.INSTANCE.getTableData()[row][i].reciprocal();
+                for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
+                    ValuesSingleton.INSTANCE.tableData[row][j] = ValuesSingleton.INSTANCE.tableData[row][j].multiply(rec);
+                }
             } 
         }
     }

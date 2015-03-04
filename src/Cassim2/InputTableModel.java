@@ -11,6 +11,9 @@ public class InputTableModel extends AbstractTableModel {
     private Object[] porovnania = ValuesSingleton.INSTANCE.porovnaniasPS;
     private Object[] nezapornost = ValuesSingleton.INSTANCE.nezapornost;
 
+    public void setNezap(Object[] nezap) {
+        this.nezapornost = nezap;
+    }
 
     public int getColumnCount() {
         return columnNames.length+1;
@@ -18,6 +21,58 @@ public class InputTableModel extends AbstractTableModel {
 
     public int getRowCount() {
         return data.length+1;
+    }
+
+    public String getDataAt(int row, int col) {
+        if (row < 0 || row >= data.length || col <0 || col >= columnNames.length)
+            return null;
+        return data[row][col].toString().trim();
+    }
+    
+    public int getPorovnCount() {
+        return porovnania.length;
+    }
+
+    public String getPorovn(int row) {
+        if ( row == 0 )
+            return "";
+        else if ( row-1 > getPorovnCount() )
+            return null;
+        else 
+            return porovnania[row-1].toString().trim();
+    }
+
+    public int getNerovnCount() {
+        int count = 0;
+        for ( int i = 0; i < porovnania.length; i++ )
+            if ( !getPorovn(i+1).equalsIgnoreCase("=") )
+                count++;
+        return count;
+    }
+
+    public int getNezapCount() {
+        return nezapornost.length;
+    }
+
+    public String getNezap(int col) {
+        if ( col == 0 )
+            return "";
+        else if ( col-1 > getNezapCount() )
+            return null;
+        else 
+            return nezapornost[col-1].toString().trim();
+    }
+
+    public int getNeohrCount() {
+        int count = 0;
+        for ( int i = 0; i < nezapornost.length; i++ )
+            if ( getNezap(i+1).equalsIgnoreCase("<>") )
+                count++;
+        return count;
+    }
+
+    public String getColumnName2(int col) {
+        return columnNames[col];
     }
 
     public String getColumnName(int col) {
