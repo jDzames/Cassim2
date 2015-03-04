@@ -118,7 +118,7 @@ public class SolutionCalcService {
     public int minimum(int selectedRow, int selectedColumn) {     
         
         int minIdx = -2;
-        BigFraction minimal = new BigFraction(Integer.MAX_VALUE);
+        BigFraction minimal = new BigFraction(Long.MAX_VALUE);
         
         for (int i = 1; i <= ValuesSingleton.INSTANCE.rows; i++) {
             if (ValuesSingleton.INSTANCE.tableData[i][selectedColumn].getNumerator().compareTo(BigInteger.ZERO)<=0) {
@@ -151,7 +151,7 @@ public class SolutionCalcService {
     public int maximum(int selectedRow, int selectedColumn) {
            
         int maxIdx = -2;
-        BigFraction maximal = new BigFraction(Integer.MIN_VALUE);
+        BigFraction maximal = new BigFraction(Long.MIN_VALUE);
         
         for (int i = 1; i <= ValuesSingleton.INSTANCE.columns; i++) {
             if (ValuesSingleton.INSTANCE.tableData[selectedRow][i].getNumerator().compareTo(BigInteger.ZERO)>=0) {
@@ -299,6 +299,43 @@ public class SolutionCalcService {
         }
         //OK
         return 0;
+    }
+
+    public boolean deleteRow(int row) {
+        
+        if (row<=0 || row>=ValuesSingleton.INSTANCE.tableData.length) {
+            return false;
+        }
+        //ci je riadok na vymazanie
+        for (int i = 0; i < ValuesSingleton.INSTANCE.tableData[0].length; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[row][i].compareTo(BigFraction.ZERO)!=0) {
+                return false;
+            }
+        }
+        //vymazanie ho
+        BigFraction[][] pole = new BigFraction[ValuesSingleton.INSTANCE.tableData.length-1][ValuesSingleton.INSTANCE.tableData[0].length];
+        int idx=0;
+        for (int i = 0; i < ValuesSingleton.INSTANCE.tableData.length; i++) {
+            if (i!=row) {
+                pole[idx]=ValuesSingleton.INSTANCE.tableData[i];
+                idx++;
+            }
+        }
+        ValuesSingleton.INSTANCE.tableData=pole;
+        pole=null;
+        //a bazy
+        int[] basisPole = new int[ValuesSingleton.INSTANCE.basisDataIdx.length-1];
+        int basisIdx=0;
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            if (i!=row-1) {
+                basisPole[basisIdx]=ValuesSingleton.INSTANCE.basisDataIdx[i];
+                basisIdx++;
+            }
+        }
+        ValuesSingleton.INSTANCE.basisDataIdx=basisPole;
+        basisPole=null;
+        ValuesSingleton.INSTANCE.rows--;
+        return true;
     }
 
     

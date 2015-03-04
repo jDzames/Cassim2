@@ -16,7 +16,10 @@ public class DataParser {
     private boolean isFracion_notDouble=false;
     
     public BigFraction parseString(String cell){
-                     
+        
+        if (cell.trim().equals("0")) {
+            return BigFraction.ZERO;
+        }
         String numer="";
         String denum="";
         StringBuilder working=new StringBuilder();

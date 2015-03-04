@@ -3,11 +3,13 @@ package Cassim2;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import javax.xml.stream.events.Characters;
+import org.apache.commons.math3.fraction.BigFraction;
 import org.apache.commons.math3.fraction.Fraction;
 
 /**
@@ -54,7 +56,7 @@ public class skusky {
         vlakno.run();
         vlakno.append();
         System.out.println("konec");*/
-
+/*
         int[] a = {1,2,3};
         int[] b = {4,5,6};
         int[][] ab = new int[2][3];
@@ -72,8 +74,12 @@ public class skusky {
             }
             System.out.println("");
         }
+    
+    */
+        BigFraction bf = BigFraction.FOUR_FIFTHS;
+        BigFraction bf2 = BigFraction.ONE_FIFTH;
+        System.out.println(bf2.compareTo(bf));
+        BigInteger bi = BigInteger.ONE;
+        
     }
-    
-    
-    
 }

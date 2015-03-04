@@ -275,6 +275,11 @@ public class MainFrame  extends javax.swing.JFrame {
 
         jMenuItemRemoveZeroLine.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemRemoveZeroLine.setText("Odstráň nulový riadok");
+        jMenuItemRemoveZeroLine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRemoveZeroLineActionPerformed(evt);
+            }
+        });
         jMenuPomocneOperacie.add(jMenuItemRemoveZeroLine);
 
         jMenuBar.add(jMenuPomocneOperacie);
@@ -349,6 +354,8 @@ public class MainFrame  extends javax.swing.JFrame {
     
     private void initSolution(){
         //pustim ked prvy raz sa zjavia tabulky
+        ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.columnNames.length;
+        
         tblBaza = new JTable();
         tblSolution = new JTable();
         
@@ -521,6 +528,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, "Ešte nie je optimum!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
                     return;
             default: ValuesSingleton.INSTANCE.doGomory(tblSolution.getSelectedRow());
+                    ValuesSingleton.INSTANCE.showColumns++;
                     imageTableModel = new ImageTableModel();
                     tblSolution.setModel(imageTableModel);
                     basisTableModel = new BasisTableModel();
@@ -600,10 +608,10 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemMaxActionPerformed
 
     private void jMenuItemPivotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPivotActionPerformed
-        if (!solutionCalculations.isBased()) {
+        /*if (!solutionCalculations.isBased()) {
             JOptionPane.showMessageDialog(this, "Tabuľka musí byť najprv bázovaná!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return;            
-        }
+        }*/
         int selectedRow = tblSolution.getSelectedRow();
         int selectedColumn = tblSolution.getSelectedColumn();
         int checkPivot = solutionCalculations.checkPivot(selectedRow, selectedColumn);
@@ -612,9 +620,12 @@ public class MainFrame  extends javax.swing.JFrame {
                 return;
             case -2: JOptionPane.showMessageDialog(this, "Nie je možné pivotovať na 0 (čísle menšom ako 0).", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
-            case -3: JOptionPane.showMessageDialog(this, "Ste v neprípustnom riešení!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
-                return;
-            case -4: int potvrdenie = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde (v 0. riadku/stĺpci nie je záporné číslo). Naozaj chcete pokračovať?", "Varovanie",
+            case -3: int potvrdenie3 = JOptionPane.showOptionDialog(this,"Daná operácia (0. riadok alebo stĺpec) nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?", "Varovanie",
+                    0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+                if (potvrdenie3 != JOptionPane.YES_OPTION) {
+                    return;
+                }
+            case -4: int potvrdenie = JOptionPane.showOptionDialog(this,"Daná operácia nezodpovedá Simplexovej metóde. Naozaj chcete pokračovať?", "Varovanie",
                     0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
                 if (potvrdenie != JOptionPane.YES_OPTION) {
                     return;
@@ -747,26 +758,32 @@ public class MainFrame  extends javax.swing.JFrame {
         BigFraction multBy = ValuesSingleton.INSTANCE.multBy;
         
         int canBeMult = solutionCalculations.canBeMultiplied(selectedRow);
-        switch(canBeMult){
+        /*switch(canBeMult){
             case -1: JOptionPane.showMessageDialog(this, "Tento riadok nie je možné násobiť! (Môže sa pokaziť báza.)", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return; //je tam baza
             case -2: JOptionPane.showMessageDialog(this, "Táto operácia by viedla k neprípustnej úlohe!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return; //0. riadok zaporny a aj v 0. stlpci to vyrabam
-            default: //vynasobim, prezriem a zrusim nepotrebne componenty
-                solutionCalculations.multiplRow(selectedRow, multBy);
-                imageTableModel.fireTableDataChanged();
-                solutionCalculations.findBasis();//ak by mohlo ist do bazy
-                basisTableModel.fireTableDataChanged();
-
-                SavingWriterThread saver = new SavingWriterThread();
-                
-                    String[] row = {"6",""+selectedRow,""+multBy.getNumerator(),""+multBy.getDenominator()};
-                    ValuesSingleton.INSTANCE.putToSavingQueue(row);
-                    String[] end = {"POISON_PILL"};
-                    ValuesSingleton.INSTANCE.putToSavingQueue(end);
-                    saver.append();
-                
+            default: //vynasobim, prezriem a zrusim nepotrebne componenty*/
+        if (canBeMult==-1) {
+            int potvrdenie = JOptionPane.showOptionDialog(this,"Vyhodíte prvok z bázy. Naozaj chcete pokračovať?", "Varovanie",
+                    0, JOptionPane.WARNING_MESSAGE, null, options, options[1]);
+            if (potvrdenie != JOptionPane.YES_OPTION) {
+                return;
+            }
         }
+        solutionCalculations.multiplRow(selectedRow, multBy);
+        imageTableModel.fireTableDataChanged();
+        ValuesSingleton.INSTANCE.basisDataIdx[selectedRow-1]=-1;
+        solutionCalculations.findBasis();//ak by mohlo ist do bazy
+        basisTableModel.fireTableDataChanged();
+        
+                /*SavingWriterThread saver = new SavingWriterThread();
+                String[] row = {"6",""+selectedRow,""+multBy.getNumerator(),""+multBy.getDenominator()};
+                ValuesSingleton.INSTANCE.putToSavingQueue(row);
+                String[] end = {"POISON_PILL"};
+                ValuesSingleton.INSTANCE.putToSavingQueue(end);
+                saver.append();*/
+        //}
     }//GEN-LAST:event_jMenuItemPrenasobRiadokActionPerformed
 
     private void jMenuHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuHistoryActionPerformed
@@ -823,6 +840,7 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.isOK=false;
         
         ValuesSingleton.INSTANCE.suppRoleVariables = 0;
+        ValuesSingleton.INSTANCE.gomoryVariables = 0;
         this.pocetPomPremennych = 0;
         
         int[] pole = new int[ValuesSingleton.INSTANCE.rows];
@@ -844,7 +862,7 @@ public class MainFrame  extends javax.swing.JFrame {
         if (!tblSolution.isVisible()) {
             initSolution();
         } else {
-            
+            jMenuItemSuppRole.setEnabled(true);
             tblSolution.setModel(imageTableModel);
             tblBaza.setModel(basisTableModel);
             solutionCalculations.findBasis();
@@ -902,6 +920,8 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.basisDataIdx = pole;
         
         ValuesSingleton.INSTANCE.suppRoleVariables = 0;
+        ValuesSingleton.INSTANCE.gomoryVariables = 0;
+        
         this.pocetPomPremennych = 0;
         btnKoniecPomUlohy.setVisible(false);
         
@@ -961,6 +981,7 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         
         ValuesSingleton.INSTANCE.suppRoleVariables = 0;
+        ValuesSingleton.INSTANCE.gomoryVariables = 0;
         this.pocetPomPremennych = 0;
         btnKoniecPomUlohy.setVisible(false);
         
@@ -1010,6 +1031,19 @@ public class MainFrame  extends javax.swing.JFrame {
         imageTableModel = new ImageTableModel();
         tblSolution.setModel(imageTableModel);
     }//GEN-LAST:event_jMenuItemShowSuppVariablesActionPerformed
+
+    private void jMenuItemRemoveZeroLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRemoveZeroLineActionPerformed
+        
+        boolean vymazane = solutionCalculations.deleteRow(tblSolution.getSelectedRow());
+        if (!vymazane) {
+            JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
+        }else{
+            imageTableModel = new ImageTableModel();
+            basisTableModel = new BasisTableModel();
+            tblBaza.setModel(basisTableModel);
+            tblSolution.setModel(imageTableModel);
+        }
+    }//GEN-LAST:event_jMenuItemRemoveZeroLineActionPerformed
 
     
     

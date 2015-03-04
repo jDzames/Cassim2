@@ -39,7 +39,7 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_ON);
 
-            if (value.getDenominator().longValue()==1) {
+            if (value.getDenominator().compareTo(BigInteger.ONE)==0 || value.getNumerator().compareTo(BigInteger.ZERO)==0) {
                 // vytvorime stringy s obsahom, ktory ideme zobrazit
 		boolean negative = false;
                 if (value.getNumerator().compareTo(BigInteger.ZERO)<0) {
