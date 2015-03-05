@@ -182,6 +182,11 @@ public class MainFrame  extends javax.swing.JFrame {
 
         jMenuItemRevided.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemRevided.setText("Revidovaná úloha");
+        jMenuItemRevided.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRevidedActionPerformed(evt);
+            }
+        });
         jMenuTable.add(jMenuItemRevided);
 
         jMenuItemGomory.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
@@ -355,6 +360,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private void initSolution(){
         //pustim ked prvy raz sa zjavia tabulky
         ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.columnNames.length;
+        ValuesSingleton.INSTANCE.revidedMethodRunning = false;
         
         tblBaza = new JTable();
         tblSolution = new JTable();
@@ -383,7 +389,6 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuTable.setEnabled(true);
         jMenuItemSave.setEnabled(true);
         jMenuItemBasisSolution.setEnabled(true);
-        jMenuItemSuppRole.setEnabled(true);
         
         ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
         
@@ -856,6 +861,7 @@ public class MainFrame  extends javax.swing.JFrame {
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         }
         
+        ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
         basisTableModel = new BasisTableModel();
         imageTableModel = new ImageTableModel();
         
@@ -1044,6 +1050,19 @@ public class MainFrame  extends javax.swing.JFrame {
             tblSolution.setModel(imageTableModel);
         }
     }//GEN-LAST:event_jMenuItemRemoveZeroLineActionPerformed
+
+    private void jMenuItemRevidedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRevidedActionPerformed
+        if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+            
+        } else {
+            jMenuItemShowSuppVariables.setEnabled(false);
+            jMenuItemGomory.setEnabled(false);
+        
+            imageTableModel = new RevidedImageTableModel();
+            tblSolution.setModel(imageTableModel);
+        }
+        
+    }//GEN-LAST:event_jMenuItemRevidedActionPerformed
 
     
     

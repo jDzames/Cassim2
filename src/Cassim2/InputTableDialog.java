@@ -209,7 +209,7 @@ public class InputTableDialog extends javax.swing.JDialog {
                             ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString( inputTableModel.getDataAt(j, i));//dataParser.parseString((String)ValuesSingleton.INSTANCE.data[x][y]);            
                         }
                     } else if (inputTableModel.getNezap(i).equalsIgnoreCase("<>") ) {
-                        if ( j == 0 && min == false ) {
+                        if ( j == 0 && !min /*== false*/ ) {
                             ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString(inputTableModel.getDataAt(j, i)).multiply(BigFraction.MINUS_ONE);
                             ValuesSingleton.INSTANCE.tableData[j][currCol+1] = dataParser.parseString(inputTableModel.getDataAt(j, i));
                         } else {
@@ -217,7 +217,7 @@ public class InputTableDialog extends javax.swing.JDialog {
                             ValuesSingleton.INSTANCE.tableData[j][currCol+1] = dataParser.parseString(inputTableModel.getDataAt(j, i)).multiply(BigFraction.MINUS_ONE);
                         }
                     } else {
-                        if ( j == 0 && min == false )
+                        if ( j == 0 && !min /*== false*/ )
                             ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString(inputTableModel.getDataAt(j, i)).multiply(BigFraction.MINUS_ONE);
                         else
                             ValuesSingleton.INSTANCE.tableData[j][currCol] = dataParser.parseString(((String) inputTableModel.getDataAt(j, i)).trim());
@@ -262,7 +262,6 @@ public class InputTableDialog extends javax.swing.JDialog {
             int slack = 1;
             int surplus = 1;
             for (int i = 1; i <= inputTableModel.getPorovnCount(); i++) {
-                String test3 = inputTableModel.getPorovn(i);
                 if (inputTableModel.getPorovn(i).equals("<=")) {
                     colNames[actPos] = "r"+slack;
                     slack++;

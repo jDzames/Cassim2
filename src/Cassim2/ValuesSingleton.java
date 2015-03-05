@@ -35,6 +35,11 @@ public enum ValuesSingleton {
     public int gomoryVariables=0;
     protected BigFraction multBy;
     
+    public int revidedShownIdx=-1;
+    public boolean revidedMethodRunning;
+    public boolean revidedColumnIsComplete;
+    public boolean[] revidedColumnCell;
+    
     public BigFraction[][] tableDataSaved;
     public int[] basisDataIdxSaved;
     

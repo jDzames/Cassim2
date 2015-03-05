@@ -80,6 +80,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Revidovan&#xe1; &#xfa;loha"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemRevidedActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemGomory">
               <Properties>
