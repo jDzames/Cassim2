@@ -1,12 +1,15 @@
 package Cassim2;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.util.TreeSet;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -22,6 +25,7 @@ public class MainFrame  extends javax.swing.JFrame {
 
     private ImageTableModel imageTableModel = new ImageTableModel();
     private BasisTableModel basisTableModel = new BasisTableModel();
+    private RevidedImageTableModel revidedTableModel = new RevidedImageTableModel();
     private final SavedSolutionReader reader = new SavedSolutionReader();
     private final SolutionCalcService solutionCalculations = new SolutionCalcService();
     private int pocetPomPremennych;
@@ -66,6 +70,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblBaza = new javax.swing.JTable();
         btnKoniecPomUlohy = new javax.swing.JButton();
+        jComboBoxRevidedVariable = new javax.swing.JComboBox();
         jMenuBar = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemOpenNew = new javax.swing.JMenuItem();
@@ -74,7 +79,6 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemSave = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
         jMenuTable = new javax.swing.JMenu();
-        jMenuItemRevided = new javax.swing.JMenuItem();
         jMenuItemGomory = new javax.swing.JMenuItem();
         jMenuItemSuppRole = new javax.swing.JMenuItem();
         jMenuItemBasisSolution = new javax.swing.JMenuItem();
@@ -83,10 +87,14 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemPivot = new javax.swing.JMenuItem();
         jMenuItemMin = new javax.swing.JMenuItem();
         jMenuItemMax = new javax.swing.JMenuItem();
-        jMenuPomocneOperacie = new javax.swing.JMenu();
+        jMenuHelpOperations = new javax.swing.JMenu();
         jMenuItemPrenasobRiadok = new javax.swing.JMenuItem();
         jMenuItemShowSuppVariables = new javax.swing.JMenuItem();
         jMenuItemRemoveZeroLine = new javax.swing.JMenuItem();
+        jMenuRevidedMethod = new javax.swing.JMenu();
+        jMenuItemRevidedSwitch = new javax.swing.JMenuItem();
+        jMenuItemRevided0Row = new javax.swing.JMenuItem();
+        jMenuItemRevidedRowValue = new javax.swing.JMenuItem();
         jMenuHistory = new javax.swing.JMenu();
         jMenuHelp = new javax.swing.JMenu();
         jMenuItemHelp = new javax.swing.JMenuItem();
@@ -126,6 +134,8 @@ public class MainFrame  extends javax.swing.JFrame {
                 btnKoniecPomUlohyActionPerformed(evt);
             }
         });
+
+        jComboBoxRevidedVariable.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
 
         jMenuFile.setText("Úloha ");
 
@@ -179,15 +189,6 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuBar.add(jMenuFile);
 
         jMenuTable.setText("Tabuľka");
-
-        jMenuItemRevided.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemRevided.setText("Revidovaná úloha");
-        jMenuItemRevided.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemRevidedActionPerformed(evt);
-            }
-        });
-        jMenuTable.add(jMenuItemRevided);
 
         jMenuItemGomory.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemGomory.setText("Gomoryho rez");
@@ -258,7 +259,7 @@ public class MainFrame  extends javax.swing.JFrame {
 
         jMenuBar.add(jMenuEdit);
 
-        jMenuPomocneOperacie.setText("Pomocné operácie");
+        jMenuHelpOperations.setText("Pomocné operácie");
 
         jMenuItemPrenasobRiadok.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, 0));
         jMenuItemPrenasobRiadok.setText("Prenásob riadok");
@@ -267,7 +268,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 jMenuItemPrenasobRiadokActionPerformed(evt);
             }
         });
-        jMenuPomocneOperacie.add(jMenuItemPrenasobRiadok);
+        jMenuHelpOperations.add(jMenuItemPrenasobRiadok);
 
         jMenuItemShowSuppVariables.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 0));
         jMenuItemShowSuppVariables.setText("Zobraz pomocné stĺpce");
@@ -276,7 +277,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 jMenuItemShowSuppVariablesActionPerformed(evt);
             }
         });
-        jMenuPomocneOperacie.add(jMenuItemShowSuppVariables);
+        jMenuHelpOperations.add(jMenuItemShowSuppVariables);
 
         jMenuItemRemoveZeroLine.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
         jMenuItemRemoveZeroLine.setText("Odstráň nulový riadok");
@@ -285,9 +286,38 @@ public class MainFrame  extends javax.swing.JFrame {
                 jMenuItemRemoveZeroLineActionPerformed(evt);
             }
         });
-        jMenuPomocneOperacie.add(jMenuItemRemoveZeroLine);
+        jMenuHelpOperations.add(jMenuItemRemoveZeroLine);
 
-        jMenuBar.add(jMenuPomocneOperacie);
+        jMenuBar.add(jMenuHelpOperations);
+
+        jMenuRevidedMethod.setText("Revidovaná metóda");
+
+        jMenuItemRevidedSwitch.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+        jMenuItemRevidedSwitch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRevidedSwitchActionPerformed(evt);
+            }
+        });
+        jMenuRevidedMethod.add(jMenuItemRevidedSwitch);
+
+        jMenuItemRevided0Row.setText("účelová");
+        jMenuItemRevided0Row.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRevided0RowActionPerformed(evt);
+            }
+        });
+        jMenuRevidedMethod.add(jMenuItemRevided0Row);
+
+        jMenuItemRevidedRowValue.setText("vybraté");
+        jMenuItemRevidedRowValue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemRevidedRowValueActionPerformed(evt);
+            }
+        });
+        jMenuRevidedMethod.add(jMenuItemRevidedRowValue);
+
+        jMenuBar.add(jMenuRevidedMethod);
 
         jMenuHistory.setText("História");
         jMenuHistory.addActionListener(new java.awt.event.ActionListener() {
@@ -317,25 +347,30 @@ public class MainFrame  extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(btnKoniecPomUlohy)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(35, 35, 35)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
-                        .addGap(41, 41, 41))))
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnKoniecPomUlohy)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jComboBoxRevidedVariable, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(btnKoniecPomUlohy)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnKoniecPomUlohy)
                     .addGroup(layout.createSequentialGroup()
+                        .addComponent(jComboBoxRevidedVariable, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(48, 48, 48)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE))
                 .addGap(47, 47, 47))
         );
 
@@ -349,12 +384,18 @@ public class MainFrame  extends javax.swing.JFrame {
         
         jMenuHistory.setEnabled(false);
         jMenuEdit.setEnabled(false);
-        jMenuPomocneOperacie.setEnabled(false);
+        jMenuHelpOperations.setEnabled(false);
+        jMenuRevidedMethod.setEnabled(false);
         jMenuTable.setEnabled(false);
         jMenuItemSave.setEnabled(false);
         jMenuItemBasisSolution.setEnabled(false);
+        jMenuItemShowSuppVariables.setEnabled(false);
+        jMenuItemGomory.setEnabled(false);
+        jMenuItemMakeBasis.setEnabled(false);
+        jMenuItemMax.setEnabled(false);
         
         btnKoniecPomUlohy.setVisible(false);
+        jComboBoxRevidedVariable.setVisible(false);
     }
     
     private void initSolution(){
@@ -364,6 +405,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
         tblBaza = new JTable();
         tblSolution = new JTable();
+        
         
         tblBaza.setRowHeight(44);
         tblSolution.setRowHeight(44);
@@ -383,12 +425,18 @@ public class MainFrame  extends javax.swing.JFrame {
         tblBaza.setDefaultRenderer(JLabel.class, new BasisRenderer(tblBaza));
         tblBaza.setFont(new Font("Times New Roman", Font.BOLD, 16));
         
+        jComboBoxRevidedVariable.setVisible(false);
         jMenuHistory.setEnabled(true);
         jMenuEdit.setEnabled(true);
-        jMenuPomocneOperacie.setEnabled(true);
+        jMenuHelpOperations.setEnabled(true);
+        jMenuRevidedMethod.setEnabled(true);
         jMenuTable.setEnabled(true);
         jMenuItemSave.setEnabled(true);
         jMenuItemBasisSolution.setEnabled(true);
+        jMenuItemShowSuppVariables.setEnabled(true);
+        jMenuItemGomory.setEnabled(true);
+        jMenuItemMakeBasis.setEnabled(true);
+        jMenuItemMax.setEnabled(true);
         
         ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
         
@@ -489,7 +537,12 @@ public class MainFrame  extends javax.swing.JFrame {
         solutionCalculations.makeZeroOverBasis();
         //tblSolution.repaint();
         //tblBaza.repaint();
-        imageTableModel.fireTableDataChanged();
+        if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+            revidedTableModel.fireTableDataChanged();
+        }else{
+            imageTableModel.fireTableDataChanged();
+        }
+        
         SavingWriterThread saver = new SavingWriterThread();
         
             String[] row = {"0"};
@@ -550,7 +603,18 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemGomoryActionPerformed
 
     private void jMenuItemMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMinActionPerformed
-        int checkedMin = solutionCalculations.checkMin(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+        int selColumn = tblSolution.getSelectedColumn();
+        
+        if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+            if (selColumn == ValuesSingleton.INSTANCE.rows + 1) {
+                selColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
+            } else if (selColumn == 0) {
+                selColumn = 0;
+            } else {
+                selColumn = ValuesSingleton.INSTANCE.basisDataIdx[selColumn - 1];
+            }
+        }
+        int checkedMin = solutionCalculations.checkMin(tblSolution.getSelectedRow(), selColumn);
 
         switch(checkedMin){
             case -4: JOptionPane.showMessageDialog(this, "Vyberte bunku kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
@@ -562,12 +626,12 @@ public class MainFrame  extends javax.swing.JFrame {
                     if (potvrdenie != JOptionPane.YES_OPTION) {
                         return;
                     }
-            default: int focusRow = solutionCalculations.minimum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
-                    if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator().longValue()<0) {
+            default: int focusRow = solutionCalculations.minimum(tblSolution.getSelectedRow(), selColumn);
+                    if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][selColumn].getNumerator().longValue()<0) {
                         JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                         return;
                     } else
-                        if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][tblSolution.getSelectedColumn()].getNumerator().longValue()==0) {
+                        if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][selColumn].getNumerator().longValue()==0) {
                             JOptionPane.showMessageDialog(this, "Tento stĺpec nie je vhodný na hľadanie minima.", "Nevhodný stĺpec", JOptionPane.PLAIN_MESSAGE);
                             return;
                         }
@@ -619,6 +683,17 @@ public class MainFrame  extends javax.swing.JFrame {
         }*/
         int selectedRow = tblSolution.getSelectedRow();
         int selectedColumn = tblSolution.getSelectedColumn();
+        
+        if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+            if (selectedColumn == ValuesSingleton.INSTANCE.rows + 1) {
+                selectedColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
+            } else if (selectedColumn == 0) {
+                selectedColumn = 0;
+            } else {
+                selectedColumn = ValuesSingleton.INSTANCE.basisDataIdx[selectedColumn - 1];
+            }
+        }
+        
         int checkPivot = solutionCalculations.checkPivot(selectedRow, selectedColumn);
         switch(checkPivot){
             case -1: JOptionPane.showMessageDialog(this, "Vyberte riadok/stĺpec kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
@@ -642,7 +717,11 @@ public class MainFrame  extends javax.swing.JFrame {
                 } 
             default: //pivotuj
                 solutionCalculations.pivot(selectedRow, selectedColumn);                   
-                imageTableModel.fireTableDataChanged();
+                if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                    revidedTableModel.fireTableDataChanged();
+                }else{
+                    imageTableModel.fireTableDataChanged();
+                }
                 basisTableModel.fireTableDataChanged();
                 SavingWriterThread saver = new SavingWriterThread();
                 
@@ -705,8 +784,14 @@ public class MainFrame  extends javax.swing.JFrame {
             
             ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
             
-            imageTableModel = new ImageTableModel();
-            tblSolution.setModel(imageTableModel);
+            if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                revidedTableModel= new RevidedImageTableModel();
+                tblSolution.setModel(revidedTableModel);
+            }else{
+                imageTableModel = new ImageTableModel();
+                tblSolution.setModel(imageTableModel);
+            }
+            
             basisTableModel = new BasisTableModel();
             tblBaza.setModel(basisTableModel);
             btnKoniecPomUlohy.setVisible(false);
@@ -726,8 +811,14 @@ public class MainFrame  extends javax.swing.JFrame {
             }
             ValuesSingleton.INSTANCE.endOfSuppRoleNotOpt(pocetPomPremennych);
             
-            imageTableModel = new ImageTableModel();
-            tblSolution.setModel(imageTableModel);
+            if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                revidedTableModel= new RevidedImageTableModel();
+                tblSolution.setModel(revidedTableModel);
+            }else{
+                imageTableModel = new ImageTableModel();
+                tblSolution.setModel(imageTableModel);
+            }
+            
             basisTableModel.fireTableDataChanged();
             btnKoniecPomUlohy.setVisible(false);
             SavingWriterThread saver = new SavingWriterThread();
@@ -1051,20 +1142,95 @@ public class MainFrame  extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemRemoveZeroLineActionPerformed
 
-    private void jMenuItemRevidedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRevidedActionPerformed
+    private void jMenuItemRevidedSwitchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRevidedSwitchActionPerformed
+        if (!solutionCalculations.isBased()) {
+            JOptionPane.showMessageDialog(this, "Tabuľka nemá bázu!", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+            jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemGomory.setEnabled(true);
+            jMenuHelpOperations.setEnabled(true);
+            jMenuItemMax.setEnabled(true);
+            jMenuItemRevided0Row.setEnabled(false);
+            jMenuItemRevidedRowValue.setEnabled(false);
+            jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+            jComboBoxRevidedVariable.setVisible(false);
             
+            ValuesSingleton.INSTANCE.revidedMethodRunning=false;
+            
+            imageTableModel = new ImageTableModel();
+            tblSolution.setModel(imageTableModel);
         } else {
             jMenuItemShowSuppVariables.setEnabled(false);
             jMenuItemGomory.setEnabled(false);
-        
+            jMenuHelpOperations.setEnabled(false);
+            jMenuItemMax.setEnabled(false);
+            jMenuItemRevided0Row.setEnabled(false);
+            jMenuItemRevidedRowValue.setEnabled(false);
+            jMenuItemRevidedSwitch.setText("Ukončiť revidovanú metódu");
+            jComboBoxRevidedVariable.setVisible(true);
+            ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[ValuesSingleton.INSTANCE.rows+1];
+            jComboBoxRevidedVariable.addItem(new ComboBoxObjects(-1, ""));
+            fillComboBox();
+            addComboBoxListener();
+            
+            ValuesSingleton.INSTANCE.revidedMethodRunning=true;
+            
             imageTableModel = new RevidedImageTableModel();
             tblSolution.setModel(imageTableModel);
         }
         
-    }//GEN-LAST:event_jMenuItemRevidedActionPerformed
+    }//GEN-LAST:event_jMenuItemRevidedSwitchActionPerformed
+
+    private void jMenuItemRevided0RowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRevided0RowActionPerformed
+        ValuesSingleton.INSTANCE.revidedColumnCell[0]=true;
+        revidedTableModel.fireTableDataChanged();
+        jMenuItemRevidedRowValue.setEnabled(true);
+    }//GEN-LAST:event_jMenuItemRevided0RowActionPerformed
+
+    private void jMenuItemRevidedRowValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRevidedRowValueActionPerformed
+        int selectedRow = tblSolution.getSelectedRow();
+        if (selectedRow<=0) {
+            JOptionPane.showMessageDialog(this, "Vyberte nenulový riadok!", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+        ValuesSingleton.INSTANCE.revidedColumnCell[selectedRow]=true;
+        revidedTableModel.fireTableDataChanged();
+    }//GEN-LAST:event_jMenuItemRevidedRowValueActionPerformed
 
     
+    private void fillComboBox() {
+        TreeSet<Integer> basisIdxs = new TreeSet<>();
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            basisIdxs.add(ValuesSingleton.INSTANCE.basisDataIdx[i]);
+        }
+        for (int i = 1; i < ValuesSingleton.INSTANCE.columnNames.length; i++) {
+            if (!basisIdxs.contains(i)) {
+                jComboBoxRevidedVariable.addItem(new ComboBoxObjects(i, ValuesSingleton.INSTANCE.columnNames[i]));
+            }
+        }
+    }
+
+    private void addComboBoxListener() {
+        jComboBoxRevidedVariable.addActionListener (new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ComboBoxObjects selected = (ComboBoxObjects)(jComboBoxRevidedVariable.getSelectedItem());
+                ValuesSingleton.INSTANCE.revidedShownIdx = selected.getColumn();
+                ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[ValuesSingleton.INSTANCE.rows+1];
+                jMenuItemRevidedRowValue.setEnabled(false);
+                if (selected.getColumn()!=-1) {
+                    jMenuItemRevided0Row.setEnabled(true);
+                }else{
+                    jMenuItemRevided0Row.setEnabled(false);
+                }
+                revidedTableModel= new RevidedImageTableModel();
+                tblSolution.setModel(revidedTableModel);
+            }
+        });
+    }
+
     
     
     public static void main(String args[]) {
@@ -1098,10 +1264,12 @@ public class MainFrame  extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnKoniecPomUlohy;
+    private javax.swing.JComboBox jComboBoxRevidedVariable;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuEdit;
     private javax.swing.JMenu jMenuFile;
     private javax.swing.JMenu jMenuHelp;
+    private javax.swing.JMenu jMenuHelpOperations;
     private javax.swing.JMenu jMenuHistory;
     private javax.swing.JMenuItem jMenuItemAboutAuthors;
     private javax.swing.JMenuItem jMenuItemBasisSolution;
@@ -1117,11 +1285,13 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemPivot;
     private javax.swing.JMenuItem jMenuItemPrenasobRiadok;
     private javax.swing.JMenuItem jMenuItemRemoveZeroLine;
-    private javax.swing.JMenuItem jMenuItemRevided;
+    private javax.swing.JMenuItem jMenuItemRevided0Row;
+    private javax.swing.JMenuItem jMenuItemRevidedRowValue;
+    private javax.swing.JMenuItem jMenuItemRevidedSwitch;
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenuItem jMenuItemShowSuppVariables;
     private javax.swing.JMenuItem jMenuItemSuppRole;
-    private javax.swing.JMenu jMenuPomocneOperacie;
+    private javax.swing.JMenu jMenuRevidedMethod;
     private javax.swing.JMenu jMenuTable;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
