@@ -199,13 +199,14 @@ public enum ValuesSingleton {
             this.tableData[0][i]=tableDataSaved[0][i];
         }
         ValuesSingleton.INSTANCE.tableDataSaved=null;
-        ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.showColumns-pocetPomPremennych;
+        ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.columnNames.length-pocetPomPremennych;
         
         for (int i = 0; i < this.basisDataIdx.length; i++) {
             if (this.basisDataIdx[i]>=columnNames.length-suppRoleVariables) {
                 this.basisDataIdx[i]=-1;
             }
         }
+        
         /*ValuesSingleton.INSTANCE.tableData=ValuesSingleton.INSTANCE.tableDataSaved;
         ValuesSingleton.INSTANCE.basisDataIdx=ValuesSingleton.INSTANCE.basisDataIdxSaved;
         

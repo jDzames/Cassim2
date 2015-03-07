@@ -126,7 +126,7 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
             Object cellValue, boolean isSelected, boolean hasFocus, int row,
             int column) {
 
-        boolean focusable = ValuesSingleton.INSTANCE.suppRoleRunning || column < ValuesSingleton.INSTANCE.columnNames.length - ValuesSingleton.INSTANCE.suppRoleVariables;
+        boolean focusable = ValuesSingleton.INSTANCE.revidedMethodRunning || ValuesSingleton.INSTANCE.suppRoleRunning || column < ValuesSingleton.INSTANCE.columnNames.length - ValuesSingleton.INSTANCE.suppRoleVariables;
         if (!focusable) {
             this.setFocusable(false);
         }
@@ -149,7 +149,12 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
             } else if (column == 0) {
                 setValue(ValuesSingleton.INSTANCE.tableData[row][column]);
             } else {
-                setValue(ValuesSingleton.INSTANCE.tableData[row][ValuesSingleton.INSTANCE.basisDataIdx[column - 1]]);
+                if (ValuesSingleton.INSTANCE.basisDataIdx[column - 1]<0) {
+                    setValue(null);
+                } else {
+                    setValue(ValuesSingleton.INSTANCE.tableData[row][ValuesSingleton.INSTANCE.basisDataIdx[column - 1]]);
+                }
+                
             }
         } else {
             setValue(ValuesSingleton.INSTANCE.tableData[row][column]);

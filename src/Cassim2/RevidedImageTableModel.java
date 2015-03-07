@@ -27,7 +27,11 @@ public class RevidedImageTableModel extends ImageTableModel {
               return ValuesSingleton.INSTANCE.columnNames[ValuesSingleton.INSTANCE.revidedShownIdx];
           }
       } else {
-          return ValuesSingleton.INSTANCE.columnNames[ValuesSingleton.INSTANCE.basisDataIdx[col-1]];
+          if (ValuesSingleton.INSTANCE.basisDataIdx[col-1]<0) {
+              return "";
+          } else {
+              return ValuesSingleton.INSTANCE.columnNames[ValuesSingleton.INSTANCE.basisDataIdx[col-1]];
+          }
       }
       
     }

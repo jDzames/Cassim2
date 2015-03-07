@@ -29,6 +29,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private final SavedSolutionReader reader = new SavedSolutionReader();
     private final SolutionCalcService solutionCalculations = new SolutionCalcService();
     private int pocetPomPremennych;
+    private boolean youCan=true;
     
     
 
@@ -425,18 +426,26 @@ public class MainFrame  extends javax.swing.JFrame {
         tblBaza.setDefaultRenderer(JLabel.class, new BasisRenderer(tblBaza));
         tblBaza.setFont(new Font("Times New Roman", Font.BOLD, 16));
         
-        jComboBoxRevidedVariable.setVisible(false);
-        jMenuHistory.setEnabled(true);
-        jMenuEdit.setEnabled(true);
-        jMenuHelpOperations.setEnabled(true);
-        jMenuRevidedMethod.setEnabled(true);
-        jMenuTable.setEnabled(true);
         jMenuItemSave.setEnabled(true);
-        jMenuItemBasisSolution.setEnabled(true);
-        jMenuItemShowSuppVariables.setEnabled(true);
+            
+        jMenuTable.setEnabled(true);
         jMenuItemGomory.setEnabled(true);
-        jMenuItemMakeBasis.setEnabled(true);
+        jMenuItemSuppRole.setEnabled(true);
+        jMenuItemBasisSolution.setEnabled(true);
+
+        jMenuEdit.setEnabled(true);
         jMenuItemMax.setEnabled(true);
+        jMenuItemMakeBasis.setEnabled(true);
+
+        jMenuHelpOperations.setEnabled(true);
+        jMenuItemShowSuppVariables.setEnabled(true);
+
+        jMenuRevidedMethod.setEnabled(true);
+        jMenuItemRevided0Row.setEnabled(true);
+        jMenuItemRevidedRowValue.setEnabled(true);        
+        jComboBoxRevidedVariable.setVisible(false);
+
+        jMenuHistory.setEnabled(true);
         
         ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
         
@@ -539,6 +548,7 @@ public class MainFrame  extends javax.swing.JFrame {
         //tblBaza.repaint();
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
             revidedTableModel.fireTableDataChanged();
+            tblSolution.repaint();
         }else{
             imageTableModel.fireTableDataChanged();
         }
@@ -715,11 +725,19 @@ public class MainFrame  extends javax.swing.JFrame {
                 if (potvrdenie2 != JOptionPane.YES_OPTION) {
                     return;
                 } 
-            default: //pivotuj
-                solutionCalculations.pivot(selectedRow, selectedColumn);                   
+            default: //pivotuj       
                 if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
-                    revidedTableModel.fireTableDataChanged();
+                    int idx = ValuesSingleton.INSTANCE.basisDataIdx[selectedRow-1];
+                    jComboBoxRevidedVariable.removeItem(jComboBoxRevidedVariable.getSelectedItem());
+                    if (idx>0) {
+                        ComboBoxObjects coToCombo = new ComboBoxObjects(idx, ValuesSingleton.INSTANCE.columnNames[idx]);
+                        jComboBoxRevidedVariable.addItem(coToCombo);
+                    }
+                    solutionCalculations.pivot(selectedRow, selectedColumn);  
+                    revidedTableModel= new RevidedImageTableModel();
+                    tblSolution.setModel(revidedTableModel);
                 }else{
+                    solutionCalculations.pivot(selectedRow, selectedColumn);     
                     imageTableModel.fireTableDataChanged();
                 }
                 basisTableModel.fireTableDataChanged();
@@ -780,6 +798,7 @@ public class MainFrame  extends javax.swing.JFrame {
 
     private void btnKoniecPomUlohyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKoniecPomUlohyActionPerformed
         //este skoncenie - 1.spravne podmienky a 2. ked nespravne ta savedTableData nahodit
+        youCan = false;
         if (solutionCalculations.rightEndOfSuppRole(pocetPomPremennych)) {
             
             ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
@@ -818,7 +837,9 @@ public class MainFrame  extends javax.swing.JFrame {
                 imageTableModel = new ImageTableModel();
                 tblSolution.setModel(imageTableModel);
             }
-            
+            jComboBoxRevidedVariable.removeAllItems();
+            jComboBoxRevidedVariable.addItem(new ComboBoxObjects(-1, ""));
+            fillComboBoxAfterSuppRole();
             basisTableModel.fireTableDataChanged();
             btnKoniecPomUlohy.setVisible(false);
             SavingWriterThread saver = new SavingWriterThread();
@@ -831,6 +852,7 @@ public class MainFrame  extends javax.swing.JFrame {
             
         }
         ValuesSingleton.INSTANCE.suppRoleRunning = false;
+        youCan = true;
     }//GEN-LAST:event_btnKoniecPomUlohyActionPerformed
 
     private void jMenuItemPrenasobRiadokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPrenasobRiadokActionPerformed
@@ -953,13 +975,35 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         
         ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
+        ValuesSingleton.INSTANCE.revidedMethodRunning=false;
+        
         basisTableModel = new BasisTableModel();
         imageTableModel = new ImageTableModel();
         
         if (!tblSolution.isVisible()) {
             initSolution();
         } else {
+            jMenuItemSave.setEnabled(true);
+            
+            jMenuTable.setEnabled(true);
+            jMenuItemGomory.setEnabled(true);
             jMenuItemSuppRole.setEnabled(true);
+            jMenuItemBasisSolution.setEnabled(true);
+            
+            jMenuEdit.setEnabled(true);
+            jMenuItemMax.setEnabled(true);
+            jMenuItemMakeBasis.setEnabled(true);
+            
+            jMenuHelpOperations.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(true);
+            
+            jMenuRevidedMethod.setEnabled(true);
+            jMenuItemRevided0Row.setEnabled(true);
+            jMenuItemRevidedRowValue.setEnabled(true);        
+            jComboBoxRevidedVariable.setVisible(false);
+            
+            jMenuHistory.setEnabled(true);
+            
             tblSolution.setModel(imageTableModel);
             tblBaza.setModel(basisTableModel);
             solutionCalculations.findBasis();
@@ -1018,6 +1062,8 @@ public class MainFrame  extends javax.swing.JFrame {
         
         ValuesSingleton.INSTANCE.suppRoleVariables = 0;
         ValuesSingleton.INSTANCE.gomoryVariables = 0;
+        ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
+        ValuesSingleton.INSTANCE.revidedMethodRunning=false;
         
         this.pocetPomPremennych = 0;
         btnKoniecPomUlohy.setVisible(false);
@@ -1035,6 +1081,27 @@ public class MainFrame  extends javax.swing.JFrame {
             if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
                 tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             }
+            
+            jMenuItemSave.setEnabled(true);
+            
+            jMenuTable.setEnabled(true);
+            jMenuItemGomory.setEnabled(true);
+            jMenuItemSuppRole.setEnabled(true);
+            jMenuItemBasisSolution.setEnabled(true);
+            
+            jMenuEdit.setEnabled(true);
+            jMenuItemMax.setEnabled(true);
+            jMenuItemMakeBasis.setEnabled(true);
+            
+            jMenuHelpOperations.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(true);
+            
+            jMenuRevidedMethod.setEnabled(true);
+            jMenuItemRevided0Row.setEnabled(true);
+            jMenuItemRevidedRowValue.setEnabled(true);        
+            jComboBoxRevidedVariable.setVisible(false);
+            
+            jMenuHistory.setEnabled(true);
             
             tblSolution.setModel(imageTableModel);
             tblBaza.setModel(basisTableModel);
@@ -1080,6 +1147,8 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.suppRoleVariables = 0;
         ValuesSingleton.INSTANCE.gomoryVariables = 0;
         this.pocetPomPremennych = 0;
+        ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
+        ValuesSingleton.INSTANCE.revidedMethodRunning=false;
         btnKoniecPomUlohy.setVisible(false);
         
         int[] pole = new int[ValuesSingleton.INSTANCE.rows];
@@ -1101,6 +1170,26 @@ public class MainFrame  extends javax.swing.JFrame {
             if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
                 tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
             }
+            jMenuItemSave.setEnabled(true);
+            
+            jMenuTable.setEnabled(true);
+            jMenuItemGomory.setEnabled(true);
+            jMenuItemSuppRole.setEnabled(true);
+            jMenuItemBasisSolution.setEnabled(true);
+            
+            jMenuEdit.setEnabled(true);
+            jMenuItemMax.setEnabled(true);
+            jMenuItemMakeBasis.setEnabled(true);
+            
+            jMenuHelpOperations.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(true);
+            
+            jMenuRevidedMethod.setEnabled(true);
+            jMenuItemRevided0Row.setEnabled(true);
+            jMenuItemRevidedRowValue.setEnabled(true);        
+            jComboBoxRevidedVariable.setVisible(false);
+            
+            jMenuHistory.setEnabled(true);
             
             tblBaza.setModel(basisTableModel);
             tblSolution.setModel(imageTableModel);
@@ -1108,7 +1197,7 @@ public class MainFrame  extends javax.swing.JFrame {
             basisTableModel.fireTableDataChanged();
         }
         
-        btnKoniecPomUlohy.setVisible((this.pocetPomPremennych>0));
+        //btnKoniecPomUlohy.setVisible((this.pocetPomPremennych>0));
     }//GEN-LAST:event_jMenuItemOpenSavedSolutionActionPerformed
 
     private void jMenuItemBasisSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemBasisSolutionActionPerformed
@@ -1201,6 +1290,7 @@ public class MainFrame  extends javax.swing.JFrame {
 
     
     private void fillComboBox() {
+        youCan = true;
         TreeSet<Integer> basisIdxs = new TreeSet<>();
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
             basisIdxs.add(ValuesSingleton.INSTANCE.basisDataIdx[i]);
@@ -1212,10 +1302,25 @@ public class MainFrame  extends javax.swing.JFrame {
         }
     }
 
+    private void fillComboBoxAfterSuppRole() {
+        TreeSet<Integer> basisIdxs = new TreeSet<>();
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            basisIdxs.add(ValuesSingleton.INSTANCE.basisDataIdx[i]);
+        }
+        for (int i = 1; i < ValuesSingleton.INSTANCE.showColumns; i++) {
+            if (!basisIdxs.contains(i)) {
+                jComboBoxRevidedVariable.addItem(new ComboBoxObjects(i, ValuesSingleton.INSTANCE.columnNames[i]));
+            }
+        }
+    }
+    
     private void addComboBoxListener() {
         jComboBoxRevidedVariable.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (!youCan) {
+                    return;
+                }
                 ComboBoxObjects selected = (ComboBoxObjects)(jComboBoxRevidedVariable.getSelectedItem());
                 ValuesSingleton.INSTANCE.revidedShownIdx = selected.getColumn();
                 ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[ValuesSingleton.INSTANCE.rows+1];
