@@ -217,7 +217,10 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemRevided0Row">
               <Properties>
-                <Property name="text" type="java.lang.String" value="&#xfa;&#x10d;elov&#xe1;"/>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="U"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Vypo&#x10d;&#xed;taj &#xfa;&#x10d;elov&#xfa; funkciu"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemRevided0RowActionPerformed"/>
@@ -225,7 +228,10 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItemRevidedRowValue">
               <Properties>
-                <Property name="text" type="java.lang.String" value="vybrat&#xe9;"/>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="L"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Vypo&#x10d;&#xed;taj st&#x13a;pec"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItemRevidedRowValueActionPerformed"/>

@@ -141,7 +141,9 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
         }
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
             if (column == ValuesSingleton.INSTANCE.rows + 1) {
-                if (ValuesSingleton.INSTANCE.revidedColumnCell[row]) {
+                if (row==0 && ValuesSingleton.INSTANCE.revidedColumnCell[row]) {
+                    setValue(ValuesSingleton.INSTANCE.tableData[row][ValuesSingleton.INSTANCE.revidedShownIdx]);
+                } else if(row>0 && ValuesSingleton.INSTANCE.revidedColumnCell[1]){
                     setValue(ValuesSingleton.INSTANCE.tableData[row][ValuesSingleton.INSTANCE.revidedShownIdx]);
                 } else {
                     setValue(null);

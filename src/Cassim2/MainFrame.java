@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import java.util.TreeSet;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -302,7 +301,8 @@ public class MainFrame  extends javax.swing.JFrame {
         });
         jMenuRevidedMethod.add(jMenuItemRevidedSwitch);
 
-        jMenuItemRevided0Row.setText("účelová");
+        jMenuItemRevided0Row.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, 0));
+        jMenuItemRevided0Row.setText("Vypočítaj účelovú funkciu");
         jMenuItemRevided0Row.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemRevided0RowActionPerformed(evt);
@@ -310,7 +310,8 @@ public class MainFrame  extends javax.swing.JFrame {
         });
         jMenuRevidedMethod.add(jMenuItemRevided0Row);
 
-        jMenuItemRevidedRowValue.setText("vybraté");
+        jMenuItemRevidedRowValue.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, 0));
+        jMenuItemRevidedRowValue.setText("Vypočítaj stĺpec");
         jMenuItemRevidedRowValue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItemRevidedRowValueActionPerformed(evt);
@@ -387,6 +388,9 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuEdit.setEnabled(false);
         jMenuHelpOperations.setEnabled(false);
         jMenuRevidedMethod.setEnabled(false);
+        jMenuItemRevidedSwitch.setEnabled(false);
+        jMenuItemRevided0Row.setEnabled(false);
+        jMenuItemRevidedRowValue.setEnabled(false);
         jMenuTable.setEnabled(false);
         jMenuItemSave.setEnabled(false);
         jMenuItemBasisSolution.setEnabled(false);
@@ -394,6 +398,8 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemGomory.setEnabled(false);
         jMenuItemMakeBasis.setEnabled(false);
         jMenuItemMax.setEnabled(false);
+        
+        jComboBoxRevidedVariable.removeAllItems();
         
         btnKoniecPomUlohy.setVisible(false);
         jComboBoxRevidedVariable.setVisible(false);
@@ -441,8 +447,9 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemShowSuppVariables.setEnabled(true);
 
         jMenuRevidedMethod.setEnabled(true);
-        jMenuItemRevided0Row.setEnabled(true);
-        jMenuItemRevidedRowValue.setEnabled(true);        
+        jMenuItemRevidedSwitch.setEnabled(true);
+        jMenuItemRevided0Row.setEnabled(false);
+        jMenuItemRevidedRowValue.setEnabled(false);        
         jComboBoxRevidedVariable.setVisible(false);
 
         jMenuHistory.setEnabled(true);
@@ -617,11 +624,22 @@ public class MainFrame  extends javax.swing.JFrame {
         
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
             if (selColumn == ValuesSingleton.INSTANCE.rows + 1) {
+                if (!(ValuesSingleton.INSTANCE.revidedColumnCell[0] && ValuesSingleton.INSTANCE.revidedColumnCell[1])) {
+                    JOptionPane.showMessageDialog(this, "Nie je vypočítaný stĺpec!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
                 selColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
             } else if (selColumn == 0) {
                 selColumn = 0;
             } else {
-                selColumn = ValuesSingleton.INSTANCE.basisDataIdx[selColumn - 1];
+                int rowinBasis = 0;
+                for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
+                    if (ValuesSingleton.INSTANCE.tableData[i+1][selColumn].compareTo(BigFraction.ZERO)!=0) {
+                        rowinBasis = i;
+                        break;
+                    }
+                }
+                selColumn = ValuesSingleton.INSTANCE.basisDataIdx[rowinBasis];
             }
         }
         int checkedMin = solutionCalculations.checkMin(tblSolution.getSelectedRow(), selColumn);
@@ -696,11 +714,22 @@ public class MainFrame  extends javax.swing.JFrame {
         
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
             if (selectedColumn == ValuesSingleton.INSTANCE.rows + 1) {
+                if (!(ValuesSingleton.INSTANCE.revidedColumnCell[0] && ValuesSingleton.INSTANCE.revidedColumnCell[1])) {
+                    JOptionPane.showMessageDialog(this, "Nie je vypočítaný stĺpec!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
+                    return;
+                }
                 selectedColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
             } else if (selectedColumn == 0) {
                 selectedColumn = 0;
             } else {
-                selectedColumn = ValuesSingleton.INSTANCE.basisDataIdx[selectedColumn - 1];
+                int rowinBasis = 0;
+                for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
+                    if (ValuesSingleton.INSTANCE.tableData[i+1][selectedColumn].compareTo(BigFraction.ZERO)!=0) {
+                        rowinBasis = i;
+                        break;
+                    }
+                }
+                selectedColumn = ValuesSingleton.INSTANCE.basisDataIdx[rowinBasis];
             }
         }
         
@@ -727,12 +756,6 @@ public class MainFrame  extends javax.swing.JFrame {
                 } 
             default: //pivotuj       
                 if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
-                    int idx = ValuesSingleton.INSTANCE.basisDataIdx[selectedRow-1];
-                    jComboBoxRevidedVariable.removeItem(jComboBoxRevidedVariable.getSelectedItem());
-                    if (idx>0) {
-                        ComboBoxObjects coToCombo = new ComboBoxObjects(idx, ValuesSingleton.INSTANCE.columnNames[idx]);
-                        jComboBoxRevidedVariable.addItem(coToCombo);
-                    }
                     solutionCalculations.pivot(selectedRow, selectedColumn);  
                     revidedTableModel= new RevidedImageTableModel();
                     tblSolution.setModel(revidedTableModel);
@@ -998,8 +1021,10 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemShowSuppVariables.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
-            jMenuItemRevided0Row.setEnabled(true);
-            jMenuItemRevidedRowValue.setEnabled(true);        
+            jMenuItemRevidedSwitch.setEnabled(true);
+            jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+            jMenuItemRevided0Row.setEnabled(false);
+            jMenuItemRevidedRowValue.setEnabled(false);        
             jComboBoxRevidedVariable.setVisible(false);
             
             jMenuHistory.setEnabled(true);
@@ -1097,8 +1122,10 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemShowSuppVariables.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
-            jMenuItemRevided0Row.setEnabled(true);
-            jMenuItemRevidedRowValue.setEnabled(true);        
+            jMenuItemRevidedSwitch.setEnabled(true);
+            jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+            jMenuItemRevided0Row.setEnabled(false);
+            jMenuItemRevidedRowValue.setEnabled(false);        
             jComboBoxRevidedVariable.setVisible(false);
             
             jMenuHistory.setEnabled(true);
@@ -1185,8 +1212,10 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemShowSuppVariables.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
-            jMenuItemRevided0Row.setEnabled(true);
-            jMenuItemRevidedRowValue.setEnabled(true);        
+            jMenuItemRevidedSwitch.setEnabled(true);
+            jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+            jMenuItemRevided0Row.setEnabled(false);
+            jMenuItemRevidedRowValue.setEnabled(false);        
             jComboBoxRevidedVariable.setVisible(false);
             
             jMenuHistory.setEnabled(true);
@@ -1259,7 +1288,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemRevidedRowValue.setEnabled(false);
             jMenuItemRevidedSwitch.setText("Ukončiť revidovanú metódu");
             jComboBoxRevidedVariable.setVisible(true);
-            ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[ValuesSingleton.INSTANCE.rows+1];
+            ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[2];
             jComboBoxRevidedVariable.addItem(new ComboBoxObjects(-1, ""));
             fillComboBox();
             addComboBoxListener();
@@ -1279,38 +1308,26 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemRevided0RowActionPerformed
 
     private void jMenuItemRevidedRowValueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRevidedRowValueActionPerformed
-        int selectedRow = tblSolution.getSelectedRow();
+        /*int selectedRow = tblSolution.getSelectedRow();
         if (selectedRow<=0) {
             JOptionPane.showMessageDialog(this, "Vyberte nenulový riadok!", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
             return;
-        }
-        ValuesSingleton.INSTANCE.revidedColumnCell[selectedRow]=true;
+        }*/
+        ValuesSingleton.INSTANCE.revidedColumnCell[1]=true;
         revidedTableModel.fireTableDataChanged();
     }//GEN-LAST:event_jMenuItemRevidedRowValueActionPerformed
 
     
     private void fillComboBox() {
         youCan = true;
-        TreeSet<Integer> basisIdxs = new TreeSet<>();
-        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
-            basisIdxs.add(ValuesSingleton.INSTANCE.basisDataIdx[i]);
-        }
         for (int i = 1; i < ValuesSingleton.INSTANCE.columnNames.length; i++) {
-            if (!basisIdxs.contains(i)) {
-                jComboBoxRevidedVariable.addItem(new ComboBoxObjects(i, ValuesSingleton.INSTANCE.columnNames[i]));
-            }
+           jComboBoxRevidedVariable.addItem(new ComboBoxObjects(i, ValuesSingleton.INSTANCE.columnNames[i]));
         }
     }
 
     private void fillComboBoxAfterSuppRole() {
-        TreeSet<Integer> basisIdxs = new TreeSet<>();
-        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
-            basisIdxs.add(ValuesSingleton.INSTANCE.basisDataIdx[i]);
-        }
         for (int i = 1; i < ValuesSingleton.INSTANCE.showColumns; i++) {
-            if (!basisIdxs.contains(i)) {
-                jComboBoxRevidedVariable.addItem(new ComboBoxObjects(i, ValuesSingleton.INSTANCE.columnNames[i]));
-            }
+            jComboBoxRevidedVariable.addItem(new ComboBoxObjects(i, ValuesSingleton.INSTANCE.columnNames[i]));
         }
     }
     
@@ -1323,7 +1340,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 }
                 ComboBoxObjects selected = (ComboBoxObjects)(jComboBoxRevidedVariable.getSelectedItem());
                 ValuesSingleton.INSTANCE.revidedShownIdx = selected.getColumn();
-                ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[ValuesSingleton.INSTANCE.rows+1];
+                ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[2];
                 jMenuItemRevidedRowValue.setEnabled(false);
                 if (selected.getColumn()!=-1) {
                     jMenuItemRevided0Row.setEnabled(true);
