@@ -8,9 +8,6 @@ import org.apache.commons.math3.fraction.BigFraction;
 
 public class SolutionCalcService {
     
-    
-    private String[] columnNames = ValuesSingleton.INSTANCE.getColumnNames();
-    private String[][] data = ValuesSingleton.INSTANCE.getData();
 
     public int check0Column(){
         //-1:ak v 0. stlpci je zaporne, +1:inak
@@ -38,7 +35,7 @@ public class SolutionCalcService {
         }
     }
     
-    private void addRowToRow(int addingRow, int toRow, BigFraction multipl){
+    public void addRowToRow(int addingRow, int toRow, BigFraction multipl){
         for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
             ValuesSingleton.INSTANCE.tableData[toRow][j] = 
                     ValuesSingleton.INSTANCE.tableData[toRow][j].add(ValuesSingleton.INSTANCE.tableData[addingRow][j].multiply(multipl));
