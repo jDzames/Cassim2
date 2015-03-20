@@ -10,6 +10,8 @@ public class CommandUndoStartSuppRole implements Command{
     @Override
     public void execute() {
         int rows = ValuesSingleton.INSTANCE.tableData[0].length - ValuesSingleton.INSTANCE.suppRoleVariables;
+        ValuesSingleton.INSTANCE.showColumns = rows;
+        
         BigFraction[][] data = new BigFraction[ValuesSingleton.INSTANCE.tableData.length][rows];
         data[0] = row0;
         for (int i = 1; i < ValuesSingleton.INSTANCE.tableData.length; i++) {
@@ -20,6 +22,7 @@ public class CommandUndoStartSuppRole implements Command{
         ValuesSingleton.INSTANCE.tableData = data;
         ValuesSingleton.INSTANCE.basisDataIdx = new int[data.length-1];
         new SolutionCalcService().findBasis();
+        
     }
 
     @Override

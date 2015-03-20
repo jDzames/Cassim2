@@ -226,7 +226,12 @@ public class SolutionCalcService {
         return 0;
     }
 
-    public void pivot(int row, int column){
+    public Command pivot(int row, int column){
+        BigFraction[] col = new BigFraction[ValuesSingleton.INSTANCE.tableData.length];
+        for (int i = 0; i < col.length; i++) {
+            col[i] = new BigFraction(ValuesSingleton.INSTANCE.tableData[i][column].getNumerator(), ValuesSingleton.INSTANCE.tableData[i][column].getDenominator());
+        }
+        Command cmd = new CommandUndoPivot(row, column, ValuesSingleton.INSTANCE.basisDataIdx[row-1],col);
         
         BigInteger num=ValuesSingleton.INSTANCE.tableData[row][column].getNumerator();
         BigInteger denom=ValuesSingleton.INSTANCE.tableData[row][column].getDenominator();
@@ -240,6 +245,7 @@ public class SolutionCalcService {
             addRowToRow(row, i, new BigFraction(ValuesSingleton.INSTANCE.tableData[i][column].getNumerator().multiply(BigInteger.valueOf(-1)), ValuesSingleton.INSTANCE.tableData[i][column].getDenominator()) );
         }
         ValuesSingleton.INSTANCE.basisDataIdx[row-1]=column;
+        return cmd;
     }
 
     public boolean rightEndOfSuppRole(int pocetPomPremennych) {

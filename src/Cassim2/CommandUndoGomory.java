@@ -22,6 +22,9 @@ public class CommandUndoGomory implements Command{
             }
         }
         ValuesSingleton.INSTANCE.tableData = newData;
+        ValuesSingleton.INSTANCE.rows--;
+        ValuesSingleton.INSTANCE.columns--;
+        ValuesSingleton.INSTANCE.showColumns--;
         
         int[] basisData = new int[ValuesSingleton.INSTANCE.basisDataIdx.length-1];
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length-1; i++) {

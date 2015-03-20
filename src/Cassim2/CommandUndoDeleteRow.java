@@ -30,6 +30,7 @@ public class CommandUndoDeleteRow implements Command{
             idx++;
         }
         ValuesSingleton.INSTANCE.tableData = data;
+        ValuesSingleton.INSTANCE.rows++;
         idx = 0;
         int[] basisData = new int[ValuesSingleton.INSTANCE.basisDataIdx.length+1];
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {

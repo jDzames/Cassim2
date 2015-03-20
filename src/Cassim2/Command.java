@@ -3,7 +3,7 @@ package Cassim2;
 
 public interface Command {    
     
-    void execute();
+    Command execute();
     
     @Override
     String toString();

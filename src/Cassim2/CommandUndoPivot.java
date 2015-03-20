@@ -5,19 +5,20 @@ import org.apache.commons.math3.fraction.BigFraction;
 
 public class CommandUndoPivot implements Command{
 
-    private final int positionRow;
-    private final int positionColumn;
+    private int positionRow;
+    private int positionColumn;
     private int oldBasisIdx;
-    private final BigFraction[] column;
+    private BigFraction[] column;
 
-    public CommandUndoPivot(int positionRow, int positionColumn, BigFraction[] column) {
+    public CommandUndoPivot(int positionRow, int positionColumn, int oldBasisidx, BigFraction[] column) {
         this.positionRow = positionRow;
         this.positionColumn = positionColumn;
+        this.oldBasisIdx = oldBasisidx;
         this.column = column;
     }
     
     @Override
-    public void execute() {
+    public Command execute() {
         SolutionCalcService solCalculations = new SolutionCalcService();
         
         for (int i = 0; i < column.length; i++) {
@@ -28,13 +29,12 @@ public class CommandUndoPivot implements Command{
         }
         solCalculations.multiplRow(positionRow, column[positionRow]);
         ValuesSingleton.INSTANCE.basisDataIdx[positionRow-1] = oldBasisIdx;
+        return new CommandPivot(positionRow, positionColumn);
     }
 
     @Override
     public String toString() {
         return "Undo pivot na"+"["+positionRow+","+positionColumn+"]"; 
     }
-    
-    
-    
+
 }
