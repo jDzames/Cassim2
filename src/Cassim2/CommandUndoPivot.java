@@ -7,6 +7,7 @@ public class CommandUndoPivot implements Command{
 
     private final int positionRow;
     private final int positionColumn;
+    private int oldBasisIdx;
     private final BigFraction[] column;
 
     public CommandUndoPivot(int positionRow, int positionColumn, BigFraction[] column) {
@@ -26,7 +27,14 @@ public class CommandUndoPivot implements Command{
             solCalculations.addRowToRow(positionRow, i, column[i]);
         }
         solCalculations.multiplRow(positionRow, column[positionRow]);
-        
+        ValuesSingleton.INSTANCE.basisDataIdx[positionRow-1] = oldBasisIdx;
     }
+
+    @Override
+    public String toString() {
+        return "Undo pivot na"+"["+positionRow+","+positionColumn+"]"; 
+    }
+    
+    
     
 }

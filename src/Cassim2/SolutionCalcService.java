@@ -251,7 +251,7 @@ public class SolutionCalcService {
             return false;
         }
         
-        int pocetPovodStlpcov = ValuesSingleton.INSTANCE.columns-pocetPomPremennych;
+        int pocetPovodStlpcov = ValuesSingleton.INSTANCE.showColumns;
         for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
             if (ValuesSingleton.INSTANCE.basisDataIdx[i]>pocetPovodStlpcov) {
                 
@@ -308,7 +308,7 @@ public class SolutionCalcService {
             return false;
         }
         //ci je riadok na vymazanie
-        for (int i = 0; i < ValuesSingleton.INSTANCE.tableData[0].length; i++) {
+        for (int i = 0; i < ValuesSingleton.INSTANCE.showColumns; i++) {
             if (ValuesSingleton.INSTANCE.tableData[row][i].compareTo(BigFraction.ZERO)!=0) {
                 return false;
             }

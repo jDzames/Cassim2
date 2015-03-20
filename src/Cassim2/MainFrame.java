@@ -666,7 +666,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     if (focusRow>0 && focusRow<= ValuesSingleton.INSTANCE.rows) {
                         tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), false, false);
                      } else {
-                        JOptionPane.showMessageDialog(this, "Chybový stav!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "V tomto stĺpci nie je možné nájsť minimum podľa postupu Simplexovej metódy!", "Chyba", JOptionPane.ERROR_MESSAGE);
                      }
         }
 
@@ -698,7 +698,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     if (focusColumn>0 && focusColumn<= ValuesSingleton.INSTANCE.columns) {
                         tblSolution.changeSelection(tblSolution.getSelectedRow(), focusColumn, false, false);
                      } else {
-                        JOptionPane.showMessageDialog(this, "Chybový stav!", "Chyba", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "V tomto stĺpci nie je možné nájsť minimum podľa postupu Simplexovej metódy!", "Chyba", JOptionPane.ERROR_MESSAGE);
                      }
         }
 

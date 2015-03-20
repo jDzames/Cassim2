@@ -40,6 +40,7 @@ public enum ValuesSingleton {
     public boolean revidedColumnIsComplete;
     public boolean[] revidedColumnCell;
     
+    public BigFraction[] row0saved;
     public BigFraction[][] tableDataSaved;
     public int[] basisDataIdxSaved;
     
@@ -189,6 +190,8 @@ public enum ValuesSingleton {
             }        
         }  
         this.suppRoleVariables=pocetPomPremennych;
+        this.row0saved = this.tableDataSaved[0];
+        this.tableDataSaved = null;
     }
 
     public void endOfSuppRoleNotOpt(int pocetPomPremennych) {
@@ -196,9 +199,8 @@ public enum ValuesSingleton {
         
         //ValuesSingleton.INSTANCE.tableData[0]=ValuesSingleton.INSTANCE.tableDataSaved[0];
         for (int i = 0; i < columnNames.length-pocetPomPremennych; i++) {
-            this.tableData[0][i]=tableDataSaved[0][i];
+            this.tableData[0][i]=row0saved[i];
         }
-        ValuesSingleton.INSTANCE.tableDataSaved=null;
         ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.columnNames.length-pocetPomPremennych;
         
         for (int i = 0; i < this.basisDataIdx.length; i++) {
@@ -248,7 +250,7 @@ public enum ValuesSingleton {
         
         BigFraction[][] pole = new BigFraction[this.tableData.length-rowsToRemove][this.tableData[0].length];
         for(int j=0; j<pole[0].length-pocetPomPremennych; j++){
-            pole[0][j]=new BigFraction(this.tableDataSaved[0][j].getNumerator(), this.tableDataSaved[0][j].getDenominator());
+            pole[0][j]=new BigFraction(this.row0saved[j].getNumerator(), this.row0saved[j].getDenominator());
         }
         for(int j=pole[0].length-pocetPomPremennych; j<pole[0].length; j++){
             pole[0][j]=BigFraction.ZERO;
@@ -269,7 +271,6 @@ public enum ValuesSingleton {
         System.arraycopy( this.columnNames, 0, colNames, 0, colNames.length );      
         this.columnNames = colNames;
         
-        ValuesSingleton.INSTANCE.tableDataSaved=null;
         ValuesSingleton.INSTANCE.showColumns = this.columnNames.length-pocetPomPremennych;
     }
 
