@@ -9,11 +9,13 @@ public class CommandUndoMultiplyRow implements Command{
     private final BigFraction multBy;
     private final int row;
     private int basisIdx;
+    private final byte type;
 
     public CommandUndoMultiplyRow(BigFraction multBy, int row, int basisIdx) {
         this.multBy = multBy;
         this.row = row;
         this.basisIdx = basisIdx;
+        type = 1;
     }
     
     @Override
@@ -30,4 +32,8 @@ public class CommandUndoMultiplyRow implements Command{
         return "Undo vynásob riadok "+multBy.toString();
     }
     
+    @Override
+    public int getType() {
+        return type;
+    }
 }

@@ -193,6 +193,8 @@ public enum ValuesSingleton {
         this.suppRoleVariables=pocetPomPremennych;
         this.row0saved = this.tableDataSaved[0];
         this.tableDataSaved = null;
+        ValuesSingleton.INSTANCE.suppRoleRunning = true;
+        
         
         return new CommandUndoStartSuppRole(row0saved);
     }
@@ -296,6 +298,7 @@ public enum ValuesSingleton {
         this.columns++;
         this.rows++;
         this.gomoryVariables++;
+        this.showColumns++;
         
         this.basisDataIdxSaved = this.basisDataIdx;  
         this.tableDataSaved = this.tableData;

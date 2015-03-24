@@ -6,9 +6,11 @@ import org.apache.commons.math3.fraction.BigFraction;
 public class CommandUndoStartSuppRole implements Command{
 
     private BigFraction[] row0;
+    private final byte type;
 
     public CommandUndoStartSuppRole(BigFraction[] row0) {
         this.row0 = row0;
+        type = 3;
     }
     
     @Override
@@ -25,7 +27,18 @@ public class CommandUndoStartSuppRole implements Command{
         }
         ValuesSingleton.INSTANCE.tableData = data;
         ValuesSingleton.INSTANCE.basisDataIdx = new int[data.length-1];
-        new SolutionCalcService().findBasis();
+        String[] colNames = new String[ValuesSingleton.INSTANCE.columnNames.length-ValuesSingleton.INSTANCE.suppRoleVariables];
+        System.arraycopy(ValuesSingleton.INSTANCE.columnNames, 0, colNames, 0, colNames.length);
+        ValuesSingleton.INSTANCE.columnNames = colNames;
+        
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            if (ValuesSingleton.INSTANCE.basisDataIdx[i] >= colNames.length) {
+                ValuesSingleton.INSTANCE.basisDataIdx[i] = -1;
+            }
+        }
+        
+        ValuesSingleton.INSTANCE.suppRoleVariables = 0;
+        ValuesSingleton.INSTANCE.suppRoleRunning = false;
         return new CommandStartSuppRole();
     }
 
@@ -34,4 +47,8 @@ public class CommandUndoStartSuppRole implements Command{
         return "Undo začni pomocnú úlohu";
     }
     
+    @Override
+    public int getType() {
+        return type;
+    }
 }

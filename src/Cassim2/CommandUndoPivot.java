@@ -9,12 +9,14 @@ public class CommandUndoPivot implements Command{
     private int positionColumn;
     private int oldBasisIdx;
     private BigFraction[] column;
+    private final byte type;
 
     public CommandUndoPivot(int positionRow, int positionColumn, int oldBasisidx, BigFraction[] column) {
         this.positionRow = positionRow;
         this.positionColumn = positionColumn;
         this.oldBasisIdx = oldBasisidx;
         this.column = column;
+        type = 1;
     }
     
     @Override
@@ -37,4 +39,8 @@ public class CommandUndoPivot implements Command{
         return "Undo pivot na"+"["+positionRow+","+positionColumn+"]"; 
     }
 
+    @Override
+    public int getType() {
+        return type;
+    }
 }

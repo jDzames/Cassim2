@@ -6,9 +6,11 @@ import org.apache.commons.math3.fraction.BigFraction;
 public class CommandUndoGomory implements Command{
     
     private int rowPosition;
+    private final byte type;
 
     public CommandUndoGomory(int rowPosition) {
         this.rowPosition = rowPosition;
+        type = 6;
     }
 
     @Override
@@ -17,7 +19,7 @@ public class CommandUndoGomory implements Command{
                 [ValuesSingleton.INSTANCE.tableData[0].length-1];
         BigFraction[][] oldData = ValuesSingleton.INSTANCE.tableData; 
         
-        int gomoryCol = ValuesSingleton.INSTANCE.showColumns-1;
+        int gomoryCol = ValuesSingleton.INSTANCE.columnNames.length-1-ValuesSingleton.INSTANCE.suppRoleVariables;
         for (int i = 0; i < oldData.length-1; i++) {
             int colIdx = 0;
             for (int j = 0; j < oldData[0].length; j++) {
@@ -38,7 +40,13 @@ public class CommandUndoGomory implements Command{
             basisData[i] = ValuesSingleton.INSTANCE.basisDataIdx[i]; 
         }
         ValuesSingleton.INSTANCE.basisDataIdx = basisData;
-        
+        int gomColNext = ValuesSingleton.INSTANCE.columnNames.length-ValuesSingleton.INSTANCE.suppRoleVariables;
+        String[] colNames = new String[ValuesSingleton.INSTANCE.columnNames.length-1];
+        System.arraycopy(ValuesSingleton.INSTANCE.columnNames, 0, colNames, 0, gomColNext);
+        for (int i = 0; i < ValuesSingleton.INSTANCE.suppRoleVariables; i++) {
+            colNames[gomoryCol+i] = ValuesSingleton.INSTANCE.columnNames[gomColNext+i];
+        }
+        ValuesSingleton.INSTANCE.columnNames = colNames;
         return new CommandGomory(rowPosition);
     }
 
@@ -47,5 +55,9 @@ public class CommandUndoGomory implements Command{
         return "Undo gomoryho rez";
     }
     
+    @Override
+    public int getType() {
+        return type;
+    }
     
 }

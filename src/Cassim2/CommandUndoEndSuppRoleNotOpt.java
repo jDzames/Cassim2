@@ -8,10 +8,12 @@ public class CommandUndoEndSuppRoleNotOpt implements Command{
 
     private BigFraction[] suppRowO;
     private int[] basisIdxs;
+    private final byte type;
     
     public CommandUndoEndSuppRoleNotOpt(BigFraction[] suppRowO, int[] basisIdxs) {
         this.suppRowO = suppRowO;
         this.basisIdxs = basisIdxs;
+        type = 5;
     }
 
     @Override
@@ -28,4 +30,8 @@ public class CommandUndoEndSuppRoleNotOpt implements Command{
         return "Undo ukončenie pomocnej úlohy mimo optima";
     }
     
+    @Override
+    public int getType() {
+        return type;
+    }
 }

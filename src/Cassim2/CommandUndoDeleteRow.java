@@ -9,11 +9,13 @@ public class CommandUndoDeleteRow implements Command{
     private final int rowPosition;
     private BigFraction[] rowDeleted;
     private int basisIdx;
+    private final byte type;
 
     public CommandUndoDeleteRow(int rowPosition, BigFraction[] rowDeleted, int basisIdx) {
         this.rowPosition = rowPosition;
         this.rowDeleted = rowDeleted;
         this.basisIdx = basisIdx;
+        type = 8;
     }
     
     @Override
@@ -48,6 +50,11 @@ public class CommandUndoDeleteRow implements Command{
     @Override
     public String toString() {
         return "Undo vymazanie riadku "+rowPosition;
+    }
+
+    @Override
+    public int getType() {
+        return type;
     }
     
 }

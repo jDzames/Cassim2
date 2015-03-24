@@ -8,10 +8,12 @@ public class CommandUndoMakeBasis implements Command{
 
     private final BigFraction[] tableChoosed; //jak idem cez bazu a bazujem, tak v tom poradi tu prvky
     private final BigFraction[] row0;
+    private final byte type;
 
     public CommandUndoMakeBasis(BigFraction[] tableChoosed, BigFraction[] row0Choosed) {
         this.tableChoosed = tableChoosed;
         this.row0 = row0Choosed;
+        type = 1;
     }
     
     @Override
@@ -34,4 +36,8 @@ public class CommandUndoMakeBasis implements Command{
         return "Undo bázovanie";
     }
     
+    @Override
+    public int getType() {
+        return type;
+    }
 }

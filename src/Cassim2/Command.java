@@ -3,8 +3,10 @@ package Cassim2;
 
 public interface Command {    
     
-    Command execute();
+    public Command execute();
     
     @Override
-    String toString();
+    public String toString();
+
+    public int getType();
 }

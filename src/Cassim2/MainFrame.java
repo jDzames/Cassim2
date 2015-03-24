@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import java.util.Stack;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,7 +31,8 @@ public class MainFrame  extends javax.swing.JFrame {
     private int pocetPomPremennych;
     private boolean youCan=true;
     
-    
+    private Stack<Command> undoStack;
+    private Stack<Command> redoStack;
 
     public MainFrame() {
         //super(parent, modal);
@@ -96,6 +98,8 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemRevided0Row = new javax.swing.JMenuItem();
         jMenuItemRevidedRowValue = new javax.swing.JMenuItem();
         jMenuHistory = new javax.swing.JMenu();
+        jMenuItemUNDO = new javax.swing.JMenuItem();
+        jMenuItemREDO = new javax.swing.JMenuItem();
         jMenuHelp = new javax.swing.JMenu();
         jMenuItemHelp = new javax.swing.JMenuItem();
         jMenuItemAboutAuthors = new javax.swing.JMenuItem();
@@ -148,7 +152,7 @@ public class MainFrame  extends javax.swing.JFrame {
         });
         jMenuFile.add(jMenuItemOpenNew);
 
-        jMenuItemOpenSavedInput.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemOpenSavedInput.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemOpenSavedInput.setText("Otvor uložené zadanie");
         jMenuItemOpenSavedInput.setToolTipText("Načíta uložené zadanie na upravovanie");
         jMenuItemOpenSavedInput.addActionListener(new java.awt.event.ActionListener() {
@@ -208,7 +212,7 @@ public class MainFrame  extends javax.swing.JFrame {
         });
         jMenuTable.add(jMenuItemSuppRole);
 
-        jMenuItemBasisSolution.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemBasisSolution.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemBasisSolution.setText("Bázické riešenie");
         jMenuItemBasisSolution.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -327,6 +331,25 @@ public class MainFrame  extends javax.swing.JFrame {
                 jMenuHistoryActionPerformed(evt);
             }
         });
+
+        jMenuItemUNDO.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemUNDO.setText("UNDO ");
+        jMenuItemUNDO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemUNDOActionPerformed(evt);
+            }
+        });
+        jMenuHistory.add(jMenuItemUNDO);
+
+        jMenuItemREDO.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemREDO.setText("REDO");
+        jMenuItemREDO.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemREDOActionPerformed(evt);
+            }
+        });
+        jMenuHistory.add(jMenuItemREDO);
+
         jMenuBar.add(jMenuHistory);
 
         jMenuHelp.setText("Pomocník");
@@ -550,7 +573,13 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
     private void jMenuItemMakeBasisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMakeBasisActionPerformed
-        solutionCalculations.makeZeroOverBasis();
+        Command cmd = solutionCalculations.makeZeroOverBasis();
+        undoStack.push(cmd);
+        jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        if (!redoStack.isEmpty()) {
+            redoStack = new Stack<>();
+        }
+        
         //tblSolution.repaint();
         //tblBaza.repaint();
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
@@ -602,8 +631,13 @@ public class MainFrame  extends javax.swing.JFrame {
                     }*/
                     JOptionPane.showMessageDialog(this, "Ešte nie je optimum!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
                     return;
-            default: ValuesSingleton.INSTANCE.doGomory(tblSolution.getSelectedRow());
-                    ValuesSingleton.INSTANCE.showColumns++;
+            default: Command cmd = ValuesSingleton.INSTANCE.doGomory(tblSolution.getSelectedRow());
+                    undoStack.push(cmd);
+                    jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+                    if (!redoStack.isEmpty()) {
+                        redoStack = new Stack<>();
+                    }
+                    
                     imageTableModel = new ImageTableModel();
                     tblSolution.setModel(imageTableModel);
                     basisTableModel = new BasisTableModel();
@@ -754,15 +788,22 @@ public class MainFrame  extends javax.swing.JFrame {
                 if (potvrdenie2 != JOptionPane.YES_OPTION) {
                     return;
                 } 
-            default: //pivotuj       
+            default: //pivotuj      
+                Command cmd;
                 if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
-                    solutionCalculations.pivot(selectedRow, selectedColumn);  
+                    cmd = solutionCalculations.pivot(selectedRow, selectedColumn);  
                     revidedTableModel= new RevidedImageTableModel();
                     tblSolution.setModel(revidedTableModel);
                 }else{
-                    solutionCalculations.pivot(selectedRow, selectedColumn);     
+                    cmd = solutionCalculations.pivot(selectedRow, selectedColumn);     
                     imageTableModel.fireTableDataChanged();
                 }
+                undoStack.push(cmd);
+                jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+                if (!redoStack.isEmpty()) {
+                    redoStack = new Stack<>();
+                }
+        
                 basisTableModel.fireTableDataChanged();
                 SavingWriterThread saver = new SavingWriterThread();
                 
@@ -794,8 +835,13 @@ public class MainFrame  extends javax.swing.JFrame {
             return;
         }
       
-        ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych); 
-        ValuesSingleton.INSTANCE.suppRoleRunning = true;
+        Command cmd = ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych); 
+        undoStack.push(cmd);
+        jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        if (!redoStack.isEmpty()) {
+            redoStack = new Stack<>();
+        }
+        
         /*for (int i = 0; i < pocetPomPremennych; i++) {
             tblSolution.addColumn(new TableColumn());
         }   */
@@ -824,8 +870,13 @@ public class MainFrame  extends javax.swing.JFrame {
         youCan = false;
         if (solutionCalculations.rightEndOfSuppRole(pocetPomPremennych)) {
             
-            ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
-            
+            Command cmd = ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
+            undoStack.push(cmd);
+            jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            if (!redoStack.isEmpty()) {
+                redoStack = new Stack<>();
+            }
+        
             if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
                 revidedTableModel= new RevidedImageTableModel();
                 tblSolution.setModel(revidedTableModel);
@@ -851,8 +902,13 @@ public class MainFrame  extends javax.swing.JFrame {
             if (potvrdenie != JOptionPane.YES_OPTION) {
                 return;
             }
-            ValuesSingleton.INSTANCE.endOfSuppRoleNotOpt(pocetPomPremennych);
-            
+            Command cmd = ValuesSingleton.INSTANCE.endOfSuppRoleNotOpt(pocetPomPremennych);
+            undoStack.push(cmd);
+            jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            if (!redoStack.isEmpty()) {
+                redoStack = new Stack<>();
+            }
+        
             if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
                 revidedTableModel= new RevidedImageTableModel();
                 tblSolution.setModel(revidedTableModel);
@@ -912,7 +968,13 @@ public class MainFrame  extends javax.swing.JFrame {
                 return;
             }
         }
-        solutionCalculations.multiplRow(selectedRow, multBy);
+        Command cmd = solutionCalculations.multiplRow(selectedRow, multBy);
+        undoStack.push(cmd);
+        jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        if (!redoStack.isEmpty()) {
+            redoStack = new Stack<>();
+        }
+        
         imageTableModel.fireTableDataChanged();
         ValuesSingleton.INSTANCE.basisDataIdx[selectedRow-1]=-1;
         solutionCalculations.findBasis();//ak by mohlo ist do bazy
@@ -928,7 +990,6 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemPrenasobRiadokActionPerformed
 
     private void jMenuHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuHistoryActionPerformed
-        
         //otvor okno s vypisanou historiou
     }//GEN-LAST:event_jMenuHistoryActionPerformed
 
@@ -992,6 +1053,9 @@ public class MainFrame  extends javax.swing.JFrame {
         
         ValuesSingleton.INSTANCE.file =  new File("tmp_posledneRiesenie.csv");
         this.saveTables();
+        
+        undoStack = new Stack<>();
+        redoStack = new Stack<>();
         
         if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -1099,6 +1163,9 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.file =  new File("tmp_posledneRiesenie.csv");
         this.saveTables();
         
+        undoStack = new Stack<>();
+        redoStack = new Stack<>();
+        
         if (!tblSolution.isVisible()) {
             initSolution();
             
@@ -1190,6 +1257,9 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.file =  new File("tmp_posledneRiesenie.csv");
         this.saveTables();
         
+        undoStack = new Stack<>();
+        redoStack = new Stack<>();
+        
         if (!tblSolution.isVisible()) {
             initSolution();
             
@@ -1248,11 +1318,14 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemShowSuppVariablesActionPerformed
 
     private void jMenuItemRemoveZeroLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRemoveZeroLineActionPerformed
-        
-        boolean vymazane = solutionCalculations.deleteRow(tblSolution.getSelectedRow()) == null;
+        Command cmd = solutionCalculations.deleteRow(tblSolution.getSelectedRow());
+        boolean vymazane =  cmd == null;
         if (!vymazane) {
             JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
         }else{
+            undoStack.push(cmd);
+            jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        
             imageTableModel = new ImageTableModel();
             basisTableModel = new BasisTableModel();
             tblBaza.setModel(basisTableModel);
@@ -1277,6 +1350,13 @@ public class MainFrame  extends javax.swing.JFrame {
             
             ValuesSingleton.INSTANCE.revidedMethodRunning=false;
             
+            Command cmd = new CommandUndoRevidedStop();
+            undoStack.push(cmd);
+            jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            if (!redoStack.isEmpty()) {
+                redoStack = new Stack<>();
+            }
+            
             imageTableModel = new ImageTableModel();
             tblSolution.setModel(imageTableModel);
         } else {
@@ -1295,8 +1375,16 @@ public class MainFrame  extends javax.swing.JFrame {
             
             ValuesSingleton.INSTANCE.revidedMethodRunning=true;
             
-            imageTableModel = new RevidedImageTableModel();
-            tblSolution.setModel(imageTableModel);
+            Command cmd = new CommandUndoRevidedStart();
+            undoStack.push(cmd);
+            jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            if (!redoStack.isEmpty()) {
+                redoStack = new Stack<>();
+            }
+            
+            //imageTableModel = new RevidedImageTableModel();
+            revidedTableModel = new RevidedImageTableModel();
+            tblSolution.setModel(revidedTableModel);
         }
         
     }//GEN-LAST:event_jMenuItemRevidedSwitchActionPerformed
@@ -1316,6 +1404,188 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.revidedColumnCell[1]=true;
         revidedTableModel.fireTableDataChanged();
     }//GEN-LAST:event_jMenuItemRevidedRowValueActionPerformed
+
+    private void jMenuItemUNDOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemUNDOActionPerformed
+        if (!undoStack.isEmpty()) {
+            Command cmd = undoStack.pop();
+            Command redoCmd = cmd.execute();
+            
+            switch(cmd.getType()){
+                case 1 : basisTableModel.fireTableDataChanged();
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel.fireTableDataChanged();
+                    } else {
+                        imageTableModel.fireTableDataChanged();
+                    }
+
+                case 3 : basisTableModel.fireTableDataChanged();
+                    btnKoniecPomUlohy.setVisible(false);
+                    jMenuItemSuppRole.setEnabled(true);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                case 5 : basisTableModel.fireTableDataChanged();
+                    btnKoniecPomUlohy.setVisible(true);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                    
+                case 6 : basisTableModel = new BasisTableModel();
+                    tblBaza.setModel(basisTableModel);
+                    btnKoniecPomUlohy.setVisible(false);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                    
+                case 7 : basisTableModel = new BasisTableModel();
+                    tblBaza.setModel(basisTableModel);
+                    btnKoniecPomUlohy.setVisible(true);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                    
+                case 8 : basisTableModel = new BasisTableModel();
+                    tblBaza.setModel(basisTableModel);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }  
+                    
+                case 9 : if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        jMenuItemShowSuppVariables.setEnabled(true);
+                        jMenuItemGomory.setEnabled(true);
+                        jMenuHelpOperations.setEnabled(true);
+                        jMenuItemMax.setEnabled(true);
+                        jMenuItemRevided0Row.setEnabled(false);
+                        jMenuItemRevidedRowValue.setEnabled(false);
+                        jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+                        jComboBoxRevidedVariable.setVisible(false);
+
+                        ValuesSingleton.INSTANCE.revidedMethodRunning=false;
+
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                
+                default: ;    
+            }
+            
+            redoStack.push(redoCmd);
+            jMenuItemREDO.setToolTipText(redoCmd.toString());
+        }
+        if (!undoStack.isEmpty()) {
+            jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        }else{
+            jMenuItemUNDO.setToolTipText("Nedá sa urobiť krok späť");
+        }
+    }//GEN-LAST:event_jMenuItemUNDOActionPerformed
+
+    private void jMenuItemREDOActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemREDOActionPerformed
+        if (!redoStack.isEmpty()) {
+            Command cmd = redoStack.pop();
+            Command undoCmd = cmd.execute();
+            
+            switch(cmd.getType()){
+                case 1 : basisTableModel.fireTableDataChanged();
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel.fireTableDataChanged();
+                    } else {
+                        imageTableModel.fireTableDataChanged();
+                    }
+
+                case 2 : basisTableModel.fireTableDataChanged();
+                    btnKoniecPomUlohy.setVisible(true);
+                    jMenuItemSuppRole.setEnabled(false);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                case 4 : basisTableModel.fireTableDataChanged();
+                    btnKoniecPomUlohy.setVisible(false);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                    
+                case 6 : basisTableModel = new BasisTableModel();
+                    tblBaza.setModel(basisTableModel);
+                    btnKoniecPomUlohy.setVisible(false);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                
+                case 8 : basisTableModel = new BasisTableModel();
+                    tblBaza.setModel(basisTableModel);
+                    if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    } else {
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }  
+                
+                case 10 : if (!ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        jMenuItemShowSuppVariables.setEnabled(false);
+                        jMenuItemGomory.setEnabled(false);
+                        jMenuHelpOperations.setEnabled(false);
+                        jMenuItemMax.setEnabled(false);
+                        jMenuItemRevided0Row.setEnabled(false);
+                        jMenuItemRevidedRowValue.setEnabled(false);
+                        jMenuItemRevidedSwitch.setText("Ukončiť revidovanú metódu");
+                        jComboBoxRevidedVariable.setVisible(true);
+                        ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[2];
+                        jComboBoxRevidedVariable.addItem(new ComboBoxObjects(-1, ""));
+                        fillComboBox();
+                        addComboBoxListener();
+
+                        ValuesSingleton.INSTANCE.revidedMethodRunning=true;
+
+                        //imageTableModel = new RevidedImageTableModel();
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    }
+                
+                default: ; 
+            }
+            
+            undoStack.push(undoCmd);
+            jMenuItemUNDO.setToolTipText(undoCmd.toString());
+        }
+        if (!redoStack.isEmpty()) {
+            jMenuItemREDO.setToolTipText(redoStack.peek().toString());
+        }else{
+            jMenuItemREDO.setToolTipText("Nedá sa urobiť krok späť");
+        }
+    }//GEN-LAST:event_jMenuItemREDOActionPerformed
 
     
     private void fillComboBox() {
@@ -1406,6 +1676,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemOpenSavedSolution;
     private javax.swing.JMenuItem jMenuItemPivot;
     private javax.swing.JMenuItem jMenuItemPrenasobRiadok;
+    private javax.swing.JMenuItem jMenuItemREDO;
     private javax.swing.JMenuItem jMenuItemRemoveZeroLine;
     private javax.swing.JMenuItem jMenuItemRevided0Row;
     private javax.swing.JMenuItem jMenuItemRevidedRowValue;
@@ -1413,6 +1684,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemSave;
     private javax.swing.JMenuItem jMenuItemShowSuppVariables;
     private javax.swing.JMenuItem jMenuItemSuppRole;
+    private javax.swing.JMenuItem jMenuItemUNDO;
     private javax.swing.JMenu jMenuRevidedMethod;
     private javax.swing.JMenu jMenuTable;
     private javax.swing.JScrollPane jScrollPane1;

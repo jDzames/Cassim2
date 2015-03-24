@@ -10,11 +10,13 @@ public class CommandUndoEndSuppRoleOpt implements Command{
     private ArrayList<BigFraction[]> deletedRows;
     private ArrayList<Integer> deletedRowsIdxs;
     private ArrayList<Integer> deletedBasisIdxs;
+    private final byte type;
 
     public CommandUndoEndSuppRoleOpt(ArrayList<BigFraction[]> deletedRows, ArrayList<Integer> deletedRowsIdxs, ArrayList<Integer> deletedBasisIdxs) {
         this.deletedRows = deletedRows;
         this.deletedRowsIdxs = deletedRowsIdxs;
         this.deletedBasisIdxs = deletedBasisIdxs;
+        type = 7;
     }
     
     @Override
@@ -50,4 +52,8 @@ public class CommandUndoEndSuppRoleOpt implements Command{
         return "Undo ukonči pomocnú úlohu";
     }
     
+    @Override
+    public int getType() {
+        return type;
+    }
 }

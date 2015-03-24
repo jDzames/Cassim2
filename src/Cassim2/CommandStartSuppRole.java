@@ -2,9 +2,12 @@
 package Cassim2;
 
 
-class CommandStartSuppRole implements Command {
+public class CommandStartSuppRole implements Command {
 
+    private final byte type;
+    
     public CommandStartSuppRole() {
+        type = 2;
     }
 
     @Override
@@ -22,6 +25,11 @@ class CommandStartSuppRole implements Command {
     @Override
     public String toString() {
         return "Začni pomocnú úlohu";
+    }
+
+    @Override
+    public int getType() {
+        return type;
     }
     
 }

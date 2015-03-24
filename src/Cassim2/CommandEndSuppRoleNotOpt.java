@@ -4,7 +4,10 @@ package Cassim2;
 
 public class CommandEndSuppRoleNotOpt implements Command {
 
+    private final byte type;
+    
     public CommandEndSuppRoleNotOpt() {
+       type  = 4;
     }
 
     @Override
@@ -15,5 +18,10 @@ public class CommandEndSuppRoleNotOpt implements Command {
     @Override
     public String toString() {
         return "Ukonči pomocnú úlohu mimo optima";
+    }
+
+    @Override
+    public int getType() {
+        return type;
     }
 }

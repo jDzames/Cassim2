@@ -4,7 +4,10 @@ package Cassim2;
 
 public class CommandMakeBasis implements Command {
 
+    private final byte type;
+    
     public CommandMakeBasis() {
+        type = 1;
     }
 
     @Override
@@ -16,6 +19,11 @@ public class CommandMakeBasis implements Command {
     @Override
     public String toString() {
         return "Bázuj";
+    }
+
+    @Override
+    public int getType() {
+        return type;
     }
     
 }
