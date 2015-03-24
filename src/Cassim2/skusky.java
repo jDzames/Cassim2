@@ -76,10 +76,11 @@ public class skusky {
         }
     
     */
-        BigFraction bf = BigFraction.FOUR_FIFTHS;
-        BigFraction bf2 = BigFraction.ONE_FIFTH;
-        System.out.println(bf2.compareTo(bf));
-        BigInteger bi = BigInteger.ONE;
         
+        Fraction f = new Fraction(-5,3);
+        System.out.println(f.toString());
+        
+        f.reciprocal();
+        System.out.println(f.reciprocal());
     }
 }

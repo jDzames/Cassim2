@@ -17,11 +17,12 @@ public class CommandUndoMultiplyRow implements Command{
     }
     
     @Override
-    public void execute() {
+    public Command execute() {
         SolutionCalcService solClculations = new SolutionCalcService();
         BigFraction fr = new BigFraction(multBy.getDenominator(), multBy.getNumerator());
         solClculations.multiplRow(row, multBy);
         ValuesSingleton.INSTANCE.basisDataIdx[row-1] = basisIdx;
+        return new CommandMultiplyRow(row, multBy);
     }
 
     @Override

@@ -1249,7 +1249,7 @@ public class MainFrame  extends javax.swing.JFrame {
 
     private void jMenuItemRemoveZeroLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRemoveZeroLineActionPerformed
         
-        boolean vymazane = solutionCalculations.deleteRow(tblSolution.getSelectedRow());
+        boolean vymazane = solutionCalculations.deleteRow(tblSolution.getSelectedRow()) == null;
         if (!vymazane) {
             JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
         }else{

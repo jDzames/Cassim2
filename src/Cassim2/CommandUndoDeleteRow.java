@@ -17,7 +17,7 @@ public class CommandUndoDeleteRow implements Command{
     }
     
     @Override
-    public void execute() {
+    public Command execute() {
         BigFraction[][] data = new BigFraction[ValuesSingleton.INSTANCE.tableData.length+1]
                 [ValuesSingleton.INSTANCE.tableData[0].length];
         int idx=0;
@@ -42,6 +42,7 @@ public class CommandUndoDeleteRow implements Command{
             idx++;
         }
         ValuesSingleton.INSTANCE.basisDataIdx = basisData;
+        return new CommandDeleteRow(rowPosition);
     }
 
     @Override

@@ -15,21 +15,23 @@ public class CommandUndoMakeBasis implements Command{
     }
     
     @Override
-    public void execute() {
+    public Command execute() {
         int[] basisIdx = ValuesSingleton.INSTANCE.basisDataIdx;
         SolutionCalcService solCalculations = new SolutionCalcService();
         for (int i = 0; i < basisIdx.length; i++) {
-            BigFraction fr = row0[basisIdx[i]];
-            solCalculations.addRowToRow(i+1, 0, fr);
-            solCalculations.multiplRow(i+1, tableChoosed[i]);
+            if (basisIdx[i]>0) {
+                BigFraction fr = row0[basisIdx[i]];
+                solCalculations.addRowToRow(i+1, 0, fr);
+                solCalculations.multiplRow(i+1, tableChoosed[i]);   
+            }
+            
         }
+        return new CommandMakeBasis();
     }
 
     @Override
     public String toString() {
         return "Undo bázovanie";
     }
-    
-    
     
 }

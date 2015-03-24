@@ -4,9 +4,15 @@ package Cassim2;
 import org.apache.commons.math3.fraction.BigFraction;
 
 public class CommandUndoGomory implements Command{
+    
+    private int rowPosition;
+
+    public CommandUndoGomory(int rowPosition) {
+        this.rowPosition = rowPosition;
+    }
 
     @Override
-    public void execute() {
+    public Command execute() {
         BigFraction[][] newData = new BigFraction[ValuesSingleton.INSTANCE.tableData.length-1]
                 [ValuesSingleton.INSTANCE.tableData[0].length-1];
         BigFraction[][] oldData = ValuesSingleton.INSTANCE.tableData; 
@@ -25,12 +31,15 @@ public class CommandUndoGomory implements Command{
         ValuesSingleton.INSTANCE.rows--;
         ValuesSingleton.INSTANCE.columns--;
         ValuesSingleton.INSTANCE.showColumns--;
+        ValuesSingleton.INSTANCE.gomoryVariables--;
         
         int[] basisData = new int[ValuesSingleton.INSTANCE.basisDataIdx.length-1];
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length-1; i++) {
             basisData[i] = ValuesSingleton.INSTANCE.basisDataIdx[i]; 
         }
         ValuesSingleton.INSTANCE.basisDataIdx = basisData;
+        
+        return new CommandGomory(rowPosition);
     }
 
     @Override

@@ -6,9 +6,13 @@ import org.apache.commons.math3.fraction.BigFraction;
 public class CommandUndoStartSuppRole implements Command{
 
     private BigFraction[] row0;
+
+    public CommandUndoStartSuppRole(BigFraction[] row0) {
+        this.row0 = row0;
+    }
     
     @Override
-    public void execute() {
+    public Command execute() {
         int rows = ValuesSingleton.INSTANCE.tableData[0].length - ValuesSingleton.INSTANCE.suppRoleVariables;
         ValuesSingleton.INSTANCE.showColumns = rows;
         
@@ -22,7 +26,7 @@ public class CommandUndoStartSuppRole implements Command{
         ValuesSingleton.INSTANCE.tableData = data;
         ValuesSingleton.INSTANCE.basisDataIdx = new int[data.length-1];
         new SolutionCalcService().findBasis();
-        
+        return new CommandStartSuppRole();
     }
 
     @Override

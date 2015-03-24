@@ -2,6 +2,7 @@
 package Cassim2;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -148,7 +149,7 @@ public enum ValuesSingleton {
         return this.savingQueue.poll();
     }
     
-    public void startSuppRole(int pocetPomPremennych) {
+    public Command startSuppRole(int pocetPomPremennych) {
         this.showColumns = this.showColumns+pocetPomPremennych;
         this.columns = this.columns+pocetPomPremennych;
         this.basisDataIdxSaved = this.basisDataIdx.clone();  
@@ -192,9 +193,15 @@ public enum ValuesSingleton {
         this.suppRoleVariables=pocetPomPremennych;
         this.row0saved = this.tableDataSaved[0];
         this.tableDataSaved = null;
+        
+        return new CommandUndoStartSuppRole(row0saved);
     }
 
-    public void endOfSuppRoleNotOpt(int pocetPomPremennych) {
+    public Command endOfSuppRoleNotOpt(int pocetPomPremennych) {
+        BigFraction[] suppRowO = this.tableData[0];
+        int[] basisIdxsSaving = new int[basisDataIdx.length];
+        System.arraycopy(basisDataIdx, 0, basisIdxsSaving, 0, basisDataIdx.length);
+        
         //this.columns = this.columns-pocetPomPremennych;
         
         //ValuesSingleton.INSTANCE.tableData[0]=ValuesSingleton.INSTANCE.tableDataSaved[0];
@@ -208,6 +215,7 @@ public enum ValuesSingleton {
                 this.basisDataIdx[i]=-1;
             }
         }
+        return new CommandUndoEndSuppRoleNotOpt(suppRowO, basisIdxsSaving);
         
         /*ValuesSingleton.INSTANCE.tableData=ValuesSingleton.INSTANCE.tableDataSaved;
         ValuesSingleton.INSTANCE.basisDataIdx=ValuesSingleton.INSTANCE.basisDataIdxSaved;
@@ -225,8 +233,12 @@ public enum ValuesSingleton {
         return ret;
     }
     
-    public void endOfSuppRoleOpt(int pocetPomPremennych) {
+    public Command endOfSuppRoleOpt(int pocetPomPremennych) {
         int normalColumns = this.columns-pocetPomPremennych;
+        
+        ArrayList<Integer> deletedRowsIdxs = new ArrayList<>();
+        ArrayList<BigFraction[]> deletedRows = new ArrayList<>();
+        ArrayList<Integer> deletedBasisIdxs = new ArrayList<>();
         
         //ValuesSingleton.INSTANCE.tableData[0]=ValuesSingleton.INSTANCE.tableDataSaved[0];
         /*for (int i = 0; i < columnNames.length-pocetPomPremennych; i++) {
@@ -242,6 +254,9 @@ public enum ValuesSingleton {
         for (int i = 0; i < this.basisDataIdxSaved.length; i++) {
             if (ValuesSingleton.INSTANCE.basisDataIdx[i]>normalColumns) {
                 rowsToRemove++;
+                deletedRowsIdxs.add(i+1);
+                deletedRows.add(this.tableData[i+1]);
+                deletedBasisIdxs.add(this.basisDataIdx[i]);
             }else{
                 newBasis.add(ValuesSingleton.INSTANCE.basisDataIdx[i]);
             }
@@ -272,10 +287,12 @@ public enum ValuesSingleton {
         this.columnNames = colNames;
         
         ValuesSingleton.INSTANCE.showColumns = this.columnNames.length-pocetPomPremennych;
+        deletedRowsIdxs.add(new Integer(-1));
+        return new CommandUndoEndSuppRoleOpt(deletedRows, deletedRowsIdxs, deletedBasisIdxs);
     }
 
     
-    public void doGomory(int selectedRow) {
+    public Command doGomory(int selectedRow) {
         this.columns++;
         this.rows++;
         this.gomoryVariables++;
@@ -332,6 +349,8 @@ public enum ValuesSingleton {
         
         this.tableData=pole;
         this.tableDataSaved=null;
+        
+        return new CommandUndoGomory(selectedRow);
     }
     
     

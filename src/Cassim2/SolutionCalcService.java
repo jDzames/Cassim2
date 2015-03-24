@@ -29,10 +29,12 @@ public class SolutionCalcService {
         return 1;
     }  
     
-    public void multiplRow(int row, BigFraction multipl){
+    public Command multiplRow(int row, BigFraction multipl){
+        int basisIdx = ValuesSingleton.INSTANCE.basisDataIdx[row-1];
         for (int j = 0; j <= ValuesSingleton.INSTANCE.columns; j++) {
             ValuesSingleton.INSTANCE.tableData[row][j] = ValuesSingleton.INSTANCE.tableData[row][j].multiply(multipl);
         }
+        return new CommandUndoMultiplyRow(multipl, row, basisIdx);
     }
     
     public void addRowToRow(int addingRow, int toRow, BigFraction multipl){
@@ -92,15 +94,20 @@ public class SolutionCalcService {
         }
     }
     
-    public void makeZeroOverBasis(){
+    public Command makeZeroOverBasis(){
+        BigFraction[] row0Choosed = new BigFraction[ValuesSingleton.INSTANCE.basisDataIdx.length];
+        BigFraction[] tableChoosed = new BigFraction[ValuesSingleton.INSTANCE.basisDataIdx.length];
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
             int column = ValuesSingleton.INSTANCE.basisDataIdx[i];
+            row0Choosed[i] = new BigFraction(ValuesSingleton.INSTANCE.tableData[0][column].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][column].getDenominator());
+            tableChoosed[i] = new BigFraction(ValuesSingleton.INSTANCE.tableData[i+1][column].getNumerator(), ValuesSingleton.INSTANCE.tableData[i+1][column].getDenominator());
             if (column>0) {
                 int row = i+1;
                 multiplRow(row, new BigFraction(ValuesSingleton.INSTANCE.tableData[row][column].getDenominator(), ValuesSingleton.INSTANCE.tableData[row][column].getNumerator()));
                 addRowToRow(row, 0, new BigFraction(ValuesSingleton.INSTANCE.tableData[0][column].getNumerator().multiply(BigInteger.valueOf(-1)), ValuesSingleton.INSTANCE.tableData[0][column].getDenominator()));
             }
         }  
+        return new CommandUndoMakeBasis(tableChoosed, row0Choosed);
     }
     
     public int checkMin(int selectedRow, int selectedColumn){
@@ -308,17 +315,20 @@ public class SolutionCalcService {
         return 0;
     }
 
-    public boolean deleteRow(int row) {
+    public Command deleteRow(int row) {
+        int basisIdxOld = ValuesSingleton.INSTANCE.basisDataIdx[row-1];
         
         if (row<=0 || row>=ValuesSingleton.INSTANCE.tableData.length) {
-            return false;
+            return null;
         }
         //ci je riadok na vymazanie
         for (int i = 0; i < ValuesSingleton.INSTANCE.showColumns; i++) {
             if (ValuesSingleton.INSTANCE.tableData[row][i].compareTo(BigFraction.ZERO)!=0) {
-                return false;
+                return null;
             }
         }
+        
+        BigFraction[] rowDeleted = ValuesSingleton.INSTANCE.tableData[row];
         //vymazanie ho
         BigFraction[][] pole = new BigFraction[ValuesSingleton.INSTANCE.tableData.length-1][ValuesSingleton.INSTANCE.tableData[0].length];
         int idx=0;
@@ -342,7 +352,7 @@ public class SolutionCalcService {
         ValuesSingleton.INSTANCE.basisDataIdx=basisPole;
         basisPole=null;
         ValuesSingleton.INSTANCE.rows--;
-        return true;
+        return new CommandUndoDeleteRow(row, rowDeleted, basisIdxOld);
     }
 
     
