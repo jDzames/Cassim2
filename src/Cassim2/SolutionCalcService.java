@@ -355,5 +355,11 @@ public class SolutionCalcService {
         return new CommandUndoDeleteRow(row, rowDeleted, basisIdxOld);
     }
 
+    public int hint() {
+        
+        
+        return 0;
+    }
+
     
 }

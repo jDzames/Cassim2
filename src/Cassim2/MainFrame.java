@@ -10,6 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.util.Stack;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -79,6 +84,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemOpenSavedInput = new javax.swing.JMenuItem();
         jMenuItemOpenSavedSolution = new javax.swing.JMenuItem();
         jMenuItemSave = new javax.swing.JMenuItem();
+        jMenuItemAutomat = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
         jMenuTable = new javax.swing.JMenu();
         jMenuItemGomory = new javax.swing.JMenuItem();
@@ -93,6 +99,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemPrenasobRiadok = new javax.swing.JMenuItem();
         jMenuItemShowSuppVariables = new javax.swing.JMenuItem();
         jMenuItemRemoveZeroLine = new javax.swing.JMenuItem();
+        jMenuItemHint = new javax.swing.JMenuItem();
         jMenuRevidedMethod = new javax.swing.JMenu();
         jMenuItemRevidedSwitch = new javax.swing.JMenuItem();
         jMenuItemRevided0Row = new javax.swing.JMenuItem();
@@ -180,6 +187,15 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         });
         jMenuFile.add(jMenuItemSave);
+
+        jMenuItemAutomat.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemAutomat.setText("Automatický výpočet");
+        jMenuItemAutomat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAutomatActionPerformed(evt);
+            }
+        });
+        jMenuFile.add(jMenuItemAutomat);
 
         jMenuItemExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         jMenuItemExit.setText("Ukončiť program");
@@ -292,6 +308,15 @@ public class MainFrame  extends javax.swing.JFrame {
         });
         jMenuHelpOperations.add(jMenuItemRemoveZeroLine);
 
+        jMenuItemHint.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, 0));
+        jMenuItemHint.setText("Hint k Simplex. metóde");
+        jMenuItemHint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemHintActionPerformed(evt);
+            }
+        });
+        jMenuHelpOperations.add(jMenuItemHint);
+
         jMenuBar.add(jMenuHelpOperations);
 
         jMenuRevidedMethod.setText("Revidovaná metóda");
@@ -355,9 +380,19 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuHelp.setText("Pomocník");
 
         jMenuItemHelp.setText("Pomocník");
+        jMenuItemHelp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemHelpActionPerformed(evt);
+            }
+        });
         jMenuHelp.add(jMenuItemHelp);
 
         jMenuItemAboutAuthors.setText("Autori");
+        jMenuItemAboutAuthors.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemAboutAuthorsActionPerformed(evt);
+            }
+        });
         jMenuHelp.add(jMenuItemAboutAuthors);
 
         jMenuBar.add(jMenuHelp);
@@ -421,6 +456,8 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemGomory.setEnabled(false);
         jMenuItemMakeBasis.setEnabled(false);
         jMenuItemMax.setEnabled(false);
+        jMenuItemAutomat.setEnabled(false);
+        jMenuItemHint.setEnabled(false);
         
         jComboBoxRevidedVariable.removeAllItems();
         
@@ -461,6 +498,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemGomory.setEnabled(true);
         jMenuItemSuppRole.setEnabled(true);
         jMenuItemBasisSolution.setEnabled(true);
+        jMenuItemAutomat.setEnabled(true);
 
         jMenuEdit.setEnabled(true);
         jMenuItemMax.setEnabled(true);
@@ -468,6 +506,7 @@ public class MainFrame  extends javax.swing.JFrame {
 
         jMenuHelpOperations.setEnabled(true);
         jMenuItemShowSuppVariables.setEnabled(true);
+        jMenuItemHint.setEnabled(true);
 
         jMenuRevidedMethod.setEnabled(true);
         jMenuItemRevidedSwitch.setEnabled(true);
@@ -1076,6 +1115,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemGomory.setEnabled(true);
             jMenuItemSuppRole.setEnabled(true);
             jMenuItemBasisSolution.setEnabled(true);
+            jMenuItemAutomat.setEnabled(true);
             
             jMenuEdit.setEnabled(true);
             jMenuItemMax.setEnabled(true);
@@ -1083,6 +1123,7 @@ public class MainFrame  extends javax.swing.JFrame {
             
             jMenuHelpOperations.setEnabled(true);
             jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemHint.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
             jMenuItemRevidedSwitch.setEnabled(true);
@@ -1180,6 +1221,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemGomory.setEnabled(true);
             jMenuItemSuppRole.setEnabled(true);
             jMenuItemBasisSolution.setEnabled(true);
+            jMenuItemAutomat.setEnabled(true);
             
             jMenuEdit.setEnabled(true);
             jMenuItemMax.setEnabled(true);
@@ -1187,6 +1229,7 @@ public class MainFrame  extends javax.swing.JFrame {
             
             jMenuHelpOperations.setEnabled(true);
             jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemHint.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
             jMenuItemRevidedSwitch.setEnabled(true);
@@ -1273,6 +1316,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemGomory.setEnabled(true);
             jMenuItemSuppRole.setEnabled(true);
             jMenuItemBasisSolution.setEnabled(true);
+            jMenuItemAutomat.setEnabled(true);
             
             jMenuEdit.setEnabled(true);
             jMenuItemMax.setEnabled(true);
@@ -1280,6 +1324,7 @@ public class MainFrame  extends javax.swing.JFrame {
             
             jMenuHelpOperations.setEnabled(true);
             jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemHint.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
             jMenuItemRevidedSwitch.setEnabled(true);
@@ -1347,6 +1392,8 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemRevidedRowValue.setEnabled(false);
             jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
             jComboBoxRevidedVariable.setVisible(false);
+            jMenuItemHint.setEnabled(true);
+            jMenuItemAutomat.setEnabled(true);
             
             ValuesSingleton.INSTANCE.revidedMethodRunning=false;
             
@@ -1366,6 +1413,8 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemMax.setEnabled(false);
             jMenuItemRevided0Row.setEnabled(false);
             jMenuItemRevidedRowValue.setEnabled(false);
+            jMenuItemHint.setEnabled(false);
+            jMenuItemAutomat.setEnabled(false);
             jMenuItemRevidedSwitch.setText("Ukončiť revidovanú metódu");
             jComboBoxRevidedVariable.setVisible(true);
             ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[2];
@@ -1626,6 +1675,89 @@ public class MainFrame  extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemREDOActionPerformed
 
+    private void jMenuItemAboutAuthorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAboutAuthorsActionPerformed
+        JOptionPane.showMessageDialog(this, "Tento projekt vznikol ako bakalárska práca, "
+                + "zároveň s účelom využitia na predmete LCO na UPJŠ. Autormi sú: "
+                + "RNDr. Pavol Široczki, doc. RNDr. Roman Soták, PhD. a Jozef Džama.", 
+                "Autori", JOptionPane.PLAIN_MESSAGE);
+        
+    }//GEN-LAST:event_jMenuItemAboutAuthorsActionPerformed
+
+    private void jMenuItemHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemHelpActionPerformed
+        JOptionPane.showMessageDialog(this, "V prípade otázok alebo nájdenia chyby sa obráťte "
+                + "na vyučujúcich LCO na UPJŠ alebo na mail jozef.dzama@gmail.com. Za hlásenie chýb vopred ďakujeme.", 
+                "Pomoc", JOptionPane.PLAIN_MESSAGE);
+    }//GEN-LAST:event_jMenuItemHelpActionPerformed
+
+    private void jMenuItemAutomatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAutomatActionPerformed
+
+        AutomaticSolution automat = new AutomaticSolution(undoStack);
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        Future<AutoSolObj> future;
+        
+        try {
+            future = exec.submit(automat);
+            
+            JOptionPane.showMessageDialog(this, "Začal sa automatický výpočet. Tabuľka sa zmení"
+                + " na výslednú.", "Automatický výpočet", JOptionPane.PLAIN_MESSAGE);
+            
+            AutoSolObj vysledok = future.get();
+            
+            btnKoniecPomUlohy.setVisible(false);
+            jMenuItemSave.setEnabled(true);
+            
+            jMenuTable.setEnabled(true);
+            jMenuItemGomory.setEnabled(true);
+            jMenuItemSuppRole.setEnabled(true);
+            jMenuItemBasisSolution.setEnabled(true);
+            
+            jMenuEdit.setEnabled(true);
+            jMenuItemMax.setEnabled(true);
+            jMenuItemMakeBasis.setEnabled(true);
+            
+            jMenuHelpOperations.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(true);
+            
+            jMenuRevidedMethod.setEnabled(true);
+            jMenuItemRevidedSwitch.setEnabled(true);
+            jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+            jMenuItemRevided0Row.setEnabled(false);
+            jMenuItemRevidedRowValue.setEnabled(false);        
+            jComboBoxRevidedVariable.setVisible(false);
+            
+            jMenuHistory.setEnabled(true);
+            
+            imageTableModel = new ImageTableModel();
+            tblSolution.setModel(imageTableModel);
+            basisTableModel = new BasisTableModel();
+            tblBaza.setModel(basisTableModel);
+            
+            if (!undoStack.isEmpty()) {
+                jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            }
+            
+            JOptionPane.showMessageDialog(this, vysledok.toString()+"Po riešení sa viete posúvať pomocou UNDO a REDO.", 
+                "Automatický výpočet", JOptionPane.PLAIN_MESSAGE);
+            
+            exec.shutdownNow();
+            future.cancel(true);
+        } catch (Exception ex) {
+            Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItemAutomatActionPerformed
+
+    private void jMenuItemHintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemHintActionPerformed
+        int hint = solutionCalculations.hint();
+        switch(hint){
+            case 0 : 
+                break;
+            case 1 :
+                break;
+                
+            default : break;    
+        }
+    }//GEN-LAST:event_jMenuItemHintActionPerformed
+
     
     private void fillComboBox() {
         youCan = true;
@@ -1703,10 +1835,12 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuHelpOperations;
     private javax.swing.JMenu jMenuHistory;
     private javax.swing.JMenuItem jMenuItemAboutAuthors;
+    private javax.swing.JMenuItem jMenuItemAutomat;
     private javax.swing.JMenuItem jMenuItemBasisSolution;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemGomory;
     private javax.swing.JMenuItem jMenuItemHelp;
+    private javax.swing.JMenuItem jMenuItemHint;
     private javax.swing.JMenuItem jMenuItemMakeBasis;
     private javax.swing.JMenuItem jMenuItemMax;
     private javax.swing.JMenuItem jMenuItemMin;
