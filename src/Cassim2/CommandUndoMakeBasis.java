@@ -22,7 +22,7 @@ public class CommandUndoMakeBasis implements Command{
         SolutionCalcService solCalculations = new SolutionCalcService();
         for (int i = 0; i < basisIdx.length; i++) {
             if (basisIdx[i]>0) {
-                BigFraction fr = row0[basisIdx[i]];
+                BigFraction fr = row0[i];
                 solCalculations.addRowToRow(i+1, 0, fr);
                 solCalculations.multiplRow(i+1, tableChoosed[i]);   
             }

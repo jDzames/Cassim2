@@ -15,18 +15,19 @@ public class CommandUndoStartSuppRole implements Command{
     
     @Override
     public Command execute() {
-        int rows = ValuesSingleton.INSTANCE.tableData[0].length - ValuesSingleton.INSTANCE.suppRoleVariables;
-        ValuesSingleton.INSTANCE.showColumns = rows;
+        int columns = ValuesSingleton.INSTANCE.tableData[0].length - ValuesSingleton.INSTANCE.suppRoleVariables;
+        ValuesSingleton.INSTANCE.showColumns = columns;
+        ValuesSingleton.INSTANCE.columns = ValuesSingleton.INSTANCE.columns-ValuesSingleton.INSTANCE.suppRoleVariables;
         
-        BigFraction[][] data = new BigFraction[ValuesSingleton.INSTANCE.tableData.length][rows];
+        BigFraction[][] data = new BigFraction[ValuesSingleton.INSTANCE.tableData.length][columns];
         data[0] = row0;
         for (int i = 1; i < ValuesSingleton.INSTANCE.tableData.length; i++) {
-            for (int j = 0; j < rows; j++) {
+            for (int j = 0; j < columns; j++) {
                 data[i][j] = ValuesSingleton.INSTANCE.tableData[i][j];
             }
         }
         ValuesSingleton.INSTANCE.tableData = data;
-        ValuesSingleton.INSTANCE.basisDataIdx = new int[data.length-1];
+        //ValuesSingleton.INSTANCE.basisDataIdx = new int[data.length-1];
         String[] colNames = new String[ValuesSingleton.INSTANCE.columnNames.length-ValuesSingleton.INSTANCE.suppRoleVariables];
         System.arraycopy(ValuesSingleton.INSTANCE.columnNames, 0, colNames, 0, colNames.length);
         ValuesSingleton.INSTANCE.columnNames = colNames;

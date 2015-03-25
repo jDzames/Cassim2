@@ -1417,7 +1417,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     } else {
                         imageTableModel.fireTableDataChanged();
                     }
-
+                break;
                 case 3 : basisTableModel.fireTableDataChanged();
                     btnKoniecPomUlohy.setVisible(false);
                     jMenuItemSuppRole.setEnabled(true);
@@ -1428,6 +1428,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }
+                break;
                 case 5 : basisTableModel.fireTableDataChanged();
                     btnKoniecPomUlohy.setVisible(true);
                     if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
@@ -1437,7 +1438,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }
-                    
+                break;   
                 case 6 : basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
                     btnKoniecPomUlohy.setVisible(false);
@@ -1448,7 +1449,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }
-                    
+                break;    
                 case 7 : basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
                     btnKoniecPomUlohy.setVisible(true);
@@ -1459,7 +1460,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }
-                    
+                break;    
                 case 8 : basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
                     if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
@@ -1469,7 +1470,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }  
-                    
+                break;    
                 case 9 : if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
                         jMenuItemShowSuppVariables.setEnabled(true);
                         jMenuItemGomory.setEnabled(true);
@@ -1485,7 +1486,28 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }
-                
+                break;
+                case 10 : if (!ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        jMenuItemShowSuppVariables.setEnabled(false);
+                        jMenuItemGomory.setEnabled(false);
+                        jMenuHelpOperations.setEnabled(false);
+                        jMenuItemMax.setEnabled(false);
+                        jMenuItemRevided0Row.setEnabled(false);
+                        jMenuItemRevidedRowValue.setEnabled(false);
+                        jMenuItemRevidedSwitch.setText("Ukončiť revidovanú metódu");
+                        jComboBoxRevidedVariable.setVisible(true);
+                        ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[2];
+                        jComboBoxRevidedVariable.addItem(new ComboBoxObjects(-1, ""));
+                        fillComboBox();
+                        addComboBoxListener();
+
+                        ValuesSingleton.INSTANCE.revidedMethodRunning=true;
+
+                        //imageTableModel = new RevidedImageTableModel();
+                        revidedTableModel = new RevidedImageTableModel();
+                        tblSolution.setModel(revidedTableModel);
+                    }
+                break;
                 default: ;    
             }
             
@@ -1511,7 +1533,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     } else {
                         imageTableModel.fireTableDataChanged();
                     }
-
+                break;
                 case 2 : basisTableModel.fireTableDataChanged();
                     btnKoniecPomUlohy.setVisible(true);
                     jMenuItemSuppRole.setEnabled(false);
@@ -1522,6 +1544,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }
+                break;
                 case 4 : basisTableModel.fireTableDataChanged();
                     btnKoniecPomUlohy.setVisible(false);
                     if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
@@ -1531,7 +1554,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }
-                    
+                break;    
                 case 6 : basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
                     btnKoniecPomUlohy.setVisible(false);
@@ -1542,7 +1565,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
                     }
-                
+                break;
                 case 8 : basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
                     if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
@@ -1551,8 +1574,24 @@ public class MainFrame  extends javax.swing.JFrame {
                     } else {
                         imageTableModel = new ImageTableModel();
                         tblSolution.setModel(imageTableModel);
-                    }  
-                
+                    } 
+                break;
+                case 9 : if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        jMenuItemShowSuppVariables.setEnabled(true);
+                        jMenuItemGomory.setEnabled(true);
+                        jMenuHelpOperations.setEnabled(true);
+                        jMenuItemMax.setEnabled(true);
+                        jMenuItemRevided0Row.setEnabled(false);
+                        jMenuItemRevidedRowValue.setEnabled(false);
+                        jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+                        jComboBoxRevidedVariable.setVisible(false);
+
+                        ValuesSingleton.INSTANCE.revidedMethodRunning=false;
+
+                        imageTableModel = new ImageTableModel();
+                        tblSolution.setModel(imageTableModel);
+                    }
+                break;
                 case 10 : if (!ValuesSingleton.INSTANCE.revidedMethodRunning) {
                         jMenuItemShowSuppVariables.setEnabled(false);
                         jMenuItemGomory.setEnabled(false);
@@ -1573,7 +1612,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         revidedTableModel = new RevidedImageTableModel();
                         tblSolution.setModel(revidedTableModel);
                     }
-                
+                break;
                 default: ; 
             }
             
