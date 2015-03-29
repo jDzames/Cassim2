@@ -4,12 +4,15 @@ package Cassim2;
 
 public class AutoSolObj {
 
-    public AutoSolObj() {
+    public String message;
+    
+    public AutoSolObj(String mesg) {
+        message = mesg;
     }
     
     @Override
     public String toString() {
-        return "Hotovo. ";
+        return message;
     }
     
 }

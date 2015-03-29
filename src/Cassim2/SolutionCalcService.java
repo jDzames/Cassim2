@@ -361,5 +361,48 @@ public class SolutionCalcService {
         return 0;
     }
 
+    public  boolean suppVariableInBasis() {
+        for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
+            if (ValuesSingleton.INSTANCE.basisDataIdx[i]>=
+                    ValuesSingleton.INSTANCE.tableData[0].length-ValuesSingleton.INSTANCE.suppRoleVariables) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int firstNegativeColumn() {
+        for (int i = 1; i < ValuesSingleton.INSTANCE.showColumns; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[0][i].compareTo(BigFraction.ZERO) < 0){
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int blandPivotRow(int column) {
+        int bestRow = ValuesSingleton.INSTANCE.rows+10;
+        int bestColumn = ValuesSingleton.INSTANCE.columns+10;
+        BigFraction min = new BigFraction(-1);
+        for (int i = 1; i < ValuesSingleton.INSTANCE.tableData.length; i++) {
+            BigFraction pomer = ValuesSingleton.INSTANCE.tableData[i][0].divide(
+                    ValuesSingleton.INSTANCE.tableData[i][column]);
+            if (min.compareTo(BigFraction.MINUS_ONE) == 0 || 
+                    pomer.compareTo(min) < 0 || 
+                    (pomer.compareTo(min) == 0 && ValuesSingleton.INSTANCE.basisDataIdx[i-1] < bestColumn)) {
+                bestColumn = ValuesSingleton.INSTANCE.basisDataIdx[i-1];
+                bestRow = i;
+                min = pomer;
+            }
+            
+        }
+        
+        if (bestRow == ValuesSingleton.INSTANCE.rows+10) {
+            return -1;
+        }
+        
+        return bestRow;
+    }
+
     
 }

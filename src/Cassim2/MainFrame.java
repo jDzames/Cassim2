@@ -1691,6 +1691,8 @@ public class MainFrame  extends javax.swing.JFrame {
 
     private void jMenuItemAutomatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAutomatActionPerformed
 
+        jMenuBar.setEnabled(false);
+        
         AutomaticSolution automat = new AutomaticSolution(undoStack);
         ExecutorService exec = Executors.newSingleThreadExecutor();
         Future<AutoSolObj> future;
@@ -1702,6 +1704,8 @@ public class MainFrame  extends javax.swing.JFrame {
                 + " na výslednú.", "Automatický výpočet", JOptionPane.PLAIN_MESSAGE);
             
             AutoSolObj vysledok = future.get();
+            
+            jMenuBar.setEnabled(true);
             
             btnKoniecPomUlohy.setVisible(false);
             jMenuItemSave.setEnabled(true);
@@ -1736,7 +1740,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
             }
             
-            JOptionPane.showMessageDialog(this, vysledok.toString()+"Po riešení sa viete posúvať pomocou UNDO a REDO.", 
+            JOptionPane.showMessageDialog(this, vysledok.toString(), 
                 "Automatický výpočet", JOptionPane.PLAIN_MESSAGE);
             
             exec.shutdownNow();
