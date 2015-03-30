@@ -87,9 +87,10 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemAutomat = new javax.swing.JMenuItem();
         jMenuItemExit = new javax.swing.JMenuItem();
         jMenuTable = new javax.swing.JMenu();
-        jMenuItemGomory = new javax.swing.JMenuItem();
         jMenuItemSuppRole = new javax.swing.JMenuItem();
         jMenuItemBasisSolution = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemGomory = new javax.swing.JMenuItem();
         jMenuEdit = new javax.swing.JMenu();
         jMenuItemMakeBasis = new javax.swing.JMenuItem();
         jMenuItemPivot = new javax.swing.JMenuItem();
@@ -147,6 +148,11 @@ public class MainFrame  extends javax.swing.JFrame {
         });
 
         jComboBoxRevidedVariable.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jComboBoxRevidedVariable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxRevidedVariableActionPerformed(evt);
+            }
+        });
 
         jMenuFile.setText("Úloha ");
 
@@ -210,15 +216,6 @@ public class MainFrame  extends javax.swing.JFrame {
 
         jMenuTable.setText("Tabuľka");
 
-        jMenuItemGomory.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItemGomory.setText("Gomoryho rez");
-        jMenuItemGomory.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemGomoryActionPerformed(evt);
-            }
-        });
-        jMenuTable.add(jMenuItemGomory);
-
         jMenuItemSuppRole.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItemSuppRole.setText("Riešiť pomocnú úlohu");
         jMenuItemSuppRole.addActionListener(new java.awt.event.ActionListener() {
@@ -236,6 +233,16 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         });
         jMenuTable.add(jMenuItemBasisSolution);
+        jMenuTable.add(jSeparator1);
+
+        jMenuItemGomory.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItemGomory.setText("Gomoryho rez");
+        jMenuItemGomory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemGomoryActionPerformed(evt);
+            }
+        });
+        jMenuTable.add(jMenuItemGomory);
 
         jMenuBar.add(jMenuTable);
 
@@ -1751,16 +1758,34 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemAutomatActionPerformed
 
     private void jMenuItemHintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemHintActionPerformed
-        int hint = solutionCalculations.hint();
-        switch(hint){
-            case 0 : 
+        Hint hint = solutionCalculations.hint();
+        JOptionPane.showMessageDialog(this, hint.toString(), 
+                "Hint", JOptionPane.PLAIN_MESSAGE);
+            
+        switch(hint.getType()){
+            case 1 : /*if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                    if (hint.text.contains("Duál") ||  hint.text.contains("Vynásob")) {
+                        JOptionPane.showMessageDialog(this, "Nastala chyba", 
+                            "Hint", JOptionPane.ERROR);
+                        return;
+                    }
+                    jComboBoxRevidedVariable.setSelectedIndex(hint.selectedColumn+1);
+                    jMenuItemRevided0RowActionPerformed(evt);
+                    jMenuItemRevidedRowValueActionPerformed(evt);
+                    tblSolution.requestFocus();
+                    tblSolution.changeSelection(hint.selectedRow, ValuesSingleton.INSTANCE.rows+1, false, false);
+                } else {
+                }*/    
+                tblSolution.requestFocus();
+                    tblSolution.changeSelection(hint.selectedRow, hint.selectedColumn, false, false);
                 break;
-            case 1 :
-                break;
-                
             default : break;    
         }
     }//GEN-LAST:event_jMenuItemHintActionPerformed
+
+    private void jComboBoxRevidedVariableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxRevidedVariableActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxRevidedVariableActionPerformed
 
     
     private void fillComboBox() {
@@ -1866,6 +1891,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenu jMenuTable;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JTable tblBaza;
     private javax.swing.JTable tblSolution;
     // End of variables declaration//GEN-END:variables

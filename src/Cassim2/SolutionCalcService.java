@@ -21,7 +21,11 @@ public class SolutionCalcService {
     
     public int check0Row(){
         //-1:ak v 0. riadku je zaporne, +1:inak
-        for (int i=1; i<= ValuesSingleton.INSTANCE.columns; i++) {
+        int till = ValuesSingleton.INSTANCE.showColumns;
+        if (ValuesSingleton.INSTANCE.suppRoleRunning) {
+            till = ValuesSingleton.INSTANCE.columnNames.length;
+        }
+        for (int i=1; i< till; i++) {
             if (ValuesSingleton.INSTANCE.tableData[0][i].getNumerator().compareTo(BigInteger.ZERO) <0){
                 return -1;
             }
@@ -355,10 +359,54 @@ public class SolutionCalcService {
         return new CommandUndoDeleteRow(row, rowDeleted, basisIdxOld);
     }
 
-    public int hint() {
-        
-        
-        return 0;
+    public Hint hint() {
+        //ak mam situaciu na prenasobenie riadka -1
+        if (check0Column() == -1 && (check0Row() == -1 || !isBased())) {
+            for (int i = 1; i < ValuesSingleton.INSTANCE.tableData.length; i++) {
+                if (ValuesSingleton.INSTANCE.tableData[i][0].compareTo(BigFraction.ZERO)<0) {
+                    return new Hint(1, i, 0, "Vynásobte riadok zápornou konštantou. (-1)");
+                }
+            }
+        }
+        //ak dualne pivotovanie
+        if(isBased() && check0Column()==-1 && check0Row()==1 && !ValuesSingleton.INSTANCE.suppRoleRunning) {
+            int row = firstNegativeRow();
+            int column = -1;
+            for (int i = 1; i < ValuesSingleton.INSTANCE.showColumns; i++) {
+                if (ValuesSingleton.INSTANCE.tableData[row][i].compareTo(BigFraction.ZERO)<0) {
+                    column = i;
+                    break;
+                }
+            }
+            if (column == -1) {
+                return new Hint(0, "Úloha je duálne neprípustná (??)");
+            }
+            return new Hint(1, row, column, "Duálne pivotovanie na ["+row+", "+column+"].");
+        }
+        //nema 0 nad bazou
+        if (!have0overBasis()) {
+            return new Hint(0, "Vybázuj.");
+        }
+        //pomocná uloha
+        if(!isBased()){
+            return new Hint(0, "Spustite pomocnú úlohu.");
+        }
+        //ukonc pomocnu
+        if (ValuesSingleton.INSTANCE.suppRoleRunning && rightEndOfSuppRole(ValuesSingleton.INSTANCE.suppRoleVariables)) {
+            return new Hint(0, "Ukonči pomocnú úlohu");
+        }
+        //pivotovanie
+        int column = firstNegativeColumn();
+        if (column!=-1) {
+            int row = blandPivotRow(column);
+            return new Hint(1, row, column, "Pivotovanie na ["+row+", "+column+"].");
+        }
+        //asi hotovo
+        if (ValuesSingleton.INSTANCE.suppRoleRunning) {
+            return new Hint(0, "Úloha nemá riešenie. (??) ");
+        } else {
+            return new Hint(0, "Úloha je vyriešená. ");
+        }
     }
 
     public  boolean suppVariableInBasis() {
@@ -374,6 +422,15 @@ public class SolutionCalcService {
     public int firstNegativeColumn() {
         for (int i = 1; i < ValuesSingleton.INSTANCE.showColumns; i++) {
             if (ValuesSingleton.INSTANCE.tableData[0][i].compareTo(BigFraction.ZERO) < 0){
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    public int firstNegativeRow() {
+        for (int i = 1; i < ValuesSingleton.INSTANCE.tableData.length; i++) {
+            if (ValuesSingleton.INSTANCE.tableData[i][0].compareTo(BigFraction.ZERO) < 0){
                 return i;
             }
         }
