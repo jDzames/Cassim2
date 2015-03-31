@@ -74,7 +74,7 @@ public class SavedSolutionReader {
             
             s = bufReader.readLine();
             stringsArray = s.split(";");
-            ValuesSingleton.INSTANCE.columnNames = stringsArray;
+            ValuesSingleton.INSTANCE.columnNamesSaved = stringsArray;
             
             String[][] data = new String [ValuesSingleton.INSTANCE.rows+1][ValuesSingleton.INSTANCE.columns+1];
             for (int i = 0; i < ValuesSingleton.INSTANCE.rows+1; i++) {

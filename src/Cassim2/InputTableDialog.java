@@ -34,8 +34,8 @@ public class InputTableDialog extends javax.swing.JDialog {
             tblVariables.setRowHeight(0, 36);
         }
         
-        tblInput.getTableHeader().setVisible(true);//false
-        tblVariables.getTableHeader().setVisible(true);//false
+        tblInput.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
+        tblVariables.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
         
         tblInput.getColumn(" ").setCellEditor(new InputTableCellEditor());
         tblInput.getColumn(" ").setCellRenderer(new DefaultTableCellRenderer());
@@ -182,6 +182,12 @@ public class InputTableDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnReadDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReadDataActionPerformed
+       
+        if (tblInput.isEditing())
+            tblInput.getCellEditor().stopCellEditing();
+        if (tblVariables.isEditing())
+            tblVariables.getCellEditor().stopCellEditing();
+        
         int a=-1;
         int b=-1;
         try {
@@ -251,8 +257,8 @@ public class InputTableDialog extends javax.swing.JDialog {
             int actPos = 0;
             for (int i = 0; i <= inputTableModel.getNezapCount(); i++) {
                 if (inputTableModel.getNezap(i).equalsIgnoreCase("<>")) {
-                    colNames[actPos] = inputTableModel.getColumnName2(i)+"+";
-                    colNames[actPos+1] = inputTableModel.getColumnName2(i)+"-";
+                    colNames[actPos] = inputTableModel.getColumnName2(i)+"_+";
+                    colNames[actPos+1] = inputTableModel.getColumnName2(i)+"_-";
                     actPos = actPos+2;
                 } else {
                     colNames[actPos] = inputTableModel.getColumnName2(i);
@@ -263,15 +269,16 @@ public class InputTableDialog extends javax.swing.JDialog {
             int surplus = 1;
             for (int i = 1; i <= inputTableModel.getPorovnCount(); i++) {
                 if (inputTableModel.getPorovn(i).equals("<=")) {
-                    colNames[actPos] = "r"+slack;
+                    colNames[actPos] = "r_"+slack;
                     slack++;
                     actPos++;
                 } else if (inputTableModel.getPorovn(i).equals(">=")) {
-                    colNames[actPos] = "s"+surplus;
+                    colNames[actPos] = "s_"+surplus;
                     surplus++;
                     actPos++;
                 }
             }
+            ValuesSingleton.INSTANCE.columnNamesSaved = ValuesSingleton.INSTANCE.columnNames;
             ValuesSingleton.INSTANCE.columnNames = colNames;
 
             ValuesSingleton.INSTANCE.isOK=true;

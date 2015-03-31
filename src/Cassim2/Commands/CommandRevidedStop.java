@@ -1,5 +1,7 @@
 
-package Cassim2;
+package Cassim2.Commands;
+
+import Cassim2.Commands.CommandUndoRevidedStop;
 
 
 public class CommandRevidedStop implements Command {

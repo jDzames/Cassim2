@@ -1,6 +1,7 @@
 
-package Cassim2;
+package Cassim2.Commands;
 
+import Cassim2.ValuesSingleton;
 import java.util.ArrayList;
 import org.apache.commons.math3.fraction.BigFraction;
 

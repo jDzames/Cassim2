@@ -1,4 +1,4 @@
-package Cassim2;
+package Cassim2.Commands;
 
 
 public interface Command {    

@@ -1,18 +1,18 @@
 
-package Cassim2;
+package Cassim2.Commands;
 
 
-public class CommandUndoRevidedStart implements Command{
+public class CommandUndoRevidedStop implements Command{
 
     private final byte type;
 
-    public CommandUndoRevidedStart() {
-        this.type = 9;
+    public CommandUndoRevidedStop() {
+        this.type = 10;
     }
     
     @Override
     public Command execute() {
-        return new CommandRevidedStart();
+        return new CommandRevidedStop();
     }
 
     @Override
@@ -22,7 +22,7 @@ public class CommandUndoRevidedStart implements Command{
 
     @Override
     public String toString() {
-        return "Skonči pomocnú úlohu";
+        return "Začni revidovanú úlohu";
     }
     
 }

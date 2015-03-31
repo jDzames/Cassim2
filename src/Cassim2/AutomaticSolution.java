@@ -1,6 +1,7 @@
 
 package Cassim2;
 
+import Cassim2.Commands.Command;
 import java.util.Stack;
 import java.util.concurrent.Callable;
 import org.apache.commons.math3.fraction.BigFraction;
@@ -63,7 +64,7 @@ public class AutomaticSolution implements Callable<AutoSolObj>{
         //
         undoStack.push(solCalc.makeZeroOverBasis());
         
-        //ak som tu, tak idem riesit normalne
+        //ak som tu, tak idem riesit normalne, pivot 
         int column = solCalc.firstNegativeColumn();
         while (column != -1) {            
             int row = solCalc.blandPivotRow(column);

@@ -2,6 +2,11 @@ package Cassim2;
 
 
 
+import Cassim2.Commands.CommandUndoDeleteRow;
+import Cassim2.Commands.Command;
+import Cassim2.Commands.CommandUndoPivot;
+import Cassim2.Commands.CommandUndoMakeBasis;
+import Cassim2.Commands.CommandUndoMultiplyRow;
 import java.math.BigInteger;
 import org.apache.commons.math3.fraction.BigFraction;
 
@@ -442,8 +447,11 @@ public class SolutionCalcService {
         int bestColumn = ValuesSingleton.INSTANCE.columns+10;
         BigFraction min = new BigFraction(-1);
         for (int i = 1; i < ValuesSingleton.INSTANCE.tableData.length; i++) {
-            BigFraction pomer = ValuesSingleton.INSTANCE.tableData[i][0].divide(
-                    ValuesSingleton.INSTANCE.tableData[i][column]);
+            BigFraction posFR = ValuesSingleton.INSTANCE.tableData[i][column];
+            if (posFR.compareTo(BigFraction.ZERO)<=0) {
+                continue;
+            }
+            BigFraction pomer = ValuesSingleton.INSTANCE.tableData[i][0].divide(posFR);
             if (min.compareTo(BigFraction.MINUS_ONE) == 0 || 
                     pomer.compareTo(min) < 0 || 
                     (pomer.compareTo(min) == 0 && ValuesSingleton.INSTANCE.basisDataIdx[i-1] < bestColumn)) {

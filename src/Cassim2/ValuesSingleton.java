@@ -1,6 +1,11 @@
 
 package Cassim2;
 
+import Cassim2.Commands.Command;
+import Cassim2.Commands.CommandUndoEndSuppRoleNotOpt;
+import Cassim2.Commands.CommandUndoEndSuppRoleOpt;
+import Cassim2.Commands.CommandUndoGomory;
+import Cassim2.Commands.CommandUndoStartSuppRole;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -22,6 +27,7 @@ public enum ValuesSingleton {
     public int showColumns;
     
     public String[] columnNames;
+    public String[] columnNamesSaved;
     public String[][] data;
     public String[] porovnaniasPS; //porovnanie +1 =(prislusne) data (od prveho riadku - lebo bez ucelovej)
     public String[] nezapornost;

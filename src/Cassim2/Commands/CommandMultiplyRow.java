@@ -1,6 +1,7 @@
 
-package Cassim2;
+package Cassim2.Commands;
 
+import Cassim2.SolutionCalcService;
 import org.apache.commons.math3.fraction.BigFraction;
 
 

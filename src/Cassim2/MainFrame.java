@@ -1,5 +1,8 @@
 package Cassim2;
 
+import Cassim2.Commands.Command;
+import Cassim2.Commands.CommandUndoRevidedStart;
+import Cassim2.Commands.CommandUndoRevidedStop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,11 +38,13 @@ public class MainFrame  extends javax.swing.JFrame {
     private final SolutionCalcService solutionCalculations = new SolutionCalcService();
     private int pocetPomPremennych;
     private boolean youCan=true;
+    private File directoryForSaves;
     
     private Stack<Command> undoStack;
     private Stack<Command> redoStack;
 
     public MainFrame() {
+        this.directoryForSaves = null;
         //super(parent, modal);
         this.options = new String[]{"Áno", "Nie"};
         this.setTitle("Cassim 2");
@@ -532,8 +537,10 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.basisDataIdx = pole;
         this.pocetPomPremennych=ValuesSingleton.INSTANCE.suppRoleVariables;
         
-        if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         }
         solutionCalculations.findBasis();
         
@@ -551,9 +558,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private void saveTables() {
         String[] size = {""+(ValuesSingleton.INSTANCE.data.length+3),""+ValuesSingleton.INSTANCE.data[0].length};
         ValuesSingleton.INSTANCE.putToSavingQueue(size);
-        String[] colNames = new String[ValuesSingleton.INSTANCE.data[0].length];
-        System.arraycopy(ValuesSingleton.INSTANCE.columnNames, 0, colNames, 0, ValuesSingleton.INSTANCE.data[0].length);
-        ValuesSingleton.INSTANCE.putToSavingQueue(colNames);
+        ValuesSingleton.INSTANCE.putToSavingQueue(ValuesSingleton.INSTANCE.columnNamesSaved);
         for (int i = 0; i < ValuesSingleton.INSTANCE.data.length; i++) {
             ValuesSingleton.INSTANCE.putToSavingQueue(ValuesSingleton.INSTANCE.data[i]);
         }
@@ -561,7 +566,9 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.putToSavingQueue(ValuesSingleton.INSTANCE.nezapornost);
         String[] size2 = {""+(ValuesSingleton.INSTANCE.rows+1),""+(ValuesSingleton.INSTANCE.columns+1)};
         ValuesSingleton.INSTANCE.putToSavingQueue(size2);
-        ValuesSingleton.INSTANCE.putToSavingQueue(ValuesSingleton.INSTANCE.columnNames);
+        String[] colNames = new String[ValuesSingleton.INSTANCE.columnNames.length];
+        System.arraycopy(ValuesSingleton.INSTANCE.columnNames, 0, colNames, 0, ValuesSingleton.INSTANCE.columnNames.length);
+        ValuesSingleton.INSTANCE.putToSavingQueue(colNames);
         for (int i = 0; i < ValuesSingleton.INSTANCE.rows+1; i++) {
             String[] frac = new String[ValuesSingleton.INSTANCE.columns+1];
             for (int j = 0; j < ValuesSingleton.INSTANCE.columns+1; j++) {
@@ -584,6 +591,9 @@ public class MainFrame  extends javax.swing.JFrame {
     private void jMenuItemSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemSaveActionPerformed
         JFileChooser chooser = new JFileChooser();
         chooser.setToolTipText("Zadajte názov alebo vyberte súbor typu csv");
+        if (directoryForSaves != null && directoryForSaves.exists()) {
+            chooser.setCurrentDirectory(directoryForSaves);
+        }
         chooser.setVisible(true);
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
             ".csv", "csv");
@@ -593,6 +603,7 @@ public class MainFrame  extends javax.swing.JFrame {
         int returnVal = chooser.showOpenDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
+            directoryForSaves = chooser.getCurrentDirectory();
             if (file.getAbsolutePath().equals(ValuesSingleton.INSTANCE.file.getAbsolutePath())) {
                 JOptionPane.showMessageDialog(this, "Tu už je tento súbor uložený.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
                 return;
@@ -650,7 +661,7 @@ public class MainFrame  extends javax.swing.JFrame {
 
     private void jMenuItemGomoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemGomoryActionPerformed
         int selectedRow = tblSolution.getSelectedRow();
-        if (selectedRow<=0) {
+        if (selectedRow<0) {
             JOptionPane.showMessageDialog(this, "Vyberte vhodný riadok!", "Chyba", JOptionPane.ERROR_MESSAGE);
             return; 
         }
@@ -697,10 +708,19 @@ public class MainFrame  extends javax.swing.JFrame {
                         saver.append();
                     
         }
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        }
     }//GEN-LAST:event_jMenuItemGomoryActionPerformed
 
     private void jMenuItemMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMinActionPerformed
         int selColumn = tblSolution.getSelectedColumn();
+        if (selColumn<0 || selColumn>=ValuesSingleton.INSTANCE.columnNames.length) {
+            JOptionPane.showMessageDialog(this, "Vyberte stĺpec v tabuľke", "Riešenie", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
             if (selColumn == ValuesSingleton.INSTANCE.rows + 1) {
@@ -722,6 +742,12 @@ public class MainFrame  extends javax.swing.JFrame {
                 selColumn = ValuesSingleton.INSTANCE.basisDataIdx[rowinBasis];
             }
         }
+        
+        if (!solutionCalculations.isBased() || !solutionCalculations.have0overBasis()) {
+            JOptionPane.showMessageDialog(this, "Úloha nie je vybázovaná", "Riešenie", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+        
         int checkedMin = solutionCalculations.checkMin(tblSolution.getSelectedRow(), selColumn);
 
         switch(checkedMin){
@@ -753,7 +779,18 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemMinActionPerformed
 
     private void jMenuItemMaxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMaxActionPerformed
-        int checkMax = solutionCalculations.checkMax(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
+        int selecRow = tblSolution.getSelectedRow();
+        if (selecRow<0 || selecRow>=ValuesSingleton.INSTANCE.tableData.length) {
+            JOptionPane.showMessageDialog(this, "Vyberte stĺpec v tabuľke", "Riešenie", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        if (!solutionCalculations.isBased() || !solutionCalculations.have0overBasis()) {
+            JOptionPane.showMessageDialog(this, "Úloha nie je vybázovaná", "Riešenie", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+        
+        int checkMax = solutionCalculations.checkMax(selecRow, tblSolution.getSelectedColumn());
 
         switch(checkMax){
             case -4: JOptionPane.showMessageDialog(this, "Vyberte bunku kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
@@ -766,17 +803,17 @@ public class MainFrame  extends javax.swing.JFrame {
                     if (potvrdenie != JOptionPane.YES_OPTION) {
                         return;
                     }
-            default: int focusColumn = solutionCalculations.maximum(tblSolution.getSelectedRow(), tblSolution.getSelectedColumn());
-                    if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator().longValue()<0) {
+            default: int focusColumn = solutionCalculations.maximum(selecRow, tblSolution.getSelectedColumn());
+                    if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[selecRow][0].getNumerator().longValue()<0) {
                         JOptionPane.showMessageDialog(this, "Duálna úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                         return;
                     } else
-                        if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[tblSolution.getSelectedRow()][0].getNumerator().longValue()==0) {
+                        if (focusColumn==-2 && ValuesSingleton.INSTANCE.tableData[selecRow][0].getNumerator().longValue()==0) {
                             JOptionPane.showMessageDialog(this, "Tento riadok nie je vhodný na hľadanie maxima.", "Nevhodný riadok", JOptionPane.PLAIN_MESSAGE);
                             return;
                         }
                     if (focusColumn>0 && focusColumn<= ValuesSingleton.INSTANCE.columns) {
-                        tblSolution.changeSelection(tblSolution.getSelectedRow(), focusColumn, false, false);
+                        tblSolution.changeSelection(selecRow, focusColumn, false, false);
                      } else {
                         JOptionPane.showMessageDialog(this, "V tomto stĺpci nie je možné nájsť minimum podľa postupu Simplexovej metódy!", "Chyba", JOptionPane.ERROR_MESSAGE);
                      }
@@ -892,8 +929,10 @@ public class MainFrame  extends javax.swing.JFrame {
             tblSolution.addColumn(new TableColumn());
         }   */
         
-        if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         }
         
         jMenuItemSuppRole.setEnabled(false);
@@ -978,6 +1017,12 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         ValuesSingleton.INSTANCE.suppRoleRunning = false;
         youCan = true;
+        
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        }
     }//GEN-LAST:event_btnKoniecPomUlohyActionPerformed
 
     private void jMenuItemPrenasobRiadokActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemPrenasobRiadokActionPerformed
@@ -1103,8 +1148,10 @@ public class MainFrame  extends javax.swing.JFrame {
         undoStack = new Stack<>();
         redoStack = new Stack<>();
         
-        if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         }
         
         ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
@@ -1154,6 +1201,9 @@ public class MainFrame  extends javax.swing.JFrame {
         
         JFileChooser chooser = new JFileChooser();
         chooser.setToolTipText("Zadajte názov alebo vyberte súbor typu csv");
+        if (directoryForSaves != null && directoryForSaves.exists()) {
+            chooser.setCurrentDirectory(directoryForSaves);
+        }
         chooser.setVisible(true);
         /*FileNameExtensionFilter filter = new FileNameExtensionFilter(
             ".csv", "csv");*/
@@ -1162,6 +1212,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
+            directoryForSaves = chooser.getCurrentDirectory();
             if (!file.exists()) {
                 JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -1218,8 +1269,10 @@ public class MainFrame  extends javax.swing.JFrame {
             initSolution();
             
         } else {
-            if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
                 tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            } else {
+                tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             }
             
             jMenuItemSave.setEnabled(true);
@@ -1258,6 +1311,9 @@ public class MainFrame  extends javax.swing.JFrame {
         
         JFileChooser chooser = new JFileChooser();
         chooser.setToolTipText("Zadajte názov alebo vyberte súbor typu csv");
+        if (directoryForSaves != null && directoryForSaves.exists()) {
+            chooser.setCurrentDirectory(directoryForSaves);
+        }
         chooser.setVisible(true);
         /*FileNameExtensionFilter filter = new FileNameExtensionFilter(
             ".csv", "csv");*/
@@ -1266,6 +1322,7 @@ public class MainFrame  extends javax.swing.JFrame {
 
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = chooser.getSelectedFile();
+            directoryForSaves = chooser.getCurrentDirectory();
             if (!file.exists()) {
                 JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -1314,8 +1371,10 @@ public class MainFrame  extends javax.swing.JFrame {
             initSolution();
             
         } else {
-            if (ValuesSingleton.INSTANCE.columnNames.length>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
                 tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+            } else {
+                tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             }
             jMenuItemSave.setEnabled(true);
             
@@ -1442,7 +1501,11 @@ public class MainFrame  extends javax.swing.JFrame {
             revidedTableModel = new RevidedImageTableModel();
             tblSolution.setModel(revidedTableModel);
         }
-        
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        }
     }//GEN-LAST:event_jMenuItemRevidedSwitchActionPerformed
 
     private void jMenuItemRevided0RowActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemRevided0RowActionPerformed

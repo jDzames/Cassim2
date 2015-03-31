@@ -47,7 +47,7 @@ public class MultiplyRowDialog extends javax.swing.JDialog {
             }
         });
 
-        jTxtNominator.setText("1");
+        jTxtNominator.setText("-1");
 
         jTxtDenominator.setText("1");
 
