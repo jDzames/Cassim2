@@ -475,6 +475,10 @@ public class MainFrame  extends javax.swing.JFrame {
         
         btnKoniecPomUlohy.setVisible(false);
         jComboBoxRevidedVariable.setVisible(false);
+        
+        ValuesSingleton.INSTANCE.revidedMethodRunning = false;
+        ValuesSingleton.INSTANCE.suppRoleRunning = false;
+        jComboBoxRevidedVariable.setVisible(false);
     }
     
     private void initSolution(){
@@ -622,6 +626,7 @@ public class MainFrame  extends javax.swing.JFrame {
             try {
                 Files.move(source, newdir.resolve(file.getName()), REPLACE_EXISTING);
                 ValuesSingleton.INSTANCE.file = new File(filePath+File.separator+s+".csv");
+                //sav
             } catch (IOException ex) {
                 ValuesSingleton.INSTANCE.resetSavingQueue();
                 JOptionPane.showMessageDialog(this, "Chyba pri ukladaní vstupu. Skuste súbor nazvať inak (lebo takýto súbor už pravdepodobne existuje) alebo súbor vytvorte inde (kvôli chýbajúcim právam).", "Chyba", JOptionPane.ERROR_MESSAGE);
@@ -646,13 +651,6 @@ public class MainFrame  extends javax.swing.JFrame {
             imageTableModel.fireTableDataChanged();
         }
         
-        SavingWriterThread saver = new SavingWriterThread();
-        
-            String[] row = {"0"};
-            ValuesSingleton.INSTANCE.putToSavingQueue(row);
-            String[] end = {"POISON_PILL"};
-            ValuesSingleton.INSTANCE.putToSavingQueue(end);
-            saver.append();
     }//GEN-LAST:event_jMenuItemMakeBasisActionPerformed
 
     private void jMenuItemExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemExitActionPerformed
@@ -699,13 +697,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     tblSolution.setModel(imageTableModel);
                     basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
-                    SavingWriterThread saver = new SavingWriterThread();
                     
-                        String[] row = {"5",""+selectedRow};
-                        ValuesSingleton.INSTANCE.putToSavingQueue(row);
-                        String[] end = {"POISON_PILL"};
-                        ValuesSingleton.INSTANCE.putToSavingQueue(end);
-                        saver.append();
                     
         }
         if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
@@ -888,13 +880,6 @@ public class MainFrame  extends javax.swing.JFrame {
                 }
         
                 basisTableModel.fireTableDataChanged();
-                SavingWriterThread saver = new SavingWriterThread();
-                
-                    String[] row = {"1",""+selectedRow,""+selectedColumn};
-                    ValuesSingleton.INSTANCE.putToSavingQueue(row);
-                    String[] end = {"POISON_PILL"};
-                    ValuesSingleton.INSTANCE.putToSavingQueue(end);
-                    saver.append();
                 
         }
         
@@ -940,13 +925,6 @@ public class MainFrame  extends javax.swing.JFrame {
         tblSolution.setModel(imageTableModel);
         basisTableModel.fireTableDataChanged();
         btnKoniecPomUlohy.setVisible(true);
-        SavingWriterThread saver = new SavingWriterThread();
-        
-            String[] row = {"2"};
-            ValuesSingleton.INSTANCE.putToSavingQueue(row);
-            String[] end = {"POISON_PILL"};
-            ValuesSingleton.INSTANCE.putToSavingQueue(end);
-            saver.append();
         
     }//GEN-LAST:event_jMenuItemSuppRoleActionPerformed
 
@@ -973,13 +951,6 @@ public class MainFrame  extends javax.swing.JFrame {
             basisTableModel = new BasisTableModel();
             tblBaza.setModel(basisTableModel);
             btnKoniecPomUlohy.setVisible(false);
-            SavingWriterThread saver = new SavingWriterThread();
-            
-                String[] row = {"3"};
-                ValuesSingleton.INSTANCE.putToSavingQueue(row);
-                String[] end = {"POISON_PILL"};
-                ValuesSingleton.INSTANCE.putToSavingQueue(end);
-                saver.append();
             
         } else{
             int potvrdenie = JOptionPane.showOptionDialog(this,"Daná tabuľka nezodpovedá optimálnej tabuľke na ukončenie pomocnej úlohy. Naozaj chcete pokračovať? (Budete vrátení do stavu pred pomocnou úlohou.)", "Varonanie",
@@ -1006,13 +977,6 @@ public class MainFrame  extends javax.swing.JFrame {
             fillComboBoxAfterSuppRole();
             basisTableModel.fireTableDataChanged();
             btnKoniecPomUlohy.setVisible(false);
-            SavingWriterThread saver = new SavingWriterThread();
-            
-                String[] row = {"4"};
-                ValuesSingleton.INSTANCE.putToSavingQueue(row);
-                String[] end = {"POISON_PILL"};
-                ValuesSingleton.INSTANCE.putToSavingQueue(end);
-                saver.append();
             
         }
         ValuesSingleton.INSTANCE.suppRoleRunning = false;
@@ -1071,12 +1035,6 @@ public class MainFrame  extends javax.swing.JFrame {
         solutionCalculations.findBasis();//ak by mohlo ist do bazy
         basisTableModel.fireTableDataChanged();
         
-                /*SavingWriterThread saver = new SavingWriterThread();
-                String[] row = {"6",""+selectedRow,""+multBy.getNumerator(),""+multBy.getDenominator()};
-                ValuesSingleton.INSTANCE.putToSavingQueue(row);
-                String[] end = {"POISON_PILL"};
-                ValuesSingleton.INSTANCE.putToSavingQueue(end);
-                saver.append();*/
         //}
     }//GEN-LAST:event_jMenuItemPrenasobRiadokActionPerformed
 
@@ -1193,7 +1151,6 @@ public class MainFrame  extends javax.swing.JFrame {
             solutionCalculations.findBasis();
             basisTableModel.fireTableDataChanged();
         }
-        
         btnKoniecPomUlohy.setVisible(false);
     }//GEN-LAST:event_jMenuItemOpenNewActionPerformed
 
@@ -1228,6 +1185,7 @@ public class MainFrame  extends javax.swing.JFrame {
             System.out.println("Otvoril som file: "+file.getName());
         } else {
             //JOptionPane.showMessageDialog(this, "Vyberte *.csv súbor (s uloženou úlohou LP)!", "Chyba", JOptionPane.ERROR_MESSAGE);
+            closeSolution();
             JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
             return;
         }
@@ -1269,11 +1227,6 @@ public class MainFrame  extends javax.swing.JFrame {
             initSolution();
             
         } else {
-            if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
-                tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            } else {
-                tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-            }
             
             jMenuItemSave.setEnabled(true);
             
@@ -1304,6 +1257,11 @@ public class MainFrame  extends javax.swing.JFrame {
             tblBaza.setModel(basisTableModel);
             solutionCalculations.findBasis();
             basisTableModel.fireTableDataChanged();
+        }
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         }
     }//GEN-LAST:event_jMenuItemOpenSavedInputActionPerformed
 
@@ -1371,11 +1329,7 @@ public class MainFrame  extends javax.swing.JFrame {
             initSolution();
             
         } else {
-            if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
-                tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-            } else {
-                tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-            }
+            
             jMenuItemSave.setEnabled(true);
             
             jMenuTable.setEnabled(true);
@@ -1406,7 +1360,11 @@ public class MainFrame  extends javax.swing.JFrame {
             solutionCalculations.findBasis();
             basisTableModel.fireTableDataChanged();
         }
-        
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        }
         //btnKoniecPomUlohy.setVisible((this.pocetPomPremennych>0));
     }//GEN-LAST:event_jMenuItemOpenSavedSolutionActionPerformed
 
@@ -1627,7 +1585,7 @@ public class MainFrame  extends javax.swing.JFrame {
                         tblSolution.setModel(revidedTableModel);
                     }
                 break;
-                default: ;    
+                default: ;  
             }
             
             redoStack.push(redoCmd);
@@ -1637,6 +1595,11 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
         }else{
             jMenuItemUNDO.setToolTipText("Nedá sa urobiť krok späť");
+        }
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         }
     }//GEN-LAST:event_jMenuItemUNDOActionPerformed
 
@@ -1743,6 +1706,11 @@ public class MainFrame  extends javax.swing.JFrame {
         }else{
             jMenuItemREDO.setToolTipText("Nedá sa urobiť krok späť");
         }
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        }
     }//GEN-LAST:event_jMenuItemREDOActionPerformed
 
     private void jMenuItemAboutAuthorsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAboutAuthorsActionPerformed
@@ -1818,6 +1786,11 @@ public class MainFrame  extends javax.swing.JFrame {
         } catch (Exception ex) {
             Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        } else {
+            tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        }
     }//GEN-LAST:event_jMenuItemAutomatActionPerformed
 
     private void jMenuItemHintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemHintActionPerformed
@@ -1868,10 +1841,13 @@ public class MainFrame  extends javax.swing.JFrame {
         jComboBoxRevidedVariable.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (!youCan) {
+                if (!youCan || !ValuesSingleton.INSTANCE.revidedMethodRunning) {
                     return;
                 }
                 ComboBoxObjects selected = (ComboBoxObjects)(jComboBoxRevidedVariable.getSelectedItem());
+                if (selected == null) {
+                    return;
+                }
                 ValuesSingleton.INSTANCE.revidedShownIdx = selected.getColumn();
                 ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[2];
                 jMenuItemRevidedRowValue.setEnabled(false);

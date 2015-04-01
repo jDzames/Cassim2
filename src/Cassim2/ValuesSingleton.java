@@ -8,6 +8,7 @@ import Cassim2.Commands.CommandUndoGomory;
 import Cassim2.Commands.CommandUndoStartSuppRole;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -165,7 +166,7 @@ public enum ValuesSingleton {
         System.arraycopy( this.columnNames, 0, colNames, 0, this.columnNames.length );
         int idx=1;
         for (int i = this.columnNames.length; i < this.columnNames.length+pocetPomPremennych; i++) {
-            colNames[i] = ""+"p"+idx;
+            colNames[i] = ""+"p_"+idx;
             idx++;
         }
         this.columnNames = colNames;
@@ -200,7 +201,6 @@ public enum ValuesSingleton {
         this.row0saved = this.tableDataSaved[0];
         this.tableDataSaved = null;
         ValuesSingleton.INSTANCE.suppRoleRunning = true;
-        
         
         return new CommandUndoStartSuppRole(row0saved);
     }
@@ -244,6 +244,7 @@ public enum ValuesSingleton {
     public Command endOfSuppRoleOpt(int pocetPomPremennych) {
         int normalColumns = this.columns-pocetPomPremennych;
         
+        BigFraction[] row0 = this.tableData[0];
         ArrayList<Integer> deletedRowsIdxs = new ArrayList<>();
         ArrayList<BigFraction[]> deletedRows = new ArrayList<>();
         ArrayList<Integer> deletedBasisIdxs = new ArrayList<>();
@@ -296,7 +297,8 @@ public enum ValuesSingleton {
         
         ValuesSingleton.INSTANCE.showColumns = this.columnNames.length-pocetPomPremennych;
         deletedRowsIdxs.add(new Integer(-1));
-        return new CommandUndoEndSuppRoleOpt(deletedRows, deletedRowsIdxs, deletedBasisIdxs);
+        
+        return new CommandUndoEndSuppRoleOpt(row0, deletedRows, deletedRowsIdxs, deletedBasisIdxs);
     }
 
     
@@ -311,10 +313,10 @@ public enum ValuesSingleton {
         
         String[] colNames = new String[this.columnNames.length+1];
         System.arraycopy( this.columnNames, 0, colNames, 0, this.columnNames.length );
-        colNames[colNames.length-this.suppRoleVariables-1]="G"+this.gomoryVariables;
+        colNames[colNames.length-this.suppRoleVariables-1]="G_"+this.gomoryVariables;
         int idx = 1;
         for (int i = colNames.length-this.suppRoleVariables; i < colNames.length; i++) {
-            colNames[i]="p"+idx;
+            colNames[i]="p_"+idx;
             idx++;
         }
         this.columnNames = colNames;

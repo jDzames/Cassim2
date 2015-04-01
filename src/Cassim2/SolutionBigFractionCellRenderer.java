@@ -159,7 +159,7 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
                 
             }
         } else {
-            setValue(ValuesSingleton.INSTANCE.tableData[row][column]);
+           setValue(ValuesSingleton.INSTANCE.tableData[row][column]);
         }
 
         return this;

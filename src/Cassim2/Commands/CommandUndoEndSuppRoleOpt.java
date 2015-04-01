@@ -3,6 +3,7 @@ package Cassim2.Commands;
 
 import Cassim2.ValuesSingleton;
 import java.util.ArrayList;
+import java.util.Arrays;
 import org.apache.commons.math3.fraction.BigFraction;
 
 
@@ -11,12 +12,14 @@ public class CommandUndoEndSuppRoleOpt implements Command{
     private ArrayList<BigFraction[]> deletedRows;
     private ArrayList<Integer> deletedRowsIdxs;
     private ArrayList<Integer> deletedBasisIdxs;
+    private BigFraction[] row0;
     private final byte type;
 
-    public CommandUndoEndSuppRoleOpt(ArrayList<BigFraction[]> deletedRows, ArrayList<Integer> deletedRowsIdxs, ArrayList<Integer> deletedBasisIdxs) {
+    public CommandUndoEndSuppRoleOpt(BigFraction[] row0, ArrayList<BigFraction[]> deletedRows, ArrayList<Integer> deletedRowsIdxs, ArrayList<Integer> deletedBasisIdxs) {
         this.deletedRows = deletedRows;
         this.deletedRowsIdxs = deletedRowsIdxs;
         this.deletedBasisIdxs = deletedBasisIdxs;
+        this.row0 = row0;
         type = 7;
     }
     
@@ -29,7 +32,7 @@ public class CommandUndoEndSuppRoleOpt implements Command{
         BigFraction[][] newTable = new BigFraction[ValuesSingleton.INSTANCE.tableData.length+deletedRows.size()]
                 [ValuesSingleton.INSTANCE.tableData[0].length];
         int[] newBasis = new int[ValuesSingleton.INSTANCE.basisDataIdx.length+deletedRows.size()];
-        newTable[0] = ValuesSingleton.INSTANCE.row0saved; 
+        newTable[0] = row0; 
         int idx = 1;
         int idxInDel = 0;
         for (int i = 1; i < ValuesSingleton.INSTANCE.tableData.length; i++) {

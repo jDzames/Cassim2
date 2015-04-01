@@ -108,9 +108,10 @@ public class SolutionCalcService {
         BigFraction[] tableChoosed = new BigFraction[ValuesSingleton.INSTANCE.basisDataIdx.length];
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
             int column = ValuesSingleton.INSTANCE.basisDataIdx[i];
-            row0Choosed[i] = new BigFraction(ValuesSingleton.INSTANCE.tableData[0][column].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][column].getDenominator());
-            tableChoosed[i] = new BigFraction(ValuesSingleton.INSTANCE.tableData[i+1][column].getNumerator(), ValuesSingleton.INSTANCE.tableData[i+1][column].getDenominator());
             if (column>0) {
+                row0Choosed[i] = new BigFraction(ValuesSingleton.INSTANCE.tableData[0][column].getNumerator(), ValuesSingleton.INSTANCE.tableData[0][column].getDenominator());
+                tableChoosed[i] = new BigFraction(ValuesSingleton.INSTANCE.tableData[i+1][column].getNumerator(), ValuesSingleton.INSTANCE.tableData[i+1][column].getDenominator());
+            
                 int row = i+1;
                 multiplRow(row, new BigFraction(ValuesSingleton.INSTANCE.tableData[row][column].getDenominator(), ValuesSingleton.INSTANCE.tableData[row][column].getNumerator()));
                 addRowToRow(row, 0, new BigFraction(ValuesSingleton.INSTANCE.tableData[0][column].getNumerator().multiply(BigInteger.valueOf(-1)), ValuesSingleton.INSTANCE.tableData[0][column].getDenominator()));
