@@ -16,6 +16,7 @@ public class CommandGomory implements Command {
 
     @Override
     public Command execute() {
+        ValuesSingleton.INSTANCE.stack.push("2;"+row);
         return ValuesSingleton.INSTANCE.doGomory(row);
     }
 

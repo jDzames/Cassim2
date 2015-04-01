@@ -21,6 +21,7 @@ public class CommandStartSuppRole implements Command {
                 pocet++;
             }
         }
+        ValuesSingleton.INSTANCE.stack.push("4");
         return ValuesSingleton.INSTANCE.startSuppRole(pocet);
     }
 

@@ -1,20 +1,22 @@
 package Cassim2;
 
 
+import Cassim2.Commands.Command;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Stack;
 import org.apache.commons.math3.fraction.BigFraction;
 
 
 public class SavedSolutionReader {
     
-    BufferedReader bufReader;
+    private BufferedReader bufReader;
     
     protected void readForEdit(File file) throws FileWritingException{
-        try {
+        try {            
             FileReader reader = new FileReader(file);
             bufReader = new BufferedReader(reader);
             
@@ -62,7 +64,7 @@ public class SavedSolutionReader {
         }        
     }
 
-    protected void readForSolution(File file) {
+    protected void readForSolution(File file, Stack<Command> redoStack) {
         try {
             FileReader reader = new FileReader(file);
             bufReader = new BufferedReader(reader);
@@ -116,7 +118,17 @@ public class SavedSolutionReader {
             
             //history
             
-            
+            int number = bufReader.read();
+            for (int i = 0; i < number; i++) {
+                Command command = null;
+
+                int nextType = bufReader.read();
+                
+                
+                redoStack.push(command);
+            }
+
+
         } catch (FileNotFoundException ex) {
             throw new FileWritingException("Nenájdený súbor!");
         } catch (IOException exx) {

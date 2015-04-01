@@ -2,6 +2,7 @@
 package Cassim2.Commands;
 
 import Cassim2.SolutionCalcService;
+import Cassim2.ValuesSingleton;
 import org.apache.commons.math3.fraction.BigFraction;
 
 
@@ -19,6 +20,7 @@ public class CommandMultiplyRow implements Command {
 
     @Override
     public Command execute() {
+        ValuesSingleton.INSTANCE.stack.push("7;"+multBy.getNumerator()+";"+multBy.getDenominator());
         SolutionCalcService solCalc = new SolutionCalcService();
         return solCalc.multiplRow(row, multBy);
     }

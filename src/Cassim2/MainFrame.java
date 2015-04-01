@@ -626,11 +626,13 @@ public class MainFrame  extends javax.swing.JFrame {
             try {
                 Files.move(source, newdir.resolve(file.getName()), REPLACE_EXISTING);
                 ValuesSingleton.INSTANCE.file = new File(filePath+File.separator+s+".csv");
-                //sav
+                SavingAppenderThread saver = new SavingAppenderThread(ValuesSingleton.INSTANCE.stack);
+                saver.run();
             } catch (IOException ex) {
                 ValuesSingleton.INSTANCE.resetSavingQueue();
                 JOptionPane.showMessageDialog(this, "Chyba pri ukladaní vstupu. Skuste súbor nazvať inak (lebo takýto súbor už pravdepodobne existuje) alebo súbor vytvorte inde (kvôli chýbajúcim právam).", "Chyba", JOptionPane.ERROR_MESSAGE);
             } 
+            ValuesSingleton.INSTANCE.stack = new Stack<>();
         }
     }//GEN-LAST:event_jMenuItemSaveActionPerformed
 
@@ -638,6 +640,7 @@ public class MainFrame  extends javax.swing.JFrame {
         Command cmd = solutionCalculations.makeZeroOverBasis();
         undoStack.push(cmd);
         jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        ValuesSingleton.INSTANCE.stack.push("1");
         if (!redoStack.isEmpty()) {
             redoStack = new Stack<>();
         }
@@ -689,6 +692,7 @@ public class MainFrame  extends javax.swing.JFrame {
             default: Command cmd = ValuesSingleton.INSTANCE.doGomory(tblSolution.getSelectedRow());
                     undoStack.push(cmd);
                     jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+                    ValuesSingleton.INSTANCE.stack.push("2;"+selectedRow);
                     if (!redoStack.isEmpty()) {
                         redoStack = new Stack<>();
                     }
@@ -875,6 +879,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 }
                 undoStack.push(cmd);
                 jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+                ValuesSingleton.INSTANCE.stack.push("2;"+selectedRow+";"+selectedColumn);
                 if (!redoStack.isEmpty()) {
                     redoStack = new Stack<>();
                 }
@@ -906,6 +911,7 @@ public class MainFrame  extends javax.swing.JFrame {
         Command cmd = ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych); 
         undoStack.push(cmd);
         jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        ValuesSingleton.INSTANCE.stack.push("4");
         if (!redoStack.isEmpty()) {
             redoStack = new Stack<>();
         }
@@ -936,6 +942,7 @@ public class MainFrame  extends javax.swing.JFrame {
             Command cmd = ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
             undoStack.push(cmd);
             jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            ValuesSingleton.INSTANCE.stack.push("5");
             if (!redoStack.isEmpty()) {
                 redoStack = new Stack<>();
             }
@@ -961,6 +968,7 @@ public class MainFrame  extends javax.swing.JFrame {
             Command cmd = ValuesSingleton.INSTANCE.endOfSuppRoleNotOpt(pocetPomPremennych);
             undoStack.push(cmd);
             jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            ValuesSingleton.INSTANCE.stack.push("6");
             if (!redoStack.isEmpty()) {
                 redoStack = new Stack<>();
             }
@@ -1026,6 +1034,7 @@ public class MainFrame  extends javax.swing.JFrame {
         Command cmd = solutionCalculations.multiplRow(selectedRow, multBy);
         undoStack.push(cmd);
         jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        ValuesSingleton.INSTANCE.stack.push("7;"+multBy.getNumerator()+";"+multBy.getDenominator());
         if (!redoStack.isEmpty()) {
             redoStack = new Stack<>();
         }
@@ -1105,6 +1114,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
         undoStack = new Stack<>();
         redoStack = new Stack<>();
+        ValuesSingleton.INSTANCE.stack = new Stack<>();
         
         if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -1222,6 +1232,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
         undoStack = new Stack<>();
         redoStack = new Stack<>();
+        ValuesSingleton.INSTANCE.stack = new Stack<>();
         
         if (!tblSolution.isVisible()) {
             initSolution();
@@ -1287,7 +1298,7 @@ public class MainFrame  extends javax.swing.JFrame {
             }
             //otvorit a nacitat data
             try {
-                reader.readForSolution(file);
+                reader.readForSolution(file, redoStack);
                 ValuesSingleton.INSTANCE.onlyOnce = true;
                 ValuesSingleton.INSTANCE.file = file;
                 
@@ -1324,6 +1335,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
         undoStack = new Stack<>();
         redoStack = new Stack<>();
+        ValuesSingleton.INSTANCE.stack = new Stack<>();
         
         if (!tblSolution.isVisible()) {
             initSolution();
@@ -1394,6 +1406,7 @@ public class MainFrame  extends javax.swing.JFrame {
         }else{
             undoStack.push(cmd);
             jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            ValuesSingleton.INSTANCE.stack.push("8;"+tblSolution.getSelectedRow());
         
             imageTableModel = new ImageTableModel();
             basisTableModel = new BasisTableModel();
@@ -1424,6 +1437,7 @@ public class MainFrame  extends javax.swing.JFrame {
             Command cmd = new CommandUndoRevidedStop();
             undoStack.push(cmd);
             jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            ValuesSingleton.INSTANCE.stack.push("9");
             if (!redoStack.isEmpty()) {
                 redoStack = new Stack<>();
             }
@@ -1451,6 +1465,7 @@ public class MainFrame  extends javax.swing.JFrame {
             Command cmd = new CommandUndoRevidedStart();
             undoStack.push(cmd);
             jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+            ValuesSingleton.INSTANCE.stack.push("10");
             if (!redoStack.isEmpty()) {
                 redoStack = new Stack<>();
             }
@@ -1486,6 +1501,7 @@ public class MainFrame  extends javax.swing.JFrame {
         if (!undoStack.isEmpty()) {
             Command cmd = undoStack.pop();
             Command redoCmd = cmd.execute();
+            ValuesSingleton.INSTANCE.stack.pop();
             
             switch(cmd.getType()){
                 case 1 : basisTableModel.fireTableDataChanged();

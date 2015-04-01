@@ -8,8 +8,8 @@ import Cassim2.Commands.CommandUndoGomory;
 import Cassim2.Commands.CommandUndoStartSuppRole;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.apache.commons.math3.fraction.BigFraction;
@@ -26,6 +26,8 @@ public enum ValuesSingleton {
     public int columns;
     public int rows;
     public int showColumns;
+    
+    public Stack<String> stack;
     
     public String[] columnNames;
     public String[] columnNamesSaved;

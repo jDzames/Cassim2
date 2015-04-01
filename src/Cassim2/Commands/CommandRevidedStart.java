@@ -2,6 +2,7 @@
 package Cassim2.Commands;
 
 import Cassim2.Commands.CommandUndoRevidedStart;
+import Cassim2.ValuesSingleton;
 
 
 public class CommandRevidedStart implements Command {
@@ -14,6 +15,7 @@ public class CommandRevidedStart implements Command {
 
     @Override
     public Command execute() {
+        ValuesSingleton.INSTANCE.stack.push("10");
         return new CommandUndoRevidedStart();
     }
 

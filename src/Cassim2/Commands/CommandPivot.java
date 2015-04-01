@@ -2,6 +2,7 @@
 package Cassim2.Commands;
 
 import Cassim2.SolutionCalcService;
+import Cassim2.ValuesSingleton;
 
 public class CommandPivot implements Command{
     
@@ -18,6 +19,7 @@ public class CommandPivot implements Command{
 
     @Override
     public Command execute() {
+        ValuesSingleton.INSTANCE.stack.push("3;"+positionRow+";"+positionColumn);
         SolutionCalcService solCalc = new SolutionCalcService();
         return solCalc.pivot(positionRow, positionColumn);
     }

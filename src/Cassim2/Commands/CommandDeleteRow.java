@@ -2,6 +2,7 @@
 package Cassim2.Commands;
 
 import Cassim2.SolutionCalcService;
+import Cassim2.ValuesSingleton;
 
 
 public class CommandDeleteRow implements Command{
@@ -16,6 +17,7 @@ public class CommandDeleteRow implements Command{
     
     @Override
     public Command execute() {
+        ValuesSingleton.INSTANCE.stack.push("8;"+row);
         SolutionCalcService solCalc = new SolutionCalcService();
         return solCalc.deleteRow(row);
     }
@@ -29,6 +31,5 @@ public class CommandDeleteRow implements Command{
     public int getType() {
         return this.type;
     }
-    
     
 }
