@@ -20,7 +20,7 @@ public class CommandMultiplyRow implements Command {
 
     @Override
     public Command execute() {
-        ValuesSingleton.INSTANCE.stack.push("7;"+multBy.getNumerator()+";"+multBy.getDenominator());
+        ValuesSingleton.INSTANCE.stack.push("7;"+row+";"+multBy.getNumerator()+";"+multBy.getDenominator());
         SolutionCalcService solCalc = new SolutionCalcService();
         return solCalc.multiplRow(row, multBy);
     }

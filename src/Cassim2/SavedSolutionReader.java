@@ -2,6 +2,16 @@ package Cassim2;
 
 
 import Cassim2.Commands.Command;
+import Cassim2.Commands.CommandDeleteRow;
+import Cassim2.Commands.CommandEndSuppRoleNotOpt;
+import Cassim2.Commands.CommandEndSuppRoleOpt;
+import Cassim2.Commands.CommandGomory;
+import Cassim2.Commands.CommandMakeBasis;
+import Cassim2.Commands.CommandMultiplyRow;
+import Cassim2.Commands.CommandPivot;
+import Cassim2.Commands.CommandRevidedStart;
+import Cassim2.Commands.CommandRevidedStop;
+import Cassim2.Commands.CommandStartSuppRole;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -117,15 +127,44 @@ public class SavedSolutionReader {
             ValuesSingleton.INSTANCE.tableData = tData;
             
             //history
-            
-            int number = bufReader.read();
+            String lineStart = bufReader.readLine();
+            if (lineStart == null || lineStart.length() == 0) {
+                return;
+            }
+            int number = Integer.parseInt(lineStart.split(";")[0]);
+            System.out.println(number);
             for (int i = 0; i < number; i++) {
                 Command command = null;
-
-                int nextType = bufReader.read();
-                
-                
+                String[] line = bufReader.readLine().split(";");
+                int nextType = Integer.parseInt(line[0]);
+                System.out.println(nextType);
+                switch(nextType){
+                    case 1: command = new CommandMakeBasis();
+                        break;
+                    case 2: command = new CommandGomory(Integer.parseInt(line[1]));
+                        break;    
+                    case 3: command = new CommandPivot(Integer.parseInt(line[1]), Integer.parseInt(line[2]));
+                        break;
+                    case 4: command = new CommandStartSuppRole();
+                        break;    
+                    case 5: command = new CommandEndSuppRoleOpt();
+                        break;    
+                    case 6: command = new CommandEndSuppRoleNotOpt();
+                        break;    
+                    case 7: command = new CommandMultiplyRow(Integer.parseInt(line[1]), 
+                            new BigFraction(Integer.parseInt(line[2]), Integer.parseInt(line[3])));
+                        break;
+                    case 8: command = new CommandDeleteRow(Integer.parseInt(line[1]));
+                        break;
+                    case 9: command = new CommandRevidedStop();
+                        break;
+                    case 10: command = new CommandRevidedStart();
+                        break;
+                    default: break;    
+                }
+                System.out.println("pred stackom");
                 redoStack.push(command);
+                System.out.println("v stacku");
             }
 
 

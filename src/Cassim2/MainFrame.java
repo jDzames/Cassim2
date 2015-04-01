@@ -626,7 +626,11 @@ public class MainFrame  extends javax.swing.JFrame {
             try {
                 Files.move(source, newdir.resolve(file.getName()), REPLACE_EXISTING);
                 ValuesSingleton.INSTANCE.file = new File(filePath+File.separator+s+".csv");
-                SavingAppenderThread saver = new SavingAppenderThread(ValuesSingleton.INSTANCE.stack);
+                Stack<String> toSaveStack = new Stack<>();
+                for (int i = 0; i < ValuesSingleton.INSTANCE.stack.size(); i++) {
+                    toSaveStack.push(ValuesSingleton.INSTANCE.stack.get(i));
+                }
+                SavingAppenderThread saver = new SavingAppenderThread(toSaveStack);
                 saver.run();
             } catch (IOException ex) {
                 ValuesSingleton.INSTANCE.resetSavingQueue();
@@ -879,7 +883,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 }
                 undoStack.push(cmd);
                 jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
-                ValuesSingleton.INSTANCE.stack.push("2;"+selectedRow+";"+selectedColumn);
+                ValuesSingleton.INSTANCE.stack.push("3;"+selectedRow+";"+selectedColumn);
                 if (!redoStack.isEmpty()) {
                     redoStack = new Stack<>();
                 }
@@ -1034,7 +1038,7 @@ public class MainFrame  extends javax.swing.JFrame {
         Command cmd = solutionCalculations.multiplRow(selectedRow, multBy);
         undoStack.push(cmd);
         jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
-        ValuesSingleton.INSTANCE.stack.push("7;"+multBy.getNumerator()+";"+multBy.getDenominator());
+        ValuesSingleton.INSTANCE.stack.push("7;"+selectedRow+";"+multBy.getNumerator()+";"+multBy.getDenominator());
         if (!redoStack.isEmpty()) {
             redoStack = new Stack<>();
         }
@@ -1277,7 +1281,7 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemOpenSavedInputActionPerformed
 
     private void jMenuItemOpenSavedSolutionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenSavedSolutionActionPerformed
-        
+        Stack<Command> novyStack = new Stack<>();
         JFileChooser chooser = new JFileChooser();
         chooser.setToolTipText("Zadajte názov alebo vyberte súbor typu csv");
         if (directoryForSaves != null && directoryForSaves.exists()) {
@@ -1298,7 +1302,7 @@ public class MainFrame  extends javax.swing.JFrame {
             }
             //otvorit a nacitat data
             try {
-                reader.readForSolution(file, redoStack);
+                reader.readForSolution(file, novyStack);
                 ValuesSingleton.INSTANCE.onlyOnce = true;
                 ValuesSingleton.INSTANCE.file = file;
                 
@@ -1334,7 +1338,7 @@ public class MainFrame  extends javax.swing.JFrame {
         this.saveTables();
         
         undoStack = new Stack<>();
-        redoStack = new Stack<>();
+        redoStack = novyStack;
         ValuesSingleton.INSTANCE.stack = new Stack<>();
         
         if (!tblSolution.isVisible()) {

@@ -15,8 +15,8 @@ public class SavingAppenderThread implements Runnable{
     private BufferedWriter bufferWritter;
     private final Stack<String> stack;
 
-    public SavingAppenderThread(Stack<String> undoStack) {
-        this.stack = undoStack;
+    public SavingAppenderThread(Stack<String> stack) {
+        this.stack = stack;
     }
     
     @Override
@@ -30,8 +30,10 @@ public class SavingAppenderThread implements Runnable{
             bufferWritter.newLine();
             bufferWritter.flush();
             
-            for(int i = 0; i < stack.size();  i++) {
-                String row = stack.get(i);
+            System.out.println(stack.toString());
+            int number = stack.size();
+            for(int i = 0; i < number;  i++) {
+                String row = stack.pop();
                 
                 if (row==null) {
                     bufferWritter.close();
