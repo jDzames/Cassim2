@@ -25,6 +25,7 @@ public class CommandUndoEndSuppRoleOpt implements Command{
     
     @Override
     public Command execute() {
+        //riadok je dobry, na dobrom mieste, len neda data
         ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.columnNames.length;
         ValuesSingleton.INSTANCE.rows = ValuesSingleton.INSTANCE.rows+deletedRows.size();
         ValuesSingleton.INSTANCE.suppRoleRunning = true;

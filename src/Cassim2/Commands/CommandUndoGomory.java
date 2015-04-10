@@ -41,9 +41,9 @@ public class CommandUndoGomory implements Command{
             basisData[i] = ValuesSingleton.INSTANCE.basisDataIdx[i]; 
         }
         ValuesSingleton.INSTANCE.basisDataIdx = basisData;
-        int gomColNext = ValuesSingleton.INSTANCE.columnNames.length-ValuesSingleton.INSTANCE.suppRoleVariables-1;
+        int gomColNext = gomoryCol+1;
         String[] colNames = new String[ValuesSingleton.INSTANCE.columnNames.length-1];
-        System.arraycopy(ValuesSingleton.INSTANCE.columnNames, 0, colNames, 0, gomColNext);
+        System.arraycopy(ValuesSingleton.INSTANCE.columnNames, 0, colNames, 0, gomoryCol);
         for (int i = 0; i < ValuesSingleton.INSTANCE.suppRoleVariables; i++) {
             colNames[gomoryCol+i] = ValuesSingleton.INSTANCE.columnNames[gomColNext+i];
         }

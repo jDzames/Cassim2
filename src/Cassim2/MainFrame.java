@@ -717,30 +717,18 @@ public class MainFrame  extends javax.swing.JFrame {
 
     private void jMenuItemMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMinActionPerformed
         int selColumn = tblSolution.getSelectedColumn();
+        
+        if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+            if (!(ValuesSingleton.INSTANCE.revidedColumnCell[0] && ValuesSingleton.INSTANCE.revidedColumnCell[1])) {
+                JOptionPane.showMessageDialog(this, "Nie je vypočítaný stĺpec!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
+                return;
+            }
+            selColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
+        }
+        
         if (selColumn<0 || selColumn>=ValuesSingleton.INSTANCE.columnNames.length) {
             JOptionPane.showMessageDialog(this, "Vyberte stĺpec v tabuľke", "Riešenie", JOptionPane.ERROR_MESSAGE);
             return;
-        }
-        
-        if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
-            if (selColumn == ValuesSingleton.INSTANCE.rows + 1) {
-                if (!(ValuesSingleton.INSTANCE.revidedColumnCell[0] && ValuesSingleton.INSTANCE.revidedColumnCell[1])) {
-                    JOptionPane.showMessageDialog(this, "Nie je vypočítaný stĺpec!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
-                selColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
-            } else if (selColumn == 0) {
-                selColumn = 0;
-            } else {
-                int rowinBasis = 0;
-                for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
-                    if (ValuesSingleton.INSTANCE.tableData[i+1][selColumn].compareTo(BigFraction.ZERO)!=0) {
-                        rowinBasis = i;
-                        break;
-                    }
-                }
-                selColumn = ValuesSingleton.INSTANCE.basisDataIdx[rowinBasis];
-            }
         }
         
         if (!solutionCalculations.isBased() || !solutionCalculations.have0overBasis()) {
@@ -748,7 +736,7 @@ public class MainFrame  extends javax.swing.JFrame {
             return;
         }
         
-        int checkedMin = solutionCalculations.checkMin(tblSolution.getSelectedRow(), selColumn);
+        int checkedMin = solutionCalculations.checkMin(selColumn);
 
         switch(checkedMin){
             case -4: JOptionPane.showMessageDialog(this, "Vyberte bunku kde je možné pivotovať!", "Chyba", JOptionPane.ERROR_MESSAGE);
@@ -760,7 +748,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     if (potvrdenie != JOptionPane.YES_OPTION) {
                         return;
                     }
-            default: int focusRow = solutionCalculations.minimum(tblSolution.getSelectedRow(), selColumn);
+            default: int focusRow = solutionCalculations.minimum( selColumn);
                     if (focusRow==-2 && ValuesSingleton.INSTANCE.tableData[0][selColumn].getNumerator().longValue()<0) {
                         JOptionPane.showMessageDialog(this, "Úloha je neohraničená!", "Riešenie", JOptionPane.PLAIN_MESSAGE);
                         return;
@@ -770,7 +758,11 @@ public class MainFrame  extends javax.swing.JFrame {
                             return;
                         }
                     if (focusRow>0 && focusRow<= ValuesSingleton.INSTANCE.rows) {
-                        tblSolution.changeSelection(focusRow, tblSolution.getSelectedColumn(), false, false);
+                        int columnToSelect = tblSolution.getSelectedColumn();
+                        if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                            columnToSelect = ValuesSingleton.INSTANCE.rows+1;
+                        }
+                        tblSolution.changeSelection(focusRow, columnToSelect, false, false);
                      } else {
                         JOptionPane.showMessageDialog(this, "V tomto stĺpci nie je možné nájsť minimum podľa postupu Simplexovej metódy!", "Chyba", JOptionPane.ERROR_MESSAGE);
                      }
@@ -931,6 +923,7 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         
         jMenuItemSuppRole.setEnabled(false);
+        jMenuItemShowSuppVariables.setEnabled(false);
         imageTableModel = new ImageTableModel();
         tblSolution.setModel(imageTableModel);
         basisTableModel.fireTableDataChanged();
@@ -989,6 +982,7 @@ public class MainFrame  extends javax.swing.JFrame {
             fillComboBoxAfterSuppRole();
             basisTableModel.fireTableDataChanged();
             btnKoniecPomUlohy.setVisible(false);
+            jMenuItemShowSuppVariables.setEnabled(false);
             
         }
         ValuesSingleton.INSTANCE.suppRoleRunning = false;
@@ -1460,6 +1454,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemRevidedSwitch.setText("Ukončiť revidovanú metódu");
             jComboBoxRevidedVariable.setVisible(true);
             ValuesSingleton.INSTANCE.revidedColumnCell=new boolean[2];
+            jComboBoxRevidedVariable.removeAllItems();
             jComboBoxRevidedVariable.addItem(new ComboBoxObjects(-1, ""));
             fillComboBox();
             addComboBoxListener();

@@ -120,7 +120,7 @@ public class SolutionCalcService {
         return new CommandUndoMakeBasis(tableChoosed, row0Choosed);
     }
     
-    public int checkMin(int selectedRow, int selectedColumn){
+    public int checkMin(int selectedColumn){
         //error
         if (selectedColumn <= 0)
             return -4;
@@ -133,7 +133,7 @@ public class SolutionCalcService {
         return 0;
     }
 
-    public int minimum(int selectedRow, int selectedColumn) {     
+    public int minimum(int selectedColumn) {     
         
         int minIdx = -2;
         BigFraction minimal = new BigFraction(Long.MAX_VALUE);
@@ -190,7 +190,7 @@ public class SolutionCalcService {
         BigFraction valueHere = new BigFraction(ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator(), ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getDenominator());
         valueHere = ValuesSingleton.INSTANCE.tableData[selectedRow][0].divide(valueHere);
         
-        int min = minimum(selectedRow, selectedColumn);
+        int min = minimum(selectedColumn);
         BigFraction valueMin = new BigFraction(ValuesSingleton.INSTANCE.tableData[min][selectedColumn].getNumerator(), ValuesSingleton.INSTANCE.tableData[min][selectedColumn].getDenominator());
         valueMin = ValuesSingleton.INSTANCE.tableData[min][0].divide(valueMin);
         
@@ -274,7 +274,7 @@ public class SolutionCalcService {
             return false;
         }
         
-        int pocetPovodStlpcov = ValuesSingleton.INSTANCE.showColumns;
+        int pocetPovodStlpcov = ValuesSingleton.INSTANCE.columns-ValuesSingleton.INSTANCE.suppRoleVariables;
         for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
             if (ValuesSingleton.INSTANCE.basisDataIdx[i]>pocetPovodStlpcov) {
                 
