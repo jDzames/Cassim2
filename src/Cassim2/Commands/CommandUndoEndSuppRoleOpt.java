@@ -25,7 +25,6 @@ public class CommandUndoEndSuppRoleOpt implements Command{
     
     @Override
     public Command execute() {
-        //riadok je dobry, na dobrom mieste, len neda data
         ValuesSingleton.INSTANCE.showColumns = ValuesSingleton.INSTANCE.columnNames.length;
         ValuesSingleton.INSTANCE.rows = ValuesSingleton.INSTANCE.rows+deletedRows.size();
         ValuesSingleton.INSTANCE.suppRoleRunning = true;
@@ -37,7 +36,7 @@ public class CommandUndoEndSuppRoleOpt implements Command{
         int idx = 1;
         int idxInDel = 0;
         for (int i = 1; i < ValuesSingleton.INSTANCE.tableData.length; i++) {
-            while (deletedRowsIdxs.get(idxInDel)==idx) {
+            while (deletedRowsIdxs.get(idxInDel).intValue()==idx) {
                 newTable[idx] = deletedRows.get(idxInDel);
                 newBasis[idx-1] = deletedBasisIdxs.get(idxInDel);
                 idxInDel++;
@@ -47,6 +46,14 @@ public class CommandUndoEndSuppRoleOpt implements Command{
             newTable[idx] = ValuesSingleton.INSTANCE.tableData[i];
             idx++;
         }
+        while (deletedRowsIdxs.get(idxInDel).intValue()==idx) {
+            newTable[idx] = deletedRows.get(idxInDel);
+            System.out.println(deletedRows.get(idxInDel)[2]);
+            newBasis[idx-1] = deletedBasisIdxs.get(idxInDel);
+            idxInDel++;
+            idx++;
+        }
+        
         ValuesSingleton.INSTANCE.tableData = newTable;
         ValuesSingleton.INSTANCE.basisDataIdx = newBasis;
         return new CommandEndSuppRoleOpt();
