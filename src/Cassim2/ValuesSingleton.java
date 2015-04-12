@@ -245,6 +245,7 @@ public enum ValuesSingleton {
     }
     
     public Command endOfSuppRoleOpt(int pocetPomPremennych) {
+        pocetPomPremennych = this.suppRoleVariables;
         int normalColumns = this.columns-pocetPomPremennych;
         
         BigFraction[] row0 = this.tableData[0];
@@ -276,6 +277,7 @@ public enum ValuesSingleton {
         this.basisDataIdx=toIntArray(newBasis);
         
         BigFraction[][] pole = new BigFraction[this.tableData.length-rowsToRemove][this.tableData[0].length];
+        System.out.println(pole[0].length+"  "+pocetPomPremennych);
         for(int j=0; j<pole[0].length-pocetPomPremennych; j++){
             pole[0][j]=new BigFraction(this.row0saved[j].getNumerator(), this.row0saved[j].getDenominator());
         }

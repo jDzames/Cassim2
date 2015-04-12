@@ -36,7 +36,6 @@ public class MainFrame  extends javax.swing.JFrame {
     private RevidedImageTableModel revidedTableModel = new RevidedImageTableModel();
     private final SavedSolutionReader reader = new SavedSolutionReader();
     private final SolutionCalcService solutionCalculations = new SolutionCalcService();
-    private int pocetPomPremennych;
     private boolean youCan=true;
     private File directoryForSaves;
     
@@ -521,7 +520,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemMakeBasis.setEnabled(true);
 
         jMenuHelpOperations.setEnabled(true);
-        jMenuItemShowSuppVariables.setEnabled(true);
+        jMenuItemShowSuppVariables.setEnabled(false);
         jMenuItemHint.setEnabled(true);
 
         jMenuRevidedMethod.setEnabled(true);
@@ -539,7 +538,6 @@ public class MainFrame  extends javax.swing.JFrame {
             pole[i]=-1;          
         }
         ValuesSingleton.INSTANCE.basisDataIdx = pole;
-        this.pocetPomPremennych=ValuesSingleton.INSTANCE.suppRoleVariables;
         
         if (tblSolution.getColumnCount()>6) { //6-pocet stlpcov ktore su este male ked sa nenatiahnu
             tblSolution.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -716,14 +714,15 @@ public class MainFrame  extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemGomoryActionPerformed
 
     private void jMenuItemMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemMinActionPerformed
-        int selColumn = tblSolution.getSelectedColumn();
-        
+        int selColumn;
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
             if (!(ValuesSingleton.INSTANCE.revidedColumnCell[0] && ValuesSingleton.INSTANCE.revidedColumnCell[1])) {
                 JOptionPane.showMessageDialog(this, "Nie je vypočítaný stĺpec!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
                 return;
             }
             selColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
+        } else{
+            selColumn = tblSolution.getSelectedColumn();
         }
         
         if (selColumn<0 || selColumn>=ValuesSingleton.INSTANCE.columnNames.length) {
@@ -819,27 +818,16 @@ public class MainFrame  extends javax.swing.JFrame {
             return;            
         }*/
         int selectedRow = tblSolution.getSelectedRow();
-        int selectedColumn = tblSolution.getSelectedColumn();
+        int selectedColumn;
         
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
-            if (selectedColumn == ValuesSingleton.INSTANCE.rows + 1) {
-                if (!(ValuesSingleton.INSTANCE.revidedColumnCell[0] && ValuesSingleton.INSTANCE.revidedColumnCell[1])) {
-                    JOptionPane.showMessageDialog(this, "Nie je vypočítaný stĺpec!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
-                    return;
-                }
-                selectedColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
-            } else if (selectedColumn == 0) {
-                selectedColumn = 0;
-            } else {
-                int rowinBasis = 0;
-                for (int i = 0; i < ValuesSingleton.INSTANCE.rows; i++) {
-                    if (ValuesSingleton.INSTANCE.tableData[i+1][selectedColumn].compareTo(BigFraction.ZERO)!=0) {
-                        rowinBasis = i;
-                        break;
-                    }
-                }
-                selectedColumn = ValuesSingleton.INSTANCE.basisDataIdx[rowinBasis];
+            if (!(ValuesSingleton.INSTANCE.revidedColumnCell[0] && ValuesSingleton.INSTANCE.revidedColumnCell[1])) {
+                JOptionPane.showMessageDialog(this, "Nie je vypočítaný stĺpec!", "Nevhodné použitie", JOptionPane.PLAIN_MESSAGE);
+                return;
             }
+            selectedColumn = ValuesSingleton.INSTANCE.revidedShownIdx;
+        } else{
+            selectedColumn = tblSolution.getSelectedColumn();
         }
         
         int checkPivot = solutionCalculations.checkPivot(selectedRow, selectedColumn);
@@ -893,7 +881,7 @@ public class MainFrame  extends javax.swing.JFrame {
             return;
         }       
         
-        this.pocetPomPremennych = 0;
+        int pocetPomPremennych = 0;
         for (int i = 0; i < ValuesSingleton.INSTANCE.basisDataIdx.length; i++) {
             if (ValuesSingleton.INSTANCE.basisDataIdx[i]<0) {
                 pocetPomPremennych++;
@@ -903,7 +891,7 @@ public class MainFrame  extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Pomocná úloha nie je potrebná", "Pomocná úloha", JOptionPane.PLAIN_MESSAGE);
             return;
         }
-      
+        ValuesSingleton.INSTANCE.suppRoleVariables = pocetPomPremennych;
         Command cmd = ValuesSingleton.INSTANCE.startSuppRole(pocetPomPremennych); 
         undoStack.push(cmd);
         jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
@@ -923,7 +911,6 @@ public class MainFrame  extends javax.swing.JFrame {
         }
         
         jMenuItemSuppRole.setEnabled(false);
-        jMenuItemShowSuppVariables.setEnabled(false);
         imageTableModel = new ImageTableModel();
         tblSolution.setModel(imageTableModel);
         basisTableModel.fireTableDataChanged();
@@ -934,9 +921,9 @@ public class MainFrame  extends javax.swing.JFrame {
     private void btnKoniecPomUlohyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKoniecPomUlohyActionPerformed
         //este skoncenie - 1.spravne podmienky a 2. ked nespravne ta savedTableData nahodit
         youCan = false;
-        if (solutionCalculations.rightEndOfSuppRole(pocetPomPremennych)) {
+        if (solutionCalculations.rightEndOfSuppRole(ValuesSingleton.INSTANCE.suppRoleVariables)) {
             
-            Command cmd = ValuesSingleton.INSTANCE.endOfSuppRoleOpt(pocetPomPremennych);
+            Command cmd = ValuesSingleton.INSTANCE.endOfSuppRoleOpt(ValuesSingleton.INSTANCE.suppRoleVariables);
             undoStack.push(cmd);
             jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
             ValuesSingleton.INSTANCE.stack.push("5");
@@ -962,7 +949,7 @@ public class MainFrame  extends javax.swing.JFrame {
             if (potvrdenie != JOptionPane.YES_OPTION) {
                 return;
             }
-            Command cmd = ValuesSingleton.INSTANCE.endOfSuppRoleNotOpt(pocetPomPremennych);
+            Command cmd = ValuesSingleton.INSTANCE.endOfSuppRoleNotOpt(ValuesSingleton.INSTANCE.suppRoleVariables);
             undoStack.push(cmd);
             jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
             ValuesSingleton.INSTANCE.stack.push("6");
@@ -982,9 +969,8 @@ public class MainFrame  extends javax.swing.JFrame {
             fillComboBoxAfterSuppRole();
             basisTableModel.fireTableDataChanged();
             btnKoniecPomUlohy.setVisible(false);
-            jMenuItemShowSuppVariables.setEnabled(false);
-            
         }
+        jMenuItemShowSuppVariables.setEnabled(true);
         ValuesSingleton.INSTANCE.suppRoleRunning = false;
         youCan = true;
         
@@ -1099,7 +1085,6 @@ public class MainFrame  extends javax.swing.JFrame {
         
         ValuesSingleton.INSTANCE.suppRoleVariables = 0;
         ValuesSingleton.INSTANCE.gomoryVariables = 0;
-        this.pocetPomPremennych = 0;
         
         int[] pole = new int[ValuesSingleton.INSTANCE.rows];
         for (int i = 0; i < pole.length; i++) {
@@ -1142,7 +1127,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemMakeBasis.setEnabled(true);
             
             jMenuHelpOperations.setEnabled(true);
-            jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(false);
             jMenuItemHint.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
@@ -1219,7 +1204,6 @@ public class MainFrame  extends javax.swing.JFrame {
         ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
         ValuesSingleton.INSTANCE.revidedMethodRunning=false;
         
-        this.pocetPomPremennych = 0;
         btnKoniecPomUlohy.setVisible(false);
         
         basisTableModel = new BasisTableModel();
@@ -1250,7 +1234,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemMakeBasis.setEnabled(true);
             
             jMenuHelpOperations.setEnabled(true);
-            jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(false);
             jMenuItemHint.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
@@ -1314,7 +1298,6 @@ public class MainFrame  extends javax.swing.JFrame {
         
         ValuesSingleton.INSTANCE.suppRoleVariables = 0;
         ValuesSingleton.INSTANCE.gomoryVariables = 0;
-        this.pocetPomPremennych = 0;
         ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
         ValuesSingleton.INSTANCE.revidedMethodRunning=false;
         btnKoniecPomUlohy.setVisible(false);
@@ -1353,7 +1336,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemMakeBasis.setEnabled(true);
             
             jMenuHelpOperations.setEnabled(true);
-            jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(false);
             jMenuItemHint.setEnabled(true);
             
             jMenuRevidedMethod.setEnabled(true);
@@ -1419,7 +1402,7 @@ public class MainFrame  extends javax.swing.JFrame {
             return;
         }
         if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
-            jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(!ValuesSingleton.INSTANCE.suppRoleRunning && ValuesSingleton.INSTANCE.suppRoleVariables>0);
             jMenuItemGomory.setEnabled(true);
             jMenuHelpOperations.setEnabled(true);
             jMenuItemMax.setEnabled(true);
@@ -1523,6 +1506,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 break;
                 case 5 : basisTableModel.fireTableDataChanged();
                     btnKoniecPomUlohy.setVisible(true);
+                    jMenuItemShowSuppVariables.setEnabled(false);
                     if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
                         revidedTableModel = new RevidedImageTableModel();
                         tblSolution.setModel(revidedTableModel);
@@ -1545,6 +1529,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 case 7 : basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
                     btnKoniecPomUlohy.setVisible(true);
+                    jMenuItemShowSuppVariables.setEnabled(false);
                     if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
                         revidedTableModel = new RevidedImageTableModel();
                         tblSolution.setModel(revidedTableModel);
@@ -1564,7 +1549,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     }  
                 break;    
                 case 9 : if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
-                        jMenuItemShowSuppVariables.setEnabled(true);
+                        jMenuItemShowSuppVariables.setEnabled(ValuesSingleton.INSTANCE.suppRoleVariables>0 && ValuesSingleton.INSTANCE.suppRoleRunning);
                         jMenuItemGomory.setEnabled(true);
                         jMenuHelpOperations.setEnabled(true);
                         jMenuItemMax.setEnabled(true);
@@ -1644,6 +1629,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 break;
                 case 4 : basisTableModel.fireTableDataChanged();
                     btnKoniecPomUlohy.setVisible(false);
+                    jMenuItemShowSuppVariables.setEnabled(true);
                     if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
                         revidedTableModel = new RevidedImageTableModel();
                         tblSolution.setModel(revidedTableModel);
@@ -1655,6 +1641,7 @@ public class MainFrame  extends javax.swing.JFrame {
                 case 6 : basisTableModel = new BasisTableModel();
                     tblBaza.setModel(basisTableModel);
                     btnKoniecPomUlohy.setVisible(false);
+                    jMenuItemShowSuppVariables.setEnabled(true);
                     if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
                         revidedTableModel = new RevidedImageTableModel();
                         tblSolution.setModel(revidedTableModel);
@@ -1674,7 +1661,7 @@ public class MainFrame  extends javax.swing.JFrame {
                     } 
                 break;
                 case 9 : if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
-                        jMenuItemShowSuppVariables.setEnabled(true);
+                        jMenuItemShowSuppVariables.setEnabled(ValuesSingleton.INSTANCE.suppRoleVariables>0 && ValuesSingleton.INSTANCE.suppRoleRunning);
                         jMenuItemGomory.setEnabled(true);
                         jMenuHelpOperations.setEnabled(true);
                         jMenuItemMax.setEnabled(true);
@@ -1773,7 +1760,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemMakeBasis.setEnabled(true);
             
             jMenuHelpOperations.setEnabled(true);
-            jMenuItemShowSuppVariables.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(!ValuesSingleton.INSTANCE.suppRoleRunning && ValuesSingleton.INSTANCE.suppRoleVariables>0);
             
             jMenuRevidedMethod.setEnabled(true);
             jMenuItemRevidedSwitch.setEnabled(true);

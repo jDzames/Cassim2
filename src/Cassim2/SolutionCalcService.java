@@ -217,7 +217,9 @@ public class SolutionCalcService {
             return -1;//tu nepivotujem      
         if (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator().compareTo(BigInteger.ZERO)==0) 
             return -2;//nepivotujem na 0
-        if (isSuppSol && (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator().compareTo(BigInteger.ZERO)<0)) 
+        if (isSuppSol && (ValuesSingleton.INSTANCE.tableData[selectedRow][selectedColumn].getNumerator().compareTo(BigInteger.ZERO)<0) 
+                && ((ValuesSingleton.INSTANCE.tableData[selectedRow][0].compareTo(BigFraction.ZERO)!=0)
+                || (ValuesSingleton.INSTANCE.tableData[0][0].compareTo(BigFraction.ZERO)!=0)))
             return -2;//nepivotujem dualne v pomocnej
         
         if (check0Column()<0 && check0Row()<0) 

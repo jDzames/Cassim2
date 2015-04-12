@@ -15,6 +15,7 @@ public class CommandEndSuppRoleNotOpt implements Command {
     @Override
     public Command execute() {
         ValuesSingleton.INSTANCE.stack.push("6");
+        ValuesSingleton.INSTANCE.suppRoleRunning = false;
         return ValuesSingleton.INSTANCE.endOfSuppRoleNotOpt(ValuesSingleton.INSTANCE.suppRoleVariables);
     }
 
