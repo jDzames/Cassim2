@@ -8,7 +8,6 @@ import Cassim2.Commands.CommandUndoGomory;
 import Cassim2.Commands.CommandUndoStartSuppRole;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Stack;
 import java.util.concurrent.BlockingQueue;
@@ -52,6 +51,7 @@ public enum ValuesSingleton {
     public boolean[] revidedColumnCell;
     
     public BigFraction[] row0saved;
+    public BigFraction[] changeFunctionRow0;
     public BigFraction[][] tableDataSaved;
     public int[] basisDataIdxSaved;
     

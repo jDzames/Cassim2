@@ -1,6 +1,7 @@
 package Cassim2;
 
 import Cassim2.Commands.Command;
+import Cassim2.Commands.CommandUndoChangeFunction;
 import Cassim2.Commands.CommandUndoRevidedStart;
 import Cassim2.Commands.CommandUndoRevidedStop;
 import java.awt.Font;
@@ -105,6 +106,8 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemShowSuppVariables = new javax.swing.JMenuItem();
         jMenuItemRemoveZeroLine = new javax.swing.JMenuItem();
         jMenuItemHint = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItemChangeFunction = new javax.swing.JMenuItem();
         jMenuRevidedMethod = new javax.swing.JMenu();
         jMenuItemRevidedSwitch = new javax.swing.JMenuItem();
         jMenuItemRevided0Row = new javax.swing.JMenuItem();
@@ -327,6 +330,15 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         });
         jMenuHelpOperations.add(jMenuItemHint);
+        jMenuHelpOperations.add(jSeparator2);
+
+        jMenuItemChangeFunction.setText("Zmeň účelovú funkciu");
+        jMenuItemChangeFunction.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemChangeFunctionActionPerformed(evt);
+            }
+        });
+        jMenuHelpOperations.add(jMenuItemChangeFunction);
 
         jMenuBar.add(jMenuHelpOperations);
 
@@ -1585,6 +1597,12 @@ public class MainFrame  extends javax.swing.JFrame {
                         tblSolution.setModel(revidedTableModel);
                     }
                 break;
+                case 11 : if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel.fireTableDataChanged();
+                    } else {
+                        imageTableModel.fireTableDataChanged();
+                    } 
+                break;
                 default: ;  
             }
             
@@ -1695,6 +1713,12 @@ public class MainFrame  extends javax.swing.JFrame {
                         //imageTableModel = new RevidedImageTableModel();
                         revidedTableModel = new RevidedImageTableModel();
                         tblSolution.setModel(revidedTableModel);
+                    }
+                break;
+                case 11 : if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+                        revidedTableModel.fireTableDataChanged();
+                    } else {
+                        imageTableModel.fireTableDataChanged();
                     }
                 break;
                 default: ; 
@@ -1825,6 +1849,48 @@ public class MainFrame  extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBoxRevidedVariableActionPerformed
 
+    private void jMenuItemChangeFunctionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemChangeFunctionActionPerformed
+        
+        BigFraction[] row0 = ValuesSingleton.INSTANCE.tableData[0];
+        
+        ValuesSingleton.INSTANCE.changeFunctionRow0 = new BigFraction[ValuesSingleton.INSTANCE.tableData[0].length];
+        ValuesSingleton.INSTANCE.changeFunctionRow0[0] = ValuesSingleton.INSTANCE.tableData[0][0];
+        for (int i = 1; i < ValuesSingleton.INSTANCE.tableData[0].length; i++) {
+            ValuesSingleton.INSTANCE.changeFunctionRow0[i] = BigFraction.ONE;
+        }
+        ValuesSingleton.INSTANCE.isOK = false;
+        
+        ChangeFunctionDialog changeFunctionDialog = new ChangeFunctionDialog(this, true);
+        changeFunctionDialog.setVisible(true);
+        
+        if (!ValuesSingleton.INSTANCE.isOK) {
+            JOptionPane.showMessageDialog(this, "Prebiehajúca akcia bola prerušená.", "Oznámenie", JOptionPane.PLAIN_MESSAGE);
+            return;
+        }
+        
+        ValuesSingleton.INSTANCE.isOK = false;
+        
+        if (ValuesSingleton.INSTANCE.revidedMethodRunning) {
+            revidedTableModel.fireTableDataChanged();
+        } else {
+            imageTableModel.fireTableDataChanged();
+        }
+        
+        //pridat undo objekt
+        Command cmd = new CommandUndoChangeFunction(row0);
+        undoStack.push(cmd);
+        jMenuItemUNDO.setToolTipText(undoStack.peek().toString());
+        StringBuilder row = new StringBuilder();
+        for (int i = 0; i < ValuesSingleton.INSTANCE.tableData[0].length; i++) {
+            row.append(";").append(ValuesSingleton.INSTANCE.tableData[0][i].getNumerator().toString())
+                    .append(";").append(ValuesSingleton.INSTANCE.tableData[0][i].getDenominator().toString());
+        }
+        ValuesSingleton.INSTANCE.stack.push("11"+row.toString());
+        if (!redoStack.isEmpty()) {
+            redoStack = new Stack<>();
+        }
+    }//GEN-LAST:event_jMenuItemChangeFunctionActionPerformed
+
     
     private void fillComboBox() {
         youCan = true;
@@ -1907,6 +1973,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemAboutAuthors;
     private javax.swing.JMenuItem jMenuItemAutomat;
     private javax.swing.JMenuItem jMenuItemBasisSolution;
+    private javax.swing.JMenuItem jMenuItemChangeFunction;
     private javax.swing.JMenuItem jMenuItemExit;
     private javax.swing.JMenuItem jMenuItemGomory;
     private javax.swing.JMenuItem jMenuItemHelp;
@@ -1933,6 +2000,7 @@ public class MainFrame  extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTable tblBaza;
     private javax.swing.JTable tblSolution;
     // End of variables declaration//GEN-END:variables

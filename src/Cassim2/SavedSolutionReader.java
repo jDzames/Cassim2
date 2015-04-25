@@ -2,6 +2,7 @@ package Cassim2;
 
 
 import Cassim2.Commands.Command;
+import Cassim2.Commands.CommandChangeFunction;
 import Cassim2.Commands.CommandDeleteRow;
 import Cassim2.Commands.CommandEndSuppRoleNotOpt;
 import Cassim2.Commands.CommandEndSuppRoleOpt;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Stack;
 import org.apache.commons.math3.fraction.BigFraction;
 
@@ -132,12 +134,12 @@ public class SavedSolutionReader {
                 return;
             }
             int number = Integer.parseInt(lineStart.split(";")[0]);
-            System.out.println(number);
+            
             for (int i = 0; i < number; i++) {
                 Command command = null;
                 String[] line = bufReader.readLine().split(";");
                 int nextType = Integer.parseInt(line[0]);
-                System.out.println(nextType);
+                
                 switch(nextType){
                     case 1: command = new CommandMakeBasis();
                         break;
@@ -160,11 +162,15 @@ public class SavedSolutionReader {
                         break;
                     case 10: command = new CommandRevidedStart();
                         break;
+                    case 11: BigFraction[] row = new BigFraction[(line.length-1)/2];
+                        for (int j = 0; j < row.length; j++) {
+                            row[j] = new BigFraction(Integer.parseInt(line[2*j+1]), Integer.parseInt(line[2*j+2]));
+                        }
+                        command = new CommandChangeFunction(row);
+                        break;    
                     default: break;    
                 }
-                System.out.println("pred stackom");
                 redoStack.push(command);
-                System.out.println("v stacku");
             }
 
 
