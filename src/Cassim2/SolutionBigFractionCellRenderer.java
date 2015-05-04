@@ -53,7 +53,7 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
             }
 
             // nechame si vypocitat rozmery podla aktualneho fontu
-            g2.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+            g2.setFont(new Font("Times New Roman", Font.PLAIN, 22));
             FontMetrics fm = g2.getFontMetrics();
             Rectangle2D numeratorBounds = fm.getStringBounds(numeratorStr, g2);
             Rectangle2D spaceBounds = fm.getStringBounds("", g2);
@@ -62,7 +62,7 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
             double fractionXCenter = getWidth() / 2 - spaceBounds.getWidth() - numeratorBounds.getWidth() / 2;
 
             if (negative) {
-                g2.draw(new Line2D.Double(fractionXCenter - 10, boxYCenter - 2,
+                g2.draw(new Line2D.Double(fractionXCenter - 11, boxYCenter - 2,
                         fractionXCenter - 4, boxYCenter - 2));
             }
 
@@ -87,7 +87,7 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
             String denominatorStr = value.getDenominator().toString();
 
             // nechame si vypocitat rozmery podla aktualneho fontu
-            g2.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+            g2.setFont(new Font("Times New Roman", Font.PLAIN, 22));
             FontMetrics fm = g2.getFontMetrics();
             Rectangle2D numeratorBounds = fm.getStringBounds(numeratorStr, g2);
             Rectangle2D denominatorBounds = fm.getStringBounds(denominatorStr, g2);
@@ -105,7 +105,7 @@ public class SolutionBigFractionCellRenderer extends JPanel implements TableCell
                     fractionXCenter + lineWidth, boxYCenter));
 
             if (negative) {
-                g2.draw(new Line2D.Double(fractionXCenter - 10, boxYCenter,
+                g2.draw(new Line2D.Double(fractionXCenter - 11, boxYCenter,
                         fractionXCenter - 4, boxYCenter));
             }
 

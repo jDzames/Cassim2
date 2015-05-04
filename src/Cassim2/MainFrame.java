@@ -139,7 +139,7 @@ public class MainFrame  extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblSolution);
         tblSolution.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
-        tblBaza.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        tblBaza.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
         tblBaza.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -153,7 +153,7 @@ public class MainFrame  extends javax.swing.JFrame {
         tblBaza.setRowSelectionAllowed(false);
         jScrollPane2.setViewportView(tblBaza);
 
-        btnKoniecPomUlohy.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        btnKoniecPomUlohy.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnKoniecPomUlohy.setText("Ukončiť pomocnú úlohu");
         btnKoniecPomUlohy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,7 +168,7 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         });
 
-        btnMin.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        btnMin.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnMin.setText("Minimum");
         btnMin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -176,7 +176,7 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         });
 
-        btnPivot.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        btnPivot.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         btnPivot.setText("Pivotuj");
         btnPivot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -453,8 +453,8 @@ public class MainFrame  extends javax.swing.JFrame {
                 .addGap(19, 19, 19)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnKoniecPomUlohy)
@@ -470,17 +470,17 @@ public class MainFrame  extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jComboBoxRevidedVariable, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnKoniecPomUlohy, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                    .addComponent(btnMin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnPivot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnKoniecPomUlohy, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnMin, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPivot, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(48, 48, 48)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(58, 58, 58)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addGap(47, 47, 47))
         );
 
@@ -530,8 +530,8 @@ public class MainFrame  extends javax.swing.JFrame {
         tblSolution = new JTable();
         
         
-        tblBaza.setRowHeight(44);
-        tblSolution.setRowHeight(44);
+        tblBaza.setRowHeight(60);
+        tblSolution.setRowHeight(60);
         tblSolution.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
 
@@ -546,7 +546,7 @@ public class MainFrame  extends javax.swing.JFrame {
         
         tblSolution.setDefaultRenderer(JLabel.class, new SolutionBigFractionCellRenderer()); 
         tblBaza.setDefaultRenderer(JLabel.class, new BasisRenderer(tblBaza));
-        tblBaza.setFont(new Font("Times New Roman", Font.BOLD, 16));
+        tblBaza.setFont(new Font("Times New Roman", Font.BOLD, 19));
         
         jMenuItemSave.setEnabled(true);
             
