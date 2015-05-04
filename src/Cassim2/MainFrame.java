@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -48,9 +49,11 @@ public class MainFrame  extends javax.swing.JFrame {
         //super(parent, modal);
         this.options = new String[]{"Áno", "Nie"};
         this.setTitle("Cassim 2");
+        this.setIconImage(new ImageIcon("icon.png").getImage());
         
         initComponents();
-        
+        btnMin.setFocusable(false);
+        btnPivot.setFocusable(false);
         //jScrollPane1.setVisible(false);
         //jScrollPane2.setVisible(false);
         closeSolution();
@@ -83,6 +86,8 @@ public class MainFrame  extends javax.swing.JFrame {
         tblBaza = new javax.swing.JTable();
         btnKoniecPomUlohy = new javax.swing.JButton();
         jComboBoxRevidedVariable = new javax.swing.JComboBox();
+        btnMin = new javax.swing.JButton();
+        btnPivot = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jMenuFile = new javax.swing.JMenu();
         jMenuItemOpenNew = new javax.swing.JMenuItem();
@@ -130,6 +135,7 @@ public class MainFrame  extends javax.swing.JFrame {
             }
         ));
         tblSolution.setCellSelectionEnabled(true);
+        tblSolution.setRowHeight(45);
         jScrollPane1.setViewportView(tblSolution);
         tblSolution.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 
@@ -147,6 +153,7 @@ public class MainFrame  extends javax.swing.JFrame {
         tblBaza.setRowSelectionAllowed(false);
         jScrollPane2.setViewportView(tblBaza);
 
+        btnKoniecPomUlohy.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
         btnKoniecPomUlohy.setText("Ukončiť pomocnú úlohu");
         btnKoniecPomUlohy.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,6 +165,22 @@ public class MainFrame  extends javax.swing.JFrame {
         jComboBoxRevidedVariable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBoxRevidedVariableActionPerformed(evt);
+            }
+        });
+
+        btnMin.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        btnMin.setText("Minimum");
+        btnMin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMinActionPerformed(evt);
+            }
+        });
+
+        btnPivot.setFont(new java.awt.Font("Tahoma", 0, 13)); // NOI18N
+        btnPivot.setText("Pivotuj");
+        btnPivot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPivotActionPerformed(evt);
             }
         });
 
@@ -435,6 +458,10 @@ public class MainFrame  extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 626, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnKoniecPomUlohy)
+                        .addGap(54, 54, 54)
+                        .addComponent(btnMin, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(47, 47, 47)
+                        .addComponent(btnPivot, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jComboBoxRevidedVariable, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(30, 30, 30))
@@ -443,11 +470,11 @@ public class MainFrame  extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnKoniecPomUlohy)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBoxRevidedVariable, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jComboBoxRevidedVariable, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnKoniecPomUlohy, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                    .addComponent(btnMin, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnPivot, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -467,6 +494,8 @@ public class MainFrame  extends javax.swing.JFrame {
         
         jMenuHistory.setEnabled(false);
         jMenuEdit.setEnabled(false);
+        btnMin.setVisible(false);
+        btnPivot.setVisible(false);
         jMenuHelpOperations.setEnabled(false);
         jMenuRevidedMethod.setEnabled(false);
         jMenuItemRevidedSwitch.setEnabled(false);
@@ -528,6 +557,8 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemAutomat.setEnabled(true);
 
         jMenuEdit.setEnabled(true);
+        btnMin.setVisible(true);
+        btnPivot.setVisible(true);
         jMenuItemMax.setEnabled(true);
         jMenuItemMakeBasis.setEnabled(true);
 
@@ -1135,6 +1166,8 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemAutomat.setEnabled(true);
             
             jMenuEdit.setEnabled(true);
+            btnMin.setVisible(true);
+            btnPivot.setVisible(true);
             jMenuItemMax.setEnabled(true);
             jMenuItemMakeBasis.setEnabled(true);
             
@@ -1242,6 +1275,8 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemAutomat.setEnabled(true);
             
             jMenuEdit.setEnabled(true);
+            btnMin.setVisible(true);
+            btnPivot.setVisible(true);
             jMenuItemMax.setEnabled(true);
             jMenuItemMakeBasis.setEnabled(true);
             
@@ -1344,6 +1379,8 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemAutomat.setEnabled(true);
             
             jMenuEdit.setEnabled(true);
+            btnMin.setVisible(true);
+            btnPivot.setVisible(true);
             jMenuItemMax.setEnabled(true);
             jMenuItemMakeBasis.setEnabled(true);
             
@@ -1780,6 +1817,8 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemBasisSolution.setEnabled(true);
             
             jMenuEdit.setEnabled(true);
+            btnMin.setVisible(true);
+            btnPivot.setVisible(true);
             jMenuItemMax.setEnabled(true);
             jMenuItemMakeBasis.setEnabled(true);
             
@@ -1891,6 +1930,14 @@ public class MainFrame  extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItemChangeFunctionActionPerformed
 
+    private void btnMinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMinActionPerformed
+        jMenuItemMinActionPerformed(evt);
+    }//GEN-LAST:event_btnMinActionPerformed
+
+    private void btnPivotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPivotActionPerformed
+        jMenuItemPivotActionPerformed(evt);
+    }//GEN-LAST:event_btnPivotActionPerformed
+
     
     private void fillComboBox() {
         youCan = true;
@@ -1963,6 +2010,8 @@ public class MainFrame  extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnKoniecPomUlohy;
+    private javax.swing.JButton btnMin;
+    private javax.swing.JButton btnPivot;
     private javax.swing.JComboBox jComboBoxRevidedVariable;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenu jMenuEdit;
