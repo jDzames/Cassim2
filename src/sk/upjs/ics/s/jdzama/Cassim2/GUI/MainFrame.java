@@ -571,7 +571,7 @@ public class MainFrame  extends javax.swing.JFrame {
         tblBaza.setDefaultRenderer(JLabel.class, new BasisRenderer(tblBaza));
         tblBaza.setFont(new Font("Times New Roman", Font.BOLD, 19));
         
-        jMenuItemSave.setEnabled(true);
+        /*jMenuItemSave.setEnabled(true);
             
         jMenuTable.setEnabled(true);
         jMenuItemGomory.setEnabled(true);
@@ -595,7 +595,9 @@ public class MainFrame  extends javax.swing.JFrame {
         jMenuItemRevidedRowValue.setEnabled(false);        
         jComboBoxRevidedVariable.setVisible(false);
 
-        jMenuHistory.setEnabled(true);
+        jMenuHistory.setEnabled(true);*/
+        
+        setMenuEnables();
         
         ValuesSingleton.INSTANCE.showColumns=ValuesSingleton.INSTANCE.columnNames.length;
         
@@ -1101,6 +1103,35 @@ public class MainFrame  extends javax.swing.JFrame {
         //otvor okno s vypisanou historiou
     }//GEN-LAST:event_jMenuHistoryActionPerformed
 
+    private void setMenuEnables(){
+        jMenuItemSave.setEnabled(true);
+            
+            jMenuTable.setEnabled(true);
+            jMenuItemGomory.setEnabled(true);
+            jMenuItemSuppRole.setEnabled(true);
+            jMenuItemBasisSolution.setEnabled(true);
+            jMenuItemAutomat.setEnabled(true);
+            
+            jMenuEdit.setEnabled(true);
+            btnMin.setVisible(true);
+            btnPivot.setVisible(true);
+            jMenuItemMax.setEnabled(true);
+            jMenuItemMakeBasis.setEnabled(true);
+            
+            jMenuHelpOperations.setEnabled(true);
+            jMenuItemShowSuppVariables.setEnabled(false);
+            jMenuItemHint.setEnabled(true);
+            
+            jMenuRevidedMethod.setEnabled(true);
+            jMenuItemRevidedSwitch.setEnabled(true);
+            jMenuItemRevidedSwitch.setText("Začať revidovanú metódu");
+            jMenuItemRevided0Row.setEnabled(false);
+            jMenuItemRevidedRowValue.setEnabled(false);        
+            jComboBoxRevidedVariable.setVisible(false);
+            
+            jMenuHistory.setEnabled(true);
+    }
+    
     private void jMenuItemOpenNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemOpenNewActionPerformed
         ValuesSingleton.INSTANCE.isOK=false;
         
@@ -1180,7 +1211,7 @@ public class MainFrame  extends javax.swing.JFrame {
         if (!tblSolution.isVisible()) {
             initSolution();
         } else {
-            jMenuItemSave.setEnabled(true);
+            /*jMenuItemSave.setEnabled(true);
             
             jMenuTable.setEnabled(true);
             jMenuItemGomory.setEnabled(true);
@@ -1205,7 +1236,9 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemRevidedRowValue.setEnabled(false);        
             jComboBoxRevidedVariable.setVisible(false);
             
-            jMenuHistory.setEnabled(true);
+            jMenuHistory.setEnabled(true);*/
+            
+            setMenuEnables();
             
             tblSolution.setModel(imageTableModel);
             tblBaza.setModel(basisTableModel);
@@ -1289,7 +1322,7 @@ public class MainFrame  extends javax.swing.JFrame {
             
         } else {
             
-            jMenuItemSave.setEnabled(true);
+            /*jMenuItemSave.setEnabled(true);
             
             jMenuTable.setEnabled(true);
             jMenuItemGomory.setEnabled(true);
@@ -1314,7 +1347,9 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemRevidedRowValue.setEnabled(false);        
             jComboBoxRevidedVariable.setVisible(false);
             
-            jMenuHistory.setEnabled(true);
+            jMenuHistory.setEnabled(true);*/
+            
+            setMenuEnables();
             
             tblSolution.setModel(imageTableModel);
             tblBaza.setModel(basisTableModel);
@@ -1393,7 +1428,7 @@ public class MainFrame  extends javax.swing.JFrame {
             
         } else {
             
-            jMenuItemSave.setEnabled(true);
+            /*jMenuItemSave.setEnabled(true);
             
             jMenuTable.setEnabled(true);
             jMenuItemGomory.setEnabled(true);
@@ -1418,7 +1453,9 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemRevidedRowValue.setEnabled(false);        
             jComboBoxRevidedVariable.setVisible(false);
             
-            jMenuHistory.setEnabled(true);
+            jMenuHistory.setEnabled(true);*/
+            
+            setMenuEnables();
             
             tblBaza.setModel(basisTableModel);
             tblSolution.setModel(imageTableModel);
@@ -1832,9 +1869,12 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuBar.setEnabled(true);
             
             btnKoniecPomUlohy.setVisible(false);
+            
+            setMenuEnables();
+            
             jMenuItemSave.setEnabled(true);
             
-            jMenuTable.setEnabled(true);
+            /*jMenuTable.setEnabled(true);
             jMenuItemGomory.setEnabled(true);
             jMenuItemSuppRole.setEnabled(true);
             jMenuItemBasisSolution.setEnabled(true);
@@ -1855,7 +1895,7 @@ public class MainFrame  extends javax.swing.JFrame {
             jMenuItemRevidedRowValue.setEnabled(false);        
             jComboBoxRevidedVariable.setVisible(false);
             
-            jMenuHistory.setEnabled(true);
+            jMenuHistory.setEnabled(true);*/
             
             imageTableModel = new ImageTableModel();
             tblSolution.setModel(imageTableModel);
