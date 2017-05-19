@@ -171,8 +171,10 @@ public class SolutionCalcService {
            
         int maxIdx = -2;
         BigFraction maximal = new BigFraction(Long.MIN_VALUE);
+        int cols = ValuesSingleton.INSTANCE.suppRoleRunning ? ValuesSingleton.INSTANCE.columns :
+                ValuesSingleton.INSTANCE.columns - ValuesSingleton.INSTANCE.suppRoleVariables;
         
-        for (int i = 1; i <= ValuesSingleton.INSTANCE.columns; i++) {
+        for (int i = 1; i <= cols; i++) {
             if (ValuesSingleton.INSTANCE.tableData[selectedRow][i].getNumerator().compareTo(BigInteger.ZERO)>=0) {
                 continue;
             }

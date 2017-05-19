@@ -345,7 +345,7 @@ public enum ValuesSingleton {
             pole[i][this.tableDataSaved[0].length]=BigFraction.ZERO; //posledny stlpec
         }
         for (int j = 0; j < this.tableDataSaved[0].length; j++) { //stlpce od 0 po predposl. v posl. riadku
-            pole[this.tableDataSaved.length][j]=new BigFraction(Math.floor(this.tableDataSaved[selectedRow][j].longValue()));
+            pole[this.tableDataSaved.length][j]=new BigFraction(Math.floor(this.tableDataSaved[selectedRow][j].doubleValue()));
             pole[this.tableDataSaved.length][j]=pole[this.tableDataSaved.length][j].subtract(pole[selectedRow][j]);
         }
         pole[this.tableDataSaved.length][this.tableDataSaved[0].length]=BigFraction.ONE; //posledny
